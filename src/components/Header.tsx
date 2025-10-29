@@ -1,18 +1,17 @@
 import { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 import { Menu, X, Instagram, Facebook, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const menuItems = [
-    { label: "INÍCIO", href: "#inicio" },
-    { label: "SOBRE", href: "#sobre" },
-    { label: "PORTFÓLIO", href: "#portfolio" },
-    { label: "CONTATO", href: "#contato" },
-    { label: "LOJA", href: "#loja" },
-    { label: "AUTORAL", href: "#autoral" },
-    { label: "ÁREA DO CLIENTE", href: "#area-cliente" },
+  const menuItems = [    
+    { label: "INÍCIO", href: "/" },
+    { label: "SOBRE", href: "/sobre" },
+    { label: "PORTFÓLIO", href: "/portfolio" },
+    { label: "CONTATO", href: "/contato" },
+    { label: "ÁREA DO CLIENTE", href: "/area-do-cliente" },
   ];
 
   return (
@@ -20,24 +19,40 @@ export const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="#inicio" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2">
             <div className="text-2xl font-bold tracking-wider">
-              <span className="text-foreground">JADIEL</span>
-              <span className="text-primary">SILVA</span>
+              <span className="text-foreground">BRUNO</span>
+              <span className="text-primary">NASCIMENTO</span>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
-            {menuItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-              >
-                {item.label}
-              </a>
-            ))}
+            {menuItems.map((item) =>
+              item.href.startsWith("/") ? (
+                <NavLink
+                  key={item.label}
+                  to={item.href}
+                  className={({ isActive }) =>
+                    `text-sm font-medium transition-colors hover:text-primary ${
+                      isActive && item.href !== "/" && !item.href.includes("#") // Only highlight if it's a full page route, not a hash link on home
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                    }`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ) : (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {item.label}
+                </a>
+              )
+            )}
           </nav>
 
           {/* Social Icons & Search */}
@@ -67,16 +82,28 @@ export const Header = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <nav className="lg:hidden py-4 border-t border-border">
-            {menuItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="block py-3 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.label}
-              </a>
-            ))}
+            {menuItems.map((item) =>
+              item.href.startsWith("/") ? (
+                <NavLink
+                  key={item.label}
+                  to={item.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `block py-3 text-sm font-medium transition-colors hover:text-primary ${
+                      isActive && item.href !== "/" && !item.href.includes("#") // Only highlight if it's a full page route, not a hash link on home
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                    }`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ) : (
+                <a key={item.label} href={item.href} onClick={() => setIsMenuOpen(false)} className="block py-3 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+                  {item.label}
+                </a>
+              )
+            )}
             <div className="flex items-center space-x-4 mt-4 pt-4 border-t border-border">
               <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
                 <Instagram className="h-5 w-5" />

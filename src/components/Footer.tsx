@@ -1,4 +1,5 @@
 import { Instagram, Facebook, Mail, Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   return (
@@ -8,8 +9,8 @@ export const Footer = () => {
           {/* Brand */}
           <div>
             <h3 className="text-2xl font-bold mb-4">
-              <span className="text-foreground">JADIEL</span>
-              <span className="text-primary">SILVA</span>
+              <span className="text-foreground">BRUNO</span>
+              <span className="text-primary">NASCIMENTO</span>
             </h3>
             <p className="text-muted-foreground">
               Fotografia profissional que eterniza seus momentos mais especiais.
@@ -21,24 +22,24 @@ export const Footer = () => {
             <h4 className="font-semibold mb-4">Links Rápidos</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#inicio" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/" className="text-muted-foreground hover:text-primary transition-colors">
                   Início
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#sobre" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/sobre" className="text-muted-foreground hover:text-primary transition-colors">
                   Sobre
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#portfolio" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/portfolio" className="text-muted-foreground hover:text-primary transition-colors">
                   Portfólio
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#contato" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/contato" className="text-muted-foreground hover:text-primary transition-colors">
                   Contato
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -71,7 +72,7 @@ export const Footer = () => {
 
         <div className="border-t border-border pt-8 text-center text-muted-foreground">
           <p className="flex items-center justify-center gap-2">
-            © 2024 Jadiel Silva Fotografia. Feito com <Heart className="w-4 h-4 text-primary" /> por Jadiel Silva
+            © 2024 Bruno Nascimento Fotografia. Feito com <Heart className="w-4 h-4 text-primary" /> por Bruno Nascimento
           </p>
         </div>
       </div>

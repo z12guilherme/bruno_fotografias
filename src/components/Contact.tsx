@@ -1,33 +1,41 @@
-import { useState } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+const formSchema = z.object({
+  name: z.string().min(2, { message: "O nome deve ter pelo menos 2 caracteres." }),
+  email: z.string().email({ message: "Por favor, insira um email válido." }),
+  phone: z.string().optional(),
+  message: z.string().min(10, { message: "A mensagem deve ter pelo menos 10 caracteres." }),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 export const Contact = () => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+    },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = (data: FormData) => {
+    console.log("Dados do formulário:", data); // Aqui você enviaria os dados para um backend
     toast({
       title: "Mensagem enviada com sucesso!",
       description: "Entraremos em contato em breve.",
     });
-    setFormData({ name: "", email: "", phone: "", message: "" });
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    form.reset();
   };
 
   return (
@@ -51,7 +59,7 @@ export const Contact = () => {
               </div>
               <div>
                 <h3 className="font-semibold mb-1">Email</h3>
-                <p className="text-muted-foreground">contato@jadielsilva.com</p>
+                <p className="text-muted-foreground">contato@brunonascimento.com</p>
               </div>
             </div>
 
@@ -77,54 +85,61 @@ export const Contact = () => {
           </div>
 
           {/* Contact Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <Input
-                type="text"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
                 name="name"
-                placeholder="Seu Nome"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="bg-secondary border-border"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Seu Nome" {...field} className="bg-secondary border-border" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div>
-              <Input
-                type="email"
+              <FormField
+                control={form.control}
                 name="email"
-                placeholder="Seu Email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="bg-secondary border-border"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input type="email" placeholder="Seu Email" {...field} className="bg-secondary border-border" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div>
-              <Input
-                type="tel"
+              <FormField
+                control={form.control}
                 name="phone"
-                placeholder="Seu Telefone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="bg-secondary border-border"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input type="tel" placeholder="Seu Telefone (Opcional)" {...field} className="bg-secondary border-border" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div>
-              <Textarea
+              <FormField
+                control={form.control}
                 name="message"
-                placeholder="Sua Mensagem"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                rows={5}
-                className="bg-secondary border-border resize-none"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Textarea placeholder="Sua Mensagem" rows={5} className="bg-secondary border-border resize-none" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-              Enviar Mensagem
-            </Button>
-          </form>
+              <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+                Enviar Mensagem
+              </Button>
+            </form>
+          </Form>
         </div>
       </div>
     </section>

@@ -1,27 +1,32 @@
+import { Routes, Route } from "react-router-dom";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import { ThemeProvider } from "@/theme-provider";
+import { HomePage } from "@/components/HomePage";
+import { AboutPage } from "@/components/AboutPage";
+import { ClientAreaPage } from "@/components/ClientAreaPage";
+import { PortfolioCategoriesPage } from "@/components/PortfolioCategoriesPage";
+import { PortfolioCategoryDetail } from "@/components/PortfolioCategoryDetail";
+import { ContactPage } from "@/components/ContactPage";
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+function App() {
+  return (
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Header />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/sobre" element={<AboutPage />} />
+        <Route path="/area-do-cliente" element={<ClientAreaPage />} />
+        <Route path="/portfolio" element={<PortfolioCategoriesPage />} />
+        <Route path="/portfolio/:categoryName" element={<PortfolioCategoryDetail />} />
+        <Route path="/contato" element={<ContactPage />} />
+        <Route path="*" element={<HomePage />} /> {/* Fallback para a página inicial */}
+      </Routes>
+      <Footer />
       <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+    </ThemeProvider>
+  );
+}
 
 export default App;

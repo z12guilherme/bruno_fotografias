@@ -83,3 +83,17 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Novas regras de estilo para categorias */
+@layer components {
+  .category-title {
+    display: block; /* Garante que cada título de categoria fique em sua própria linha */
+    font-size: 2.5rem; /* Tamanho de fonte grande para destaque */
+    font-weight: bold; /* Texto em negrito */
+    color: hsl(var(--primary)); /* Usa a cor primária para destaque */
+    margin-bottom: 1.5rem; /* Espaçamento abaixo de cada título de categoria */
+    text-align: left; /* Alinha o texto à esquerda para um início claro */
+    padding-left: 1rem; /* Adiciona um preenchimento à esquerda para separação visual */
+    border-left: 5px solid hsl(var(--primary)); /* Adiciona uma borda à esquerda para um destaque forte */
+  }
+}
