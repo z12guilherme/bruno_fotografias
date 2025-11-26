@@ -1,88 +1,100 @@
-# Bruno Nascimento - Portfólio de Fotografia
+<div align="center">
+  <br />
+  <h1><b>Bruno Nascimento Fotografia</b></h1>
+  <p>📸 Um portfólio web moderno e completo para fotógrafos, construído com as tecnologias mais recentes para uma experiência de usuário elegante e performática.</p>
+  <br />
+</div>
 
-Este é o repositório do site de portfólio de fotografia de Bruno Nascimento. Um site moderno e elegante, construído com as tecnologias mais recentes para garantir uma experiência de usuário rápida e agradável.
+<p align="center">
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"/>
+  <img alt="Repo size" src="https://img.shields.io/github/repo-size/z12guilherme/bruno_fotografias"/>
+  <img alt="Last commit" src="https://img.shields.io/github/last-commit/z12guilherme/bruno_fotografias"/>
+</p>
 
-## ✨ Tecnologias Utilizadas
+## ✨ Visão Geral
 
-O projeto foi construído utilizando um stack moderno de desenvolvimento web:
+Este projeto é uma aplicação **full-stack** que oferece não apenas uma vitrine pública para o trabalho do fotógrafo, mas também uma área de cliente privada e um painel administrativo para gerenciamento de conteúdo.
 
--   **[Vite](https://vitejs.dev/)**: Build tool de última geração que oferece um ambiente de desenvolvimento extremamente rápido.
--   **[React](https://react.dev/)**: Biblioteca JavaScript para construir interfaces de usuário.
--   **[TypeScript](https://www.typescriptlang.org/)**: Superset do JavaScript que adiciona tipagem estática.
--   **[Tailwind CSS](https://tailwindcss.com/)**: Framework CSS utility-first para criar designs customizados rapidamente.
--   **[shadcn/ui](https://ui.shadcn.com/)**: Coleção de componentes de UI reutilizáveis.
--   **[React Router](https://reactrouter.com/)**: Para roteamento e navegação entre as páginas.
--   **[Lucide React](https://lucide.dev/)**: Biblioteca de ícones SVG.
+> **Nota:** Este repositório pode servir como um template completo e robusto para outros fotógrafos ou profissionais criativos que desejam ter uma presença online profissional e autogerenciável.
 
-## 🚀 Como Executar o Projeto Localmente
+## 🚀 Funcionalidades Principais
 
-Para executar o projeto em sua máquina local, siga os passos abaixo. Você precisará ter o [Node.js](https://nodejs.org/) (versão 18 ou superior) e o [npm](https://www.npmjs.com/) instalados.
+*   🎨 **Galeria de Portfólio**: Exibição de trabalhos com navegação por categorias.
+*   👤 **Página "Sobre Mim"**: Espaço para apresentação do profissional.
+*   📞 **Formulário de Contato**: Canal direto para orçamentos e informações.
+*   🔐 **Área do Cliente**: Sistema de login para que clientes possam visualizar suas galerias de fotos privadas.
+*   ⚙️ **Painel Administrativo**: Área restrita para o fotógrafo gerenciar clientes e fazer upload de novas galerias.
+*   📱 **Design Responsivo**: Experiência de usuário otimizada para desktops, tablets e celulares.
 
-1.  **Clone o repositório:**
-    ```bash
-    git clone https://github.com/z12guilherme/bruno_fotografias.git
-    cd bruno_fotografias
-    ```
+## 🛠️ Tecnologias Utilizadas
 
-2.  **Instale as dependências:**
-    ```bash
-    npm install
-    ```
+O projeto foi construído com um stack moderno, separando claramente as responsabilidades entre o frontend e o backend.
 
-3.  **Inicie o servidor de desenvolvimento:**
-    ```bash
-    npm run dev
-    ```
+### **Frontend**
+*   **Framework**: [React](https://react.dev/) com [TypeScript](https://www.typescriptlang.org/)
+*   **Build Tool**: [Vite](https://vitejs.dev/)
+*   **Estilização**: [Tailwind CSS](https://tailwindcss.com/)
+*   **Componentes UI**: [shadcn/ui](https://ui.shadcn.com/)
+*   **Roteamento**: [React Router](https://reactrouter.com/)
+*   **Ícones**: [Lucide React](https://lucide.dev/)
 
-    Após iniciar, o site estará disponível em `http://localhost:8080` (ou outra porta, se a 8080 estiver em uso).
+### **Backend**
+*   **Ambiente**: Node.js
+*   **Framework**: Express.js
+*   **Banco de Dados**: SQLite (ótimo para simplicidade e portabilidade)
+*   **Autenticação**: JSON Web Tokens (JWT)
+*   **Segurança**: bcrypt para hashing de senhas
+*   **Upload de Arquivos**: Multer
 
-## 📂 Estrutura do Projeto
+##  Como Executar o Projeto Localmente
 
-A estrutura de pastas principal do projeto é a seguinte:
+Para executar o projeto completo em sua máquina, siga os passos abaixo. Você precisará ter o Node.js (versão 18 ou superior) e o npm instalados.
 
-```
-bruno_fotografias/
-├── public/             # Arquivos estáticos que não são processados pelo build
-├── src/
-│   ├── assets/         # Imagens, fontes e outros recursos
-│   ├── components/     # Componentes React reutilizáveis
-│   │   ├── ui/         # Componentes base do shadcn/ui
-│   │   ├── AboutPage.tsx
-│   │   ├── Contact.tsx
-│   │   ├── Footer.tsx
-│   │   ├── Header.tsx
-│   │   └── ...
-│   ├── App.tsx         # Componente principal com as rotas
-│   ├── index.css       # Estilos globais e configuração do Tailwind
-│   └── main.tsx        # Ponto de entrada da aplicação
-├── tailwind.config.js  # Configuração do Tailwind CSS
-└── vite.config.ts      # Configuração do Vite
+### 1. Clonar o Repositório
+```bash
+git clone https://github.com/z12guilherme/bruno_fotografias.git
+cd bruno_fotografias
 ```
 
-## ✏️ Como Customizar
+### 2. Configurar o Backend
+```bash
+# Navegue até a pasta do servidor
+cd server
 
-### Alterar Imagens do Portfólio
+# Instale as dependências do backend
+npm install
 
--   **Imagens das categorias (Página Inicial e Portfólio):**
-    -   As imagens e títulos das categorias podem ser alterados nos arquivos `src/components/HomePage.tsx` e `src/components/PortfolioCategoriesPage.tsx`.
+# (Opcional, mas recomendado) Crie um arquivo .env para suas variáveis de ambiente
+# Exemplo: JWT_SECRET=seu_segredo_super_secreto
 
--   **Imagens da galeria de cada categoria:**
-    -   As fotos de cada categoria (casamentos, família, etc.) estão definidas no arquivo `src/components/PortfolioCategoryDetail.tsx`, dentro da função `getCategoryImages`. Substitua as URLs de placeholder pelas suas próprias imagens.
+# Volte para a pasta raiz do projeto
+cd ..
+```
 
-### Alterar Textos
+### 3. Configurar o Frontend
+```bash
+# Instale as dependências do frontend
+npm install
+```
 
--   **Sobre Mim:** Edite o conteúdo no arquivo `src/components/AboutPage.tsx`.
--   **Contato:** As informações de contato podem ser alteradas em `src/components/Contact.tsx`.
--   **Rodapé:** Altere os links e informações em `src/components/Footer.tsx`.
+### 4. Executar a Aplicação
+Para uma melhor experiência de desenvolvimento, inicie o backend e o frontend em terminais separados.
 
-## 📜 Scripts Disponíveis
+**Terminal 1: Iniciar o Backend**
+```bash
+# A partir da pasta raiz
+cd server
+npm start 
+# O servidor backend estará rodando em http://localhost:3001 (ou a porta configurada)
+```
 
--   `npm run dev`: Inicia o servidor de desenvolvimento com Hot-Reload.
--   `npm run build`: Gera a versão de produção do site na pasta `dist/`.
--   `npm run preview`: Inicia um servidor local para visualizar a versão de produção.
+**Terminal 2: Iniciar o Frontend**
+```bash
+# A partir da pasta raiz
+npm run dev
+# O site estará disponível em http://localhost:5173 (ou a porta indicada pelo Vite)
+```
 
 ## 📄 Licença
 
-Este projeto está licenciado sob a Licença MIT. Isso significa que você tem a liberdade de usar, copiar, modificar, mesclar, publicar, distribuir, sublicenciar e/ou vender cópias do software, desde que o aviso de copyright e esta permissão sejam incluídos em todas as cópias ou partes substanciais do software.
-
-Para mais detalhes, veja o arquivo [LICENSE](LICENSE).
+Distribuído sob a Licença MIT. Veja o arquivo `LICENSE` para mais informações.
