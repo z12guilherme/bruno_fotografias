@@ -11,7 +11,8 @@ export const Header = () => {
     { label: "SOBRE", href: "/sobre" },
     { label: "PORTFÓLIO", href: "/portfolio" },
     { label: "CONTATO", href: "/contato" },
-    { label: "ÁREA DO CLIENTE", href: "/area-do-cliente" },
+    { label: "ÁREA DO CLIENTE", href: "/cliente-login.html", external: true },
+    { label: "AREA ADMINISTRATIVA", href: "/admin-login.html", external: true },
   ];
 
   return (
@@ -29,7 +30,15 @@ export const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
             {menuItems.map((item) =>
-              item.href.startsWith("/") ? (
+              item.external ? (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                >
+                  {item.label}
+                </a>
+              ) : (
                 <NavLink
                   key={item.label}
                   to={item.href}
@@ -43,14 +52,6 @@ export const Header = () => {
                 >
                   {item.label}
                 </NavLink>
-              ) : (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-                >
-                  {item.label}
-                </a>
               )
             )}
           </nav>
@@ -83,7 +84,11 @@ export const Header = () => {
         {isMenuOpen && (
           <nav className="lg:hidden py-4 border-t border-border">
             {menuItems.map((item) =>
-              item.href.startsWith("/") ? (
+              item.external ? (
+                <a key={item.label} href={item.href} onClick={() => setIsMenuOpen(false)} className="block py-3 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+                  {item.label}
+                </a>
+              ) : (
                 <NavLink
                   key={item.label}
                   to={item.href}
@@ -98,10 +103,6 @@ export const Header = () => {
                 >
                   {item.label}
                 </NavLink>
-              ) : (
-                <a key={item.label} href={item.href} onClick={() => setIsMenuOpen(false)} className="block py-3 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                  {item.label}
-                </a>
               )
             )}
             <div className="flex items-center space-x-4 mt-4 pt-4 border-t border-border">

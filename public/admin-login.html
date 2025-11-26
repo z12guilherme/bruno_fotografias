@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Admin | Bruno Nascimento Fotografia</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <!-- Estilos para a página de login do admin -->
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          Helvetica, Arial, sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        margin: 0;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      .login-container {
+        max-width: 400px;
+        width: 100%;
+        background: #fff;
+        padding: 2.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      h1 {
+        color: #2c3e50;
+        margin-bottom: 1rem;
+      }
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        text-align: left;
+      }
+      input[type='password'],
+      input[type='text'] {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-bottom: 1.5rem;
+      }
+      button {
+        width: 100%;
+        background-color: #2c3e50; /* Cor mais escura para diferenciar do cliente */
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+      button:hover {
+        background-color: #34495e;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h1>Acesso Administrativo</h1>
+      <p>Faça login para gerenciar os álbuns.</p>
+      <form id="admin-login-form" style="text-align: left;">
+        <label for="admin-username">Usuário</label>
+        <input type="text" id="admin-username" name="admin-username" required style="margin-bottom: 1rem;" />
+        <label for="admin-password">Senha</label>
+        <input type="password" id="admin-password" name="admin-password" required />
+        <p id="error-message" style="color: red; height: 1rem; margin-top: -0.5rem"></p>
+        <button type="submit">Entrar no Painel</button>
+      </form>
+    </div>
+
+    <script>
+      const form = document.getElementById('admin-login-form');
+      const usernameInput = document.getElementById('admin-username');
+      const passwordInput = document.getElementById('admin-password');
+      const errorMessage = document.getElementById('error-message');
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        errorMessage.textContent = ''; // Limpa a mensagem de erro
+
+        const username = usernameInput.value;
+        const password = passwordInput.value;
+
+        try {
+          const response = await fetch('http://localhost:8080/api/admin/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            localStorage.setItem('accessToken', data.accessToken); // Salva o token
+            window.location.href = './admin.html'; // Redireciona em caso de sucesso
+          } else {
+            errorMessage.textContent = data.message || 'Ocorreu um erro.';
+          }
+        } catch (error) {
+          errorMessage.textContent = 'Não foi possível conectar ao servidor. Verifique se ele está rodando.';
+        }
+      });
+    </script>
+  </body>
+</html>
