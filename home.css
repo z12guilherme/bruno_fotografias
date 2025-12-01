@@ -1,0 +1,26 @@
+.hero-bg {
+  /* Substitua pela sua melhor foto. Use uma imagem de alta resolução. */
+  background-image: url('src/assets/logo.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; /* Efeito Parallax */
+}
+
+/* Estilização da barra de rolagem horizontal para a galeria de destaques */
+.horizontal-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

@@ -12,7 +12,7 @@ import { ContactPage } from "@/components/ContactPage";
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />

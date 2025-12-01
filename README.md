@@ -2,7 +2,7 @@
   <br />
   <h1><b>Bruno Nascimento Fotografia</b></h1>
   <p>📸 Um portfólio web moderno e completo para fotógrafos, construído com as tecnologias mais recentes para uma experiência de usuário elegante e performática.</p>
-  <br />
+  <br />  
 </div>
 
 <p align="center">
@@ -36,6 +36,8 @@ O projeto foi construído com um stack moderno, separando claramente as responsa
 *   **Estilização**: [Tailwind CSS](https://tailwindcss.com/)
 *   **Componentes UI**: [shadcn/ui](https://ui.shadcn.com/)
 *   **Roteamento**: [React Router](https://reactrouter.com/)
+*   **Animações**: [Framer Motion](https://www.framer.com/motion/)
+*   **Layouts de Galeria**: [React Masonry CSS](https://github.com/paulcollett/react-masonry-css)
 *   **Ícones**: [Lucide React](https://lucide.dev/)
 
 ### **Backend**
