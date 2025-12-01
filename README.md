@@ -1,8 +1,8 @@
 <div align="center">
   <br />
   <h1><b>Bruno Nascimento Fotografia</b></h1>
-  <p>📸 Um portfólio web moderno e completo para fotógrafos, construído com as tecnologias mais recentes para uma experiência de usuário elegante e performática.</p>
-  <br />  
+  <p>✨ Um portfólio web de luxo para fotógrafos, combinando design elegante e tecnologia de ponta para criar uma vitrine digital inesquecível. ✨</p>
+  <br />
 </div>
 
 <p align="center">
@@ -12,16 +12,16 @@
 </p>
 
 ## ✨ Visão Geral
-
-Este projeto é uma aplicação **full-stack** que oferece não apenas uma vitrine pública para o trabalho do fotógrafo, mas também uma área de cliente privada e um painel administrativo para gerenciamento de conteúdo.
+ 
+Este projeto é uma aplicação **full-stack** que transcende o conceito de um simples site. Ele oferece uma experiência digital completa: uma vitrine pública para exibir seu trabalho, uma área de cliente exclusiva para entrega de galerias privadas e um painel de controle intuitivo para gerenciamento total do conteúdo.
 
 > **Nota:** Este repositório pode servir como um template completo e robusto para outros fotógrafos ou profissionais criativos que desejam ter uma presença online profissional e autogerenciável.
 
 ## 🚀 Funcionalidades Principais
 
 *   🎨 **Galeria de Portfólio**: Exibição de trabalhos com navegação por categorias.
-*   👤 **Página "Sobre Mim"**: Espaço para apresentação do profissional.
-*   📞 **Formulário de Contato**: Canal direto para orçamentos e informações.
+*   👤 **Página "Sobre Mim"**: Espaço com foto e biografia para apresentação do profissional.
+*   � **Formulário de Contato**: Canal direto para orçamentos e informações.
 *   🔐 **Área do Cliente**: Sistema de login para que clientes possam visualizar suas galerias de fotos privadas.
 *   ⚙️ **Painel Administrativo**: Área restrita para o fotógrafo gerenciar clientes e fazer upload de novas galerias.
 *   📱 **Design Responsivo**: Experiência de usuário otimizada para desktops, tablets e celulares.

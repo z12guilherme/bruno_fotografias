@@ -1,23 +1,22 @@
 import { Link } from "react-router-dom";
 
+// 1. Importamos cada imagem para que o Vite possa processá-las.
+import imgCasamento from '@/assets/portfolio-casamento.jpg';
+import imgFamilia from '@/assets/portfolio-family.jpg';
+import imgBatizados from '@/assets/portfolio-batismo.jpg';
+import imgEventos from '@/assets/portfolio-event.jpg';
+
 export const HomePage = () => {
-  // Para colocar suas próprias imagens, substitua as URLs abaixo.
-  // O ideal é importar as imagens do seu projeto, como:
-  // import imgCasamento from '@/assets/casamento.jpg';
-  // E depois usar a variável: image: imgCasamento
   const categories = [
-    // Onde colocar a imagem para a categoria "Casamentos"
-    { id: "casamentos", title: "Casamentos", image: "src/assets/portfolio-casamento.jpg"},
-    // Onde colocar a imagem para a categoria "Família"
-    { id: "familia", title: "Família", image: "src/assets/portfolio-family.jpg"},
-    // Onde colocar a imagem para a categoria "Batizados"
-    { id: "batizados", title: "Batizados", image: "src/assets/portfolio-batismo.jpg" },
-    // Onde colocar a imagem para a categoria "Eventos"
-    { id: "eventos", title: "Eventos", image: "src/assets/portfolio-event.jpg" },
+    // 2. Usamos as variáveis importadas em vez dos caminhos de texto.
+    { id: "casamentos", title: "Casamentos", image: imgCasamento},
+    { id: "familia", title: "Família", image: imgFamilia},
+    { id: "batizados", title: "Batizados", image: imgBatizados },
+    { id: "eventos", title: "Eventos", image: imgEventos },
   ];
 
   return (
-    <main className="pt-20"> {/* pt-20 to offset the fixed header */}
+    <main> {/* Removemos o pt-20 que estava empurrando o conteúdo para baixo */}
       <div className="grid grid-cols-1 md:grid-cols-2">
         {categories.map((category) => (
           <Link

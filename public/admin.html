@@ -7,17 +7,17 @@
     <meta name="robots" content="noindex, nofollow" />
     <style>
       :root {
-        --background: #f8f9fa;
-        --foreground: #212529;
+        --background: #ffffff;
+        --foreground: #1a1a1a;
         --card: #ffffff;
-        --card-foreground: #212529;
-        --primary: #0d6efd;
+        --card-foreground: #1a1a1a;
+        --primary: #b08d57; /* Tom dourado */
         --primary-foreground: #ffffff;
-        --destructive: #dc3545;
+        --destructive: #e53e3e;
         --destructive-foreground: #ffffff;
-        --border: #dee2e6;
-        --input: #ced4da;
-        --muted-foreground: #6c757d;
+        --border: #e2e8f0;
+        --input: #e2e8f0;
+        --muted-foreground: #718096;
       }
 
       body {
@@ -114,7 +114,7 @@
         transition: background-color 0.2s;
       }
       button:hover {
-        background-color: #0b5ed7;
+        background-color: #9c7b4b; /* Dourado mais escuro no hover */
       }
       .client-item {
         display: flex;
@@ -268,6 +268,13 @@
           }
 
           const clients = await response.json();
+
+          // ADICIONAR ESTA VERIFICAÇÃO
+          if (!Array.isArray(clients)) {
+            clientListDiv.innerHTML = `<p style="color: red;">Erro: A resposta do servidor não foi uma lista válida.</p>`;
+            return;
+          }
+
           clientListDiv.innerHTML = ''; // Limpa a mensagem de "carregando"
 
           if (clients.length === 0) {

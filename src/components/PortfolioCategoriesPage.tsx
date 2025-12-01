@@ -1,33 +1,35 @@
 import { Link } from "react-router-dom";
 
+// 1. Importamos as imagens para que o Vite possa processá-las
+import imgCasamento from '@/assets/portfolio-casamento.jpg';
+import imgFamilia from '@/assets/portfolio-family.jpg';
+import imgBatizados from '@/assets/portfolio-batismo.jpg';
+import imgEventos from '@/assets/portfolio-event.jpg';
+
 export const PortfolioCategoriesPage = () => {
-  // Para colocar suas próprias imagens, substitua as URLs abaixo.
-  // O ideal é importar as imagens do seu projeto, como:
-  // import imgCasamento from '@/assets/casamento.jpg';
-  // E depois usar a variável: image: imgCasamento
   const categories = [
     {
       id: "casamentos",
       title: "Casamentos",
-      image: "src/assets/portfolio-casamento.jpg", // Onde colocar a imagem para "Casamentos"
+      image: imgCasamento, // 2. Usamos a variável importada
       description: "A celebração do amor em momentos inesquecíveis.",
     },
     {
       id: "familia",
       title: "Família",
-      image: "src/assets/portfolio-family.jpg", // Onde colocar a imagem para "Família"
+      image: imgFamilia, // 2. Usamos a variável importada
       description: "Capture a essência e o amor da sua família.",
     },
     {
       id: "batizados",
       title: "Batizados",
-      image: "src/assets/portfolio-batismo.jpg", // Onde colocar a imagem para "Batizados"
+      image: imgBatizados, // 2. Usamos a variável importada
       description: "A celebração da fé e da família em momentos sagrados.",
     },
     {
       id: "eventos",
       title: "Eventos",
-      image: "src/assets/portfolio-event.jpg", // Onde colocar a imagem para "Eventos"
+      image: imgEventos, // 2. Usamos a variável importada
       description: "Cobertura completa para seus eventos especiais.",
     },
   ];
