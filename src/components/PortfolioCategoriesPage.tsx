@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-// 1. Importamos as imagens para que o Vite possa processá-las
+// 1. Voltamos a importar as imagens de demonstração do portfólio localmente.
 import imgCasamento from '@/assets/portfolio-casamento.jpg';
 import imgFamilia from '@/assets/portfolio-family.jpg';
 import imgBatizados from '@/assets/portfolio-batismo.jpg';
@@ -11,25 +11,25 @@ export const PortfolioCategoriesPage = () => {
     {
       id: "casamentos",
       title: "Casamentos",
-      image: imgCasamento, // 2. Usamos a variável importada
+      image: imgCasamento, // 2. Usamos a variável da imagem local importada.
       description: "A celebração do amor em momentos inesquecíveis.",
     },
     {
       id: "familia",
       title: "Família",
-      image: imgFamilia, // 2. Usamos a variável importada
+      image: imgFamilia,
       description: "Capture a essência e o amor da sua família.",
     },
     {
       id: "batizados",
       title: "Batizados",
-      image: imgBatizados, // 2. Usamos a variável importada
+      image: imgBatizados,
       description: "A celebração da fé e da família em momentos sagrados.",
     },
     {
       id: "eventos",
       title: "Eventos",
-      image: imgEventos, // 2. Usamos a variável importada
+      image: imgEventos,
       description: "Cobertura completa para seus eventos especiais.",
     },
   ];

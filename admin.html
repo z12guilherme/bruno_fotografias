@@ -178,8 +178,8 @@
             <input type="password" id="client-password" name="client-password" required />
           </div>
           <div class="form-group">
-            <label for="photos">Selecione as Fotos</label>
-            <input type="file" id="photos" name="photos" multiple accept="image/*" />
+            <label for="album-link">Link do Álbum Externo</label>
+            <input type="url" id="album-link" name="album-link" required placeholder="https://galeria.site.com/link-do-album" />
           </div>
           <p id="success-message" style="color: green; height: 1rem; margin-bottom: 1rem;"></p>
           <button type="submit" style="width: 100%;">Criar Álbum</button>
@@ -221,24 +221,20 @@
 
         const clientName = document.getElementById('client-name').value;
         const clientPassword = document.getElementById('client-password').value;
-        const photos = document.getElementById('photos').files;
-
-        const formData = new FormData();
-        formData.append('clientName', clientName);
-        formData.append('clientPassword', clientPassword);
-        for (let i = 0; i < photos.length; i++) {
-          formData.append('photos', photos[i]);
-        }
+        const albumLink = document.getElementById('album-link').value;
 
         try {
           const response = await fetch('http://localhost:8080/api/clients', {
             method: 'POST',
             headers: {
-              // O FormData define o Content-Type automaticamente,
-              // mas precisamos adicionar o token de autorização.
+              'Content-Type': 'application/json',
               'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             },
-            body: formData, // Não defina 'Content-Type', o navegador faz isso por você com FormData
+            body: JSON.stringify({
+              clientName: clientName,
+              clientPassword: clientPassword,
+              albumLink: albumLink,
+            }),
           });
 
           const data = await response.json();
@@ -283,9 +279,6 @@
                 <span style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
                   ${client.name}
-                </span>
-                <span style="font-size: 0.85rem; color: var(--muted-foreground); margin-top: 0.25rem;">
-                  ${client.photoCount} ${client.photoCount === 1 ? 'foto' : 'fotos'} no álbum
                 </span>
               </div>
               <div class="client-actions">
