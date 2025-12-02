@@ -44,6 +44,9 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
       return response.status(401).send({ error: "A requisição deve ser feita por um usuário autenticado." });
     }
 
+    // Log para depuração: imprime o corpo da requisição recebida.
+    console.log("Corpo da requisição recebido:", JSON.stringify(request.body));
+
     try { // O restante da lógica permanece igual.
       // Verificamos se o token pertence a um usuário válido (poderia adicionar uma verificação de admin aqui)
       await admin.auth().verifyIdToken(idToken);
