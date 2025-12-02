@@ -1,0 +1,39 @@
+# .github/workflows/firebase-deploy.yml
+
+name: Build and Deploy to Firebase
+
+on:
+  push:
+    branches:
+      - main # Ou 'master', dependendo da sua branch principal
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Baixa o código do seu repositório
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Configura o Node.js e instala dependências do projeto React
+      - name: Setup Node.js and Install Dependencies
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install
+
+      # 3. Compila o projeto React (cria a pasta 'dist')
+      - name: Build Project
+        run: npm run build
+
+      # 4. Copia as páginas de admin para dentro da pasta de build
+      - name: Copy admin pages to dist
+        run: cp -r public/* dist/
+
+      # 5. Faz o deploy para o Firebase Hosting e Functions
+      - name: Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TOKEN }}'
+          projectId: brunonascimento-fotografia
