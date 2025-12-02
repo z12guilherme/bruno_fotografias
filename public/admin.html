@@ -174,15 +174,15 @@
             <input type="text" id="client-name" name="client-name" required />
           </div>
           <div class="form-group">
-            <label for="client-password">Senha de Acesso para o Cliente</label>
-            <input type="password" id="client-password" name="client-password" required />
+            <label for="client-email">E-mail do Cliente</label>
+            <input type="email" id="client-email" name="client-email" required />
           </div>
           <div class="form-group">
             <label for="photos">Selecione as Fotos</label>
-            <input type="file" id="photos" name="photos" multiple accept="image/*" />
+            <input type="file" id="photos" name="photos" multiple required accept="image/*" />
           </div>
           <p id="success-message" style="color: green; height: 1rem; margin-bottom: 1rem;"></p>
-          <button type="submit" style="width: 100%;">Criar Álbum</button>
+          <button type="submit" id="create-album-btn" style="width: 100%;">Criar Álbum</button>
         </form>
       </div>
 
@@ -198,82 +198,113 @@
       </div>
     </main>
 
-    <script>
+    <script type="module">
+      // Importações do Firebase
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+      import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+      import { getFirestore, collection, getDocs, orderBy, query, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+      import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
+      import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-functions.js";
+
+      // Suas credenciais do Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyAgY_VUl7Koe1r9KVuNa9yqn7eBFywvgPQ",
+        authDomain: "brunonascimento-fotografia.firebaseapp.com",
+        projectId: "brunonascimento-fotografia",
+        storageBucket: "brunonascimento-fotografia.appspot.com",
+        messagingSenderId: "1001006478460",
+        appId: "1:1001006478460:web:a2b7266215034a849945f9",
+        measurementId: "G-B68G4KMZW6"
+      };
+
+      // Inicialização dos serviços do Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const firestore = getFirestore(app);
+      const storage = getStorage(app);
+      const functions = getFunctions(app, 'southamerica-east1'); // Use a região correta!
+
       const form = document.getElementById('create-album-form');
       const successMessage = document.getElementById('success-message');
       const clientListDiv = document.getElementById('client-list');
       const logoutButton = document.getElementById('logout-button');
-      const token = localStorage.getItem('accessToken');
+      const createAlbumBtn = document.getElementById('create-album-btn');
 
-      // Redireciona para o login se não houver token
-      if (!token) {
-        window.location.href = './admin-login.html';
-      }
+      // Verifica o estado da autenticação
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // Usuário está logado, carrega os clientes.
+          loadClients();
+        } else {
+          // Usuário não está logado, redireciona para a página de login.
+          window.location.href = './admin-login.html';
+        }
+      });
 
       logoutButton.addEventListener('click', () => {
-        localStorage.removeItem('accessToken');
-        window.location.href = './admin-login.html';
+        signOut(auth).then(() => {
+          window.location.href = './admin-login.html';
+        }).catch((error) => {
+          console.error("Erro ao fazer logout:", error);
+        });
       });
 
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         successMessage.textContent = 'Enviando...';
+        createAlbumBtn.disabled = true;
+        createAlbumBtn.textContent = 'Enviando...';
 
         const clientName = document.getElementById('client-name').value;
+        const clientEmail = document.getElementById('client-email').value;
         const clientPassword = document.getElementById('client-password').value;
-        const photos = document.getElementById('photos').files;
-
-        const formData = new FormData();
-        formData.append('clientName', clientName);
-        formData.append('clientPassword', clientPassword);
-        for (let i = 0; i < photos.length; i++) {
-          formData.append('photos', photos[i]);
-        }
+        const photoFiles = document.getElementById('photos').files;
+        const tempClientId = `temp_${Date.now()}`; // ID temporário para a pasta
 
         try {
-          const response = await fetch('http://localhost:8080/api/clients', {
-            method: 'POST',
-            headers: {
-              // O FormData define o Content-Type automaticamente,
-              // mas precisamos adicionar o token de autorização.
-              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-            },
-            body: formData, // Não defina 'Content-Type', o navegador faz isso por você com FormData
+          // 1. Fazer upload das fotos para o Firebase Storage
+          successMessage.textContent = `Enviando ${photoFiles.length} fotos...`;
+          const uploadPromises = Array.from(photoFiles).map(file => {
+            const filePath = `galleries/${tempClientId}/${Date.now()}-${file.name}`;
+            const storageRef = ref(storage, filePath);
+            return uploadBytes(storageRef, file).then(snapshot => getDownloadURL(snapshot.ref));
           });
 
-          const data = await response.json();
-          if (response.ok) {
-            successMessage.textContent = data.message;
-            form.reset();
-            loadClients(); // Recarrega a lista de clientes após criar um novo
-          } else {
-            successMessage.textContent = `Erro: ${data.message}`;
-          }
+          const photoUrls = await Promise.all(uploadPromises);
 
-          if (response.status === 401 || response.status === 403) window.location.href = './admin-login.html';
+          // 2. Chamar a Cloud Function para criar o usuário e o álbum
+          successMessage.textContent = 'Criando álbum...';
+          const createAlbumFn = httpsCallable(functions, 'createAlbum');
+          const result = await createAlbumFn({
+            clientName,
+            clientEmail,
+            clientPassword,
+            photoUrls
+          });
+
+          successMessage.textContent = result.data.message;
+          form.reset();
+          loadClients(); // Recarrega a lista
+
         } catch (error) {
-          successMessage.textContent = 'Erro de conexão com o servidor.';
+          console.error("Erro ao criar álbum:", error);
+          successMessage.textContent = `Erro: ${error.message}`;
+        } finally {
+          createAlbumBtn.disabled = false;
+          createAlbumBtn.textContent = 'Criar Álbum';
         }
       });
 
       async function loadClients() {
         try {
-          const response = await fetch('http://localhost:8080/api/clients', {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
+          const clientsRef = collection(firestore, 'clients');
+          const q = query(clientsRef, orderBy('createdAt', 'desc'));
+          const querySnapshot = await getDocs(q);
 
-          if (response.status === 401 || response.status === 403) {
-            window.location.href = './admin-login.html';
-            return;
-          }
-
-          const clients = await response.json();
-
-          // ADICIONAR ESTA VERIFICAÇÃO
-          if (!Array.isArray(clients)) {
-            clientListDiv.innerHTML = `<p style="color: red;">Erro: A resposta do servidor não foi uma lista válida.</p>`;
-            return;
-          }
+          const clients = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
 
           clientListDiv.innerHTML = ''; // Limpa a mensagem de "carregando"
 
@@ -292,7 +323,7 @@
                   ${client.name}
                 </span>
                 <span style="font-size: 0.85rem; color: var(--muted-foreground); margin-top: 0.25rem;">
-                  ${client.photoCount} ${client.photoCount === 1 ? 'foto' : 'fotos'} no álbum
+                  ${client.photos.length} ${client.photos.length === 1 ? 'foto' : 'fotos'} no álbum
                 </span>
               </div>
               <div class="client-actions">
@@ -324,30 +355,21 @@
             });
           });
         } catch (error) {
-          clientListDiv.innerHTML = '<p style="color: red;">Erro ao carregar a lista de clientes.</p>';
+          console.error("Erro ao carregar clientes:", error);
+          clientListDiv.innerHTML = `<p style="color: red;">Erro ao carregar a lista de clientes: ${error.message}</p>`;
         }
       }
 
-      // Carrega os clientes assim que a página é aberta
-      loadClients();
-
       async function deleteClient(clientId) {
         try {
-          const response = await fetch(`http://localhost:8080/api/clients/${clientId}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-          if (!response.ok) {
-            // Se o token expirou, o servidor responderá com 401 ou 403
-            if (response.status === 401 || response.status === 403) {
-              alert('Sua sessão expirou. Por favor, faça login novamente.');
-              window.location.href = './admin-login.html';
-            }
-            const data = await response.json();
-            throw new Error(data.message);
-          }
+          // ATENÇÃO: Esta função deleta apenas o registro no Firestore.
+          // As fotos no Storage e o usuário no Auth NÃO serão deletados.
+          // Para uma exclusão completa, seria necessária outra Cloud Function.
+          await deleteDoc(doc(firestore, "clients", clientId));
+          alert('Álbum deletado do Firestore. O usuário e as fotos ainda existem.');
           loadClients(); // Recarrega a lista
         } catch (error) {
+          console.error("Erro ao deletar cliente:", error);
           alert(`Erro ao deletar cliente: ${error.message}`);
         }
       }

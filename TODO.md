@@ -16,37 +16,22 @@ O objetivo desta fase é ter todas as telas (páginas HTML) necessárias, mesmo 
 
 ---
 
-### Fase 2: Lógica de Simulação (Backend Falso com JavaScript)
-
-Nesta fase, vamos simular o comportamento do servidor e do banco de dados usando apenas JavaScript no navegador. **Isso é apenas para testes e não é seguro para produção.**
-
-- [x] **Criar "Banco de Dados" Falso**: Criar um arquivo `database.js` que conterá um objeto JavaScript com os dados dos clientes (nome, senha, lista de fotos).
-- [x] **Script de Login do Admin**: Em `admin-login.html`, criar um script que verifica se a senha digitada é a senha mestra definida no `database.js` e redireciona para `admin.html` em caso de sucesso.
-- [x] **Script de Criação de Álbuns**: Em `admin.html`, fazer o formulário "salvar" um novo cliente e suas fotos no nosso banco de dados falso.
-- [x] **Script de Login do Cliente**: Em `cliente-login.html`, o script irá verificar a senha digitada contra as senhas no `database.js`. Se encontrar, redireciona para a `galeria-cliente.html` passando alguma identificação do cliente (ex: `galeria-cliente.html?cliente=joao_silva`).
-- [x] **Script de Exibição da Galeria**: Em `galeria-cliente.html`, o script irá ler qual cliente foi passado na URL, buscar suas fotos no `database.js` e exibi-las dinamicamente na página.
-
----
-
-### Fase 3: Refinamento e Estilo
+### Fase 2: Refinamento e Estilo
 
 - [x] **Estilizar a Galeria**: Tornar a `galeria-cliente.html` visualmente incrível. Podemos usar um layout em grid e adicionar um efeito de "lightbox" (quando clica na foto, ela amplia na tela).
 - [x] **Melhorar Feedback**: Adicionar mensagens de erro (ex: "Senha incorreta") e sucesso nos formulários.
 
 ---
 
-### Fase 4: Backend com Node.js (Rumo à Produção)
+### Fase 3: Migração para Firebase (Backend)
 
-- [x] **Escolher Tecnologia de Backend**: Node.js com o framework Express.js.
-- [x] **Configurar Ambiente Node.js**: Criar o diretório `server/` e o arquivo `server.js` com Express.
-- [x] **Integrar Banco de Dados**: Configurar um banco de dados simples (SQLite) para armazenar os dados dos clientes.
-- [ ] **Criar Rotas da API (Endpoints)**:
-    - [x] `POST /api/admin/login`: Para autenticar o administrador.
-    - [ ] `POST /api/clients/login`: Para autenticar o cliente.
-    - [ ] `GET /api/galleries/:clientId`: Para buscar as fotos de um cliente (rota protegida).
-    - [ ] `POST /api/clients`: Para criar um novo cliente/álbum (rota protegida).
-- [x] **Implementar Upload de Arquivos**: Usar uma biblioteca como `multer` para fazer o upload das fotos para uma pasta no servidor.
-- [x] **Segurança**: Implementar hashing de senhas com `bcrypt` e autenticação com JWT (JSON Web Tokens) para proteger as rotas.
-- [x] **Conectar Frontend ao Backend**: Modificar os arquivos HTML para fazer requisições (`fetch`) para a nossa nova API em vez de usar o `database.js`.
-- [x] **Criar Página de Gerenciamento de Álbum**: `gerenciar-album.html` para adicionar/deletar fotos de um álbum específico.
-- [x] **Corrigir Bugs**: JWT_SECRET ausente, estrutura de dados de fotos incorreta para deleção.
+- [x] **Configurar Firebase Admin SDK**: Inicializar o Firebase no `server.js` com a chave de serviço.
+- [x] **Refatorar Autenticação**: Substituir JWT local pelo Firebase Authentication para validar tokens.
+- [x] **Refatorar Upload de Arquivos**: Mudar o `multer` para salvar arquivos em memória e prepará-lo para o Cloud Storage.
+- [x] **Refatorar Rotas de Criação e Leitura**: Substituir a lógica do banco de dados local pelas operações do Firestore e Cloud Storage.
+- [ ] **Próximos Passos (Frontend)**:
+    - [ ] Implementar o login do administrador no frontend usando o SDK do Firebase para obter o token.
+    - [ ] Modificar o formulário de criação de álbum (`admin.html`) para permitir o upload de múltiplos arquivos (`<input type="file" multiple>`).
+    - [ ] Ajustar o JavaScript do `admin.html` para enviar os arquivos como `FormData` em vez de JSON.
+    - [ ] Criar uma página de login para o cliente no frontend que use o Firebase Authentication.
+    - [ ] Ajustar a página da galeria (`galeria-cliente.html`) para buscar os dados do Firestore após o login do cliente.

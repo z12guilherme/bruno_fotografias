@@ -174,15 +174,23 @@
             <input type="text" id="client-name" name="client-name" required />
           </div>
           <div class="form-group">
+            <label for="client-email">E-mail do Cliente</label>
+            <input type="email" id="client-email" name="client-email" required />
+          </div>
+          <div class="form-group">
+            <label for="client-email">E-mail do Cliente</label>
+            <input type="email" id="client-email" name="client-email" required />
+          </div>
+          <div class="form-group">
             <label for="client-password">Senha de Acesso para o Cliente</label>
             <input type="password" id="client-password" name="client-password" required />
           </div>
           <div class="form-group">
-            <label for="album-link">Link do Álbum Externo</label>
-            <input type="url" id="album-link" name="album-link" required placeholder="https://galeria.site.com/link-do-album" />
+            <label for="photos">Fotos do Álbum</label>
+            <input type="file" id="photos" name="photos" multiple required accept="image/*" />
           </div>
           <p id="success-message" style="color: green; height: 1rem; margin-bottom: 1rem;"></p>
-          <button type="submit" style="width: 100%;">Criar Álbum</button>
+          <button type="submit" id="create-album-btn" style="width: 100%;">Criar Álbum</button>
         </form>
       </div>
 
@@ -219,22 +227,27 @@
         event.preventDefault();
         successMessage.textContent = 'Enviando...';
 
-        const clientName = document.getElementById('client-name').value;
-        const clientPassword = document.getElementById('client-password').value;
-        const albumLink = document.getElementById('album-link').value;
+        const createAlbumBtn = document.getElementById('create-album-btn');
+        createAlbumBtn.disabled = true;
+        createAlbumBtn.textContent = 'Enviando...';
+
+        const formData = new FormData();
+        formData.append('clientName', document.getElementById('client-name').value);
+        formData.append('clientEmail', document.getElementById('client-email').value);
+        formData.append('clientPassword', document.getElementById('client-password').value);
+        
+        const photoFiles = document.getElementById('photos').files;
+        for (let i = 0; i < photoFiles.length; i++) {
+          formData.append('photos', photoFiles[i]);
+        }
 
         try {
           const response = await fetch('http://localhost:8080/api/clients', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
               'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             },
-            body: JSON.stringify({
-              clientName: clientName,
-              clientPassword: clientPassword,
-              albumLink: albumLink,
-            }),
+            body: formData, // Envia como FormData, não como JSON
           });
 
           const data = await response.json();
@@ -249,6 +262,9 @@
           if (response.status === 401 || response.status === 403) window.location.href = './admin-login.html';
         } catch (error) {
           successMessage.textContent = 'Erro de conexão com o servidor.';
+        } finally {
+          createAlbumBtn.disabled = false;
+          createAlbumBtn.textContent = 'Criar Álbum';
         }
       });
 

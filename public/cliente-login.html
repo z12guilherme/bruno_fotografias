@@ -65,41 +65,60 @@
   <body>
     <div class="login-container">
       <h1>Área do Cliente</h1>
-      <p>Digite a senha de acesso para visualizar sua galeria. (teste: silva)</p>
+      <p>Digite seu e-mail e senha para visualizar sua galeria.</p>
       <form id="client-login-form">
-        <label for="access-password">Sua Senha</label>
-        <input type="password" id="access-password" name="access-password" required />
+        <label for="client-email">Seu E-mail</label>
+        <input type="email" id="client-email" name="client-email" required />
+        <label for="client-password">Sua Senha</label>
+        <input type="password" id="client-password" name="client-password" required />
         <p id="error-message" style="color: red; height: 1rem; margin-top: -0.5rem"></p>
         <button type="submit">Acessar Galeria</button>
       </form>
     </div>
 
-    <script>
+    <!-- Importe os scripts do Firebase -->
+    <script type="module">
+      // Importe as funções necessárias do SDK do Firebase
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+      import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+
+      // Suas credenciais do Firebase (as mesmas do admin-login)
+      const firebaseConfig = {
+        apiKey: "AIzaSyAgY_VUl7Koe1r9KVuNa9yqn7eBFywvgPQ",
+        authDomain: "brunonascimento-fotografia.firebaseapp.com",
+        projectId: "brunonascimento-fotografia",
+        storageBucket: "brunonascimento-fotografia.appspot.com",
+        messagingSenderId: "1001006478460",
+        appId: "1:1001006478460:web:a2b7266215034a849945f9",
+        measurementId: "G-B68G4KMZW6"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
       const form = document.getElementById('client-login-form');
       const errorMessage = document.getElementById('error-message');
 
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         errorMessage.textContent = '';
-
-        const password = document.getElementById('access-password').value;
+        const email = document.getElementById('client-email').value;
+        const password = document.getElementById('client-password').value;
 
         try {
-          const response = await fetch('http://localhost:8080/api/clients/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password }),
-          });
+          const userCredential = await signInWithEmailAndPassword(auth, email, password);
+          const user = userCredential.user;
 
-          const data = await response.json();
-
-          if (data.success) {
-            window.location.href = `./galeria-cliente.html?cliente=${data.clientId}`;
+          // O login foi bem-sucedido, agora podemos redirecionar para a galeria.
+          // O ID do cliente é o UID do usuário no Firebase.
+          if (user) {
+            window.location.href = `./galeria-cliente.html?cliente=${user.uid}`;
           } else {
-            errorMessage.textContent = data.message || 'Ocorreu um erro.';
+            errorMessage.textContent = 'Ocorreu um erro inesperado.';
           }
         } catch (error) {
-          errorMessage.textContent = 'Erro de conexão com o servidor.';
+          errorMessage.textContent = 'E-mail ou senha inválidos.';
+          console.error("Erro de login do cliente:", error);
         }
       });
     </script>

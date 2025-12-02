@@ -43,10 +43,9 @@ O projeto foi construído com um stack moderno, separando claramente as responsa
 ### **Backend**
 *   **Ambiente**: Node.js
 *   **Framework**: Express.js
-*   **Banco de Dados**: SQLite (ótimo para simplicidade e portabilidade)
-*   **Autenticação**: JSON Web Tokens (JWT)
-*   **Segurança**: bcrypt para hashing de senhas
-*   **Upload de Arquivos**: Multer
+*   **Banco de Dados**: Firebase Firestore (banco de dados NoSQL escalável)
+*   **Autenticação**: Firebase Authentication
+*   **Armazenamento de Arquivos**: Firebase Storage
 
 ##  Como Executar o Projeto Localmente
 

@@ -88,7 +88,25 @@
       <img class="lightbox-content" id="lightbox-img" />
     </div>
 
-    <script>
+    <script type="module">
+      // Importações do Firebase
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+      import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+      // Suas credenciais do Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyAgY_VUl7Koe1r9KVuNa9yqn7eBFywvgPQ",
+        authDomain: "brunonascimento-fotografia.firebaseapp.com",
+        projectId: "brunonascimento-fotografia",
+        storageBucket: "brunonascimento-fotografia.appspot.com",
+        messagingSenderId: "1001006478460",
+        appId: "1:1001006478460:web:a2b7266215034a849945f9",
+        measurementId: "G-B68G4KMZW6"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const firestore = getFirestore(app);
+
       const urlParams = new URLSearchParams(window.location.search);
       const clientId = urlParams.get('cliente');
       const galleryTitle = document.getElementById('gallery-title');
@@ -103,19 +121,20 @@
         }
 
         try {
-          const response = await fetch(`http://localhost:8080/api/galleries/${clientId}`);
-          const data = await response.json();
+          const clientDocRef = doc(firestore, 'clients', clientId);
+          const docSnap = await getDoc(clientDocRef);
 
-          if (!response.ok) {
-            throw new Error(data.message);
+          if (!docSnap.exists()) {
+            throw new Error('Galeria não encontrada.');
           }
 
-          galleryTitle.textContent = `Galeria de ${data.clientName}`;
-          data.photos.forEach((photo) => {
+          const clientData = docSnap.data();
+          galleryTitle.textContent = `Galeria de ${clientData.name}`;
+          clientData.photos.forEach((photoUrl) => {
             const img = document.createElement('img');
-            img.src = photo.url; // Corrigido: Acessa a propriedade 'url' do objeto
-            img.alt = `Foto para ${data.clientName}`;
-            img.addEventListener('click', () => openLightbox(photo.url)); // Corrigido: Passa a URL para o lightbox
+            img.src = photoUrl;
+            img.alt = `Foto para ${clientData.name}`;
+            img.addEventListener('click', () => openLightbox(photoUrl));
             galleryGrid.appendChild(img);
           });
         } catch (error) {
