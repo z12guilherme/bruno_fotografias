@@ -28,7 +28,7 @@ jobs:
 
       # 4. Copia as páginas de admin para dentro da pasta de build
       - name: Copiar páginas de admin para a pasta dist
-        run: rsync -av --exclude='firebase.json' public/ dist/
+        run: rsync -av --exclude='firebase.json' --exclude='index.html' public/ dist/
 
       # 5. Faz o deploy para o Firebase Hosting e Functions
       - name: Fazer Deploy para o Firebase
