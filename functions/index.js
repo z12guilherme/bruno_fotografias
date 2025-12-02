@@ -30,13 +30,13 @@ const corsHandler = cors({
  * Esta função é chamada pelo painel de administração.
  */
 exports.createAlbum = functions.region('southamerica-east1').https.onRequest((request, response) => {
-  // Envolvemos a lógica da função com o corsHandler
+  // 1. Primeiro, deixe o corsHandler processar a requisição.
+  // Ele vai responder automaticamente às requisições OPTIONS e passar para o próximo passo.
   corsHandler(request, response, async () => {
-    // Para funções onRequest, o método HTTP deve ser verificado.
+    // 2. AGORA, dentro do callback, verificamos o método.
     if (request.method !== 'POST') {
       return response.status(405).send('Method Not Allowed');
     }
-
     // 1. A verificação de autenticação precisa ser feita manualmente com o token.
     // O frontend deve enviar o ID Token do admin no cabeçalho Authorization.
     const idToken = request.headers.authorization?.split('Bearer ')[1];
@@ -44,7 +44,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
       return response.status(401).send({ error: "A requisição deve ser feita por um usuário autenticado." });
     }
 
-    try {
+    try { // O restante da lógica permanece igual.
       // Verificamos se o token pertence a um usuário válido (poderia adicionar uma verificação de admin aqui)
       await admin.auth().verifyIdToken(idToken);
 
