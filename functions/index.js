@@ -75,12 +75,18 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
 
     } catch (error) {
       console.error("Erro ao criar álbum:", error);
+
+      // Erro específico para e-mail já existente
       if (error.code === "auth/email-already-exists") {
         return response.status(409).send({ error: "Este e-mail já está em uso por outro cliente." });
       }
-      if (error.code?.startsWith('auth/')) {
+
+      // Erro para token de autenticação inválido, expirado ou malformado
+      if (error.code?.startsWith('auth/id-token-')) {
         return response.status(401).send({ error: "Token de autenticação inválido ou expirado." });
       }
+
+      // Erro genérico para qualquer outro problema
       return response.status(500).send({ error: "Ocorreu um erro interno ao criar o álbum.", details: error.message });
     }
   });
