@@ -91,6 +91,7 @@
     <script type="module">
       // Importações do Firebase
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
       import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
       // Suas credenciais do Firebase
@@ -105,6 +106,7 @@
       };
 
       const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
       const firestore = getFirestore(app);
 
       const urlParams = new URLSearchParams(window.location.search);
@@ -112,6 +114,25 @@
       const galleryTitle = document.getElementById('gallery-title');
       const galleryGrid = document.getElementById('gallery-grid');
       const errorMessage = document.getElementById('error-message');
+
+      // Verifica o estado da autenticação
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // Usuário está logado.
+          // Verificação de segurança: o ID do usuário logado é o mesmo da galeria que ele quer ver?
+          if (user.uid === clientId) {
+            // Sim, ele é o dono. Carrega a galeria.
+            loadGallery();
+          } else {
+            // Não, ele está tentando acessar a galeria de outra pessoa.
+            galleryTitle.textContent = 'Acesso Negado';
+            errorMessage.textContent = 'Você não tem permissão para ver esta galeria.';
+          }
+        } else {
+          // Usuário não está logado, redireciona para a página de login.
+          window.location.href = `./cliente-login.html`;
+        }
+      });
 
       async function loadGallery() {
         if (!clientId) {
@@ -154,8 +175,6 @@
 
       closeBtn.addEventListener('click', () => lightbox.classList.remove('active'));
       lightbox.addEventListener('click', (e) => e.target === lightbox && lightbox.classList.remove('active'));
-
-      loadGallery();
     </script>
   </body>
 </html>
