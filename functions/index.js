@@ -33,23 +33,15 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
   // 1. Primeiro, deixe o corsHandler processar a requisição.
   // Ele vai responder automaticamente às requisições OPTIONS e passar para o próximo passo.
   corsHandler(request, response, async () => {
-    // LOG INICIAL: Vamos verificar cabeçalhos e corpo da requisição assim que a função for chamada.
-    console.log("Execução iniciada. Cabeçalhos:", JSON.stringify(request.headers));
-    console.log("Corpo da requisição:", JSON.stringify(request.body));
-
-    // 2. AGORA, dentro do callback, verificamos o método.
-    if (request.method !== 'POST') {
-      return response.status(405).send('Method Not Allowed');
-    }
-    // 3. A verificação de autenticação precisa ser feita manualmente com o token.
-    // O frontend deve enviar o ID Token do admin no cabeçalho Authorization.
-    const idToken = request.headers.authorization?.split('Bearer ')[1];
-    if (!idToken) {
-      console.error("Erro de autenticação: ID Token não encontrado no cabeçalho 'Authorization'.");
-      return response.status(401).send({ error: "A requisição deve ser feita por um usuário autenticado." });
-    }
-
     try { // O restante da lógica permanece igual.
+      // LOG INICIAL: Vamos verificar cabeçalhos e corpo da requisição assim que a função for chamada.
+      console.log("Execução iniciada. Cabeçalhos:", JSON.stringify(request.headers));
+      console.log("Corpo da requisição:", JSON.stringify(request.body));
+
+      // 2. AGORA, dentro do callback, verificamos o método.
+      if (request.method !== 'POST') {
+        return response.status(405).send('Method Not Allowed');
+      }
       // Verificamos se o token pertence a um usuário válido (poderia adicionar uma verificação de admin aqui)
       await admin.auth().verifyIdToken(idToken);
 
@@ -62,7 +54,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
           !clientName && "clientName",
           !clientEmail && "clientEmail",
           !clientPassword && "clientPassword",
-          (!Array.isArray(photoUrls) || photoUrls.length === 0) && "photoUrls (deve ser um array com pelo menos uma foto)"
+          (!Array.isArray(photoUrls) || photoUrls.length === 0) && "photoUrls (deve ser um array com pelo menos uma foto)",
         ].filter(Boolean).join(', ');
         console.error(`Validação falhou. Campos ausentes: [${missingFields}]`);
         return response.status(400).send({ error: `Campos obrigatórios ausentes: ${missingFields}` });
