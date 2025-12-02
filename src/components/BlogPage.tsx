@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export const BlogPage = () => {
   const blogPosts = [
     {
@@ -37,15 +39,21 @@ export const BlogPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogPosts.map((post) => (
-            <div key={post.id} className="bg-card rounded-lg shadow-lg overflow-hidden">
-              <img src={post.image} alt={post.title} className="w-full h-48 object-cover" />
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-2">{post.title}</h3>
-                <p className="text-muted-foreground text-sm mb-4">{post.excerpt}</p>
-                <p className="text-xs text-gray-500">{post.date}</p>
-                {/* <a href="#" className="text-primary hover:underline mt-4 inline-block">Leia Mais</a> */}
+            <Link to={`/blog/${post.id}`} key={post.id} className="group">
+              <div className="bg-card rounded-lg shadow-lg overflow-hidden h-full flex flex-col">
+                <div className="overflow-hidden">
+                  <img src={post.image} alt={post.title} className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+                </div>
+                <div className="p-6 flex flex-col flex-grow">
+                  <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{post.title}</h3>
+                  <p className="text-muted-foreground text-sm mb-4 flex-grow">{post.excerpt}</p>
+                  <div className="flex justify-between items-center mt-auto">
+                    <span className="text-xs text-gray-500">{post.date}</span>
+                    <span className="text-primary font-semibold text-sm">Leia Mais →</span>
+                  </div>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
