@@ -53,13 +53,14 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
 
       const { clientName, clientEmail, clientPassword, photoUrls } = request.body;
 
-      if (!clientName || !clientEmail || !clientPassword || !photoUrls) {
+      // Validação mais robusta
+      if (!clientName || !clientEmail || !clientPassword || !Array.isArray(photoUrls) || photoUrls.length === 0) {
         // Log aprimorado para depuração
         const missingFields = [
           !clientName && "clientName",
           !clientEmail && "clientEmail",
           !clientPassword && "clientPassword",
-          !photoUrls && "photoUrls"
+          (!Array.isArray(photoUrls) || photoUrls.length === 0) && "photoUrls (deve ser um array com pelo menos uma foto)"
         ].filter(Boolean).join(', ');
         console.error(`Validação falhou. Campos ausentes: [${missingFields}]`);
         return response.status(400).send({ error: `Campos obrigatórios ausentes: ${missingFields}` });
