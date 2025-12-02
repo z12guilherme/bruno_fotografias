@@ -33,6 +33,9 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
   // 1. Primeiro, deixe o corsHandler processar a requisição.
   // Ele vai responder automaticamente às requisições OPTIONS e passar para o próximo passo.
   corsHandler(request, response, async () => {
+    // LOG INICIAL: Vamos verificar os cabeçalhos assim que a função for chamada.
+    console.log("Iniciando execução. Cabeçalhos recebidos:", JSON.stringify(request.headers));
+
     // 2. AGORA, dentro do callback, verificamos o método.
     if (request.method !== 'POST') {
       return response.status(405).send('Method Not Allowed');
@@ -41,6 +44,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
     // O frontend deve enviar o ID Token do admin no cabeçalho Authorization.
     const idToken = request.headers.authorization?.split('Bearer ')[1];
     if (!idToken) {
+      console.error("Erro de autenticação: ID Token não encontrado no cabeçalho 'Authorization'.");
       return response.status(401).send({ error: "A requisição deve ser feita por um usuário autenticado." });
     }
 
