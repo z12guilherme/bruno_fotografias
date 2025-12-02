@@ -54,7 +54,15 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
       const { clientName, clientEmail, clientPassword, photoUrls } = request.body;
 
       if (!clientName || !clientEmail || !clientPassword || !photoUrls) {
-        return response.status(400).send({ error: "Todos os campos (clientName, clientEmail, clientPassword, photoUrls) são obrigatórios." });
+        // Log aprimorado para depuração
+        const missingFields = [
+          !clientName && "clientName",
+          !clientEmail && "clientEmail",
+          !clientPassword && "clientPassword",
+          !photoUrls && "photoUrls"
+        ].filter(Boolean).join(', ');
+        console.error(`Validação falhou. Campos ausentes: [${missingFields}]`);
+        return response.status(400).send({ error: `Campos obrigatórios ausentes: ${missingFields}` });
       }
 
       // 2. Cria um novo usuário para o cliente no Firebase Authentication.
