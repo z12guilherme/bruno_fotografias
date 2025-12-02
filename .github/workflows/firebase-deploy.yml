@@ -26,6 +26,10 @@ jobs:
       - name: Compilar o Projeto
         run: npm run build
 
+      # 4. Instala as dependências da Cloud Function
+      - name: Instalar Dependências da Função
+        run: npm install --prefix functions
+
       # 4. Copia as páginas de admin para dentro da pasta de build
       - name: Copiar páginas de admin para a pasta dist
         run: rsync -av --exclude='firebase.json' --exclude='index.html' public/ dist/
