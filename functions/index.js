@@ -33,7 +33,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
   // 1. Primeiro, deixe o corsHandler processar a requisição.
   // Ele vai responder automaticamente às requisições OPTIONS e passar para o próximo passo.
   corsHandler(request, response, async () => {
-    try { // O restante da lógica permanece igual.
+    try {
       // LOG INICIAL: Vamos verificar cabeçalhos e corpo da requisição assim que a função for chamada.
       console.log("Execução iniciada. Cabeçalhos:", JSON.stringify(request.headers));
       console.log("Corpo da requisição:", JSON.stringify(request.body));
@@ -43,13 +43,15 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
         return response.status(405).send('Method Not Allowed');
       }
 
-      // 3. A verificação de autenticação precisa ser feita manualmente com o token.
+      // 3. Extrai e verifica o token de autenticação.
       // O frontend deve enviar o ID Token do admin no cabeçalho Authorization.
       const idToken = request.headers.authorization?.split('Bearer ')[1];
       if (!idToken) {
         console.error("Erro de autenticação: ID Token não encontrado no cabeçalho 'Authorization'.");
         return response.status(401).send({ error: "A requisição deve ser feita por um usuário autenticado." });
       }
+
+      // 4. Verificamos se o token pertence a um usuário válido E se ele é um admin.
       const decodedToken = await admin.auth().verifyIdToken(idToken);
       if (decodedToken.admin !== true) {
         console.error(`Acesso negado. Usuário ${decodedToken.email} não é um administrador.`);
@@ -60,7 +62,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
 
       const { clientName, clientEmail, clientPassword, photoUrls } = request.body;
 
-      // Validação mais robusta
+      // 5. Validação dos dados recebidos no corpo da requisição.
       if (!clientName || !clientEmail || !clientPassword || !Array.isArray(photoUrls) || photoUrls.length === 0) {
         // Log aprimorado para depuração
         const missingFields = [
@@ -73,7 +75,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
         return response.status(400).send({ error: `Campos obrigatórios ausentes: ${missingFields}` });
       }
 
-      // 5. Cria um novo usuário para o cliente no Firebase Authentication.
+      // 6. Cria um novo usuário para o cliente no Firebase Authentication.
       const clientUser = await admin.auth().createUser({
         email: clientEmail,
         password: clientPassword,
@@ -82,7 +84,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
 
       const clientId = clientUser.uid;
 
-      // 6. Salva os dados do álbum no Firestore, usando o UID do cliente como ID do documento.
+      // 7. Salva os dados do álbum no Firestore, usando o UID do cliente como ID do documento.
       await firestore.collection("clients").doc(clientId).set({
         name: clientName,
         email: clientEmail,
