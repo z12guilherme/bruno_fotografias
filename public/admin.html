@@ -216,7 +216,7 @@
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";      
       import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
       import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-functions.js";
-      import { getFirestore, collection, getDocs, orderBy, query, doc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+      import { getFirestore, collection, getDocs, orderBy, query, doc, deleteDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
       // Suas credenciais do Firebase
       // NOTA DE SEGURANÇA: A chave de API para web é pública por design.
@@ -284,29 +284,27 @@
           const clientPassword = document.getElementById('client-password').value;
           const driveLink = document.getElementById('drive-link').value;
 
-          // Passo 1: Chamar a Cloud Function para criar o usuário e o documento (mesmo que incompleto).
-          // Enviamos 'photoUrls' para satisfazer a validação da função.
+          // Passo 1: Chamar a Cloud Function para criar APENAS o usuário de autenticação.
+          // A função DEVE retornar o UID do usuário criado.
           const createAlbum = httpsCallable(functions, 'createAlbum');
-          await createAlbum({
+          const authResult = await createAlbum({
             clientName,
             clientEmail,
-            clientPassword,
-            photoUrls: driveLink 
+            clientPassword
           });
 
-          // Passo 2: Encontrar o cliente que acabamos de criar no Firestore usando o e-mail.
-          const clientsRef = collection(db, 'clients');
-          const q = query(clientsRef, where("email", "==", clientEmail));
-          const querySnapshot = await getDocs(q);
-
-          if (querySnapshot.empty) {
-            throw new Error("Não foi possível encontrar o cliente recém-criado para adicionar o link.");
+          // A função precisa retornar { uid: '...' } para este código funcionar.
+          const newUserId = authResult.data.uid;
+          if (!newUserId) {
+            throw new Error("A Cloud Function não retornou o ID do novo usuário. Verifique o backend.");
           }
 
-          // Passo 3: Atualizar o documento encontrado, adicionando o campo 'driveLink'.
-          const clientDoc = querySnapshot.docs[0];
-          const clientDocRef = doc(db, "clients", clientDoc.id);
-          await updateDoc(clientDocRef, { driveLink: driveLink });
+          // Passo 2: Criar o documento do cliente no Firestore usando o UID como ID.
+          // Isso garante que todos os dados, incluindo o link, sejam salvos corretamente.
+          const clientDocRef = doc(db, "clients", newUserId);
+          await setDoc(clientDocRef, { 
+            name: clientName, email: clientEmail, driveLink: driveLink, createdAt: serverTimestamp(), uid: newUserId 
+          });
 
           showFeedback('Álbum e cliente criados com sucesso!', false);
 
