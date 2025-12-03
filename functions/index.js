@@ -176,3 +176,45 @@ exports.getUploadUrl = functions.region('southamerica-east1').https.onRequest((r
     }
   });
 });
+
+/**
+ * Cloud Function para gerar uma URL de upload assinada para o Firebase Storage.
+ * Apenas administradores podem chamar esta função.
+ */
+exports.getUploadUrl = functions.region('southamerica-east1').https.onRequest((request, response) => {
+  corsHandler(request, response, async () => {
+    try {
+      if (request.method !== 'POST') {
+        return response.status(405).send('Method Not Allowed');
+      }
+
+      const idToken = request.headers.authorization?.split('Bearer ')[1];
+      if (!idToken) {
+        return response.status(401).send({ error: "Usuário não autenticado." });
+      }
+
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      if (decodedToken.admin !== true) {
+        return response.status(403).send({ error: "Permissão de administrador necessária." });
+      }
+
+      const { filePath, contentType } = request.body;
+      if (!filePath || !contentType) {
+        return response.status(400).send({ error: "filePath e contentType são obrigatórios." });
+      }
+
+      const bucket = admin.storage().bucket();
+      const file = bucket.file(filePath);
+      const options = { version: 'v4', action: 'write', expires: Date.now() + 15 * 60 * 1000, // 15 minutos
+        contentType: contentType,
+      };
+
+      const [url] = await file.getSignedUrl(options);
+      return response.status(200).send({ uploadUrl: url });
+
+    } catch (error) {
+      console.error("Erro ao gerar URL de upload:", error);
+      return response.status(500).send({ error: "Erro interno ao gerar URL de upload.", details: error.message });
+    }
+  });
+});
