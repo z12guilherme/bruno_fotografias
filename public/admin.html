@@ -359,7 +359,7 @@
           emailSpan.textContent = client.email;
 
           const driveLink = document.createElement('a');
-          driveLink.href = client.driveLink;
+          driveLink.href = client.photoUrls;
           driveLink.target = '_blank';
           driveLink.style.cssText = "font-size: 0.85rem; color: var(--primary); margin-top: 0.25rem; text-decoration: none;";
           driveLink.textContent = 'Ver Álbum no Drive';
