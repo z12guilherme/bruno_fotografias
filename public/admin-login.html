@@ -55,6 +55,10 @@
         font-size: 1rem;
         cursor: pointer;
       }
+      button:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+      }
       #error-message {
         color: #dc3545;
         text-align: center;
@@ -102,24 +106,41 @@
 
       const form = document.getElementById('admin-login-form');
       const errorMessage = document.getElementById('error-message');
+      const submitButton = form.querySelector('button');
 
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        errorMessage.textContent = 'Verificando...';
+        
+        errorMessage.textContent = '';
+        submitButton.disabled = true;
+        submitButton.textContent = 'Entrando...';
 
         try {
-          const userCredential = await signInWithEmailAndPassword(auth, email, password);
-          const user = userCredential.user;
-          const token = await user.getIdToken();
-
-          // Salva o token no localStorage para ser usado em outras páginas
-          localStorage.setItem('accessToken', token);
+          await signInWithEmailAndPassword(auth, email, password);
+          // O SDK do Firebase gerencia a sessão automaticamente.
+          // Não é necessário salvar o token manualmente no localStorage.
           window.location.href = './admin.html'; // Redireciona para o painel
         } catch (error) {
-          errorMessage.textContent = 'E-mail ou senha inválidos.';
+          switch (error.code) {
+            case 'auth/user-not-found':
+            case 'auth/invalid-email':
+              errorMessage.textContent = 'E-mail não encontrado.';
+              break;
+            case 'auth/wrong-password':
+              errorMessage.textContent = 'Senha incorreta.';
+              break;
+            case 'auth/invalid-credential':
+               errorMessage.textContent = 'E-mail ou senha inválidos.';
+               break;
+            default:
+              errorMessage.textContent = 'Ocorreu um erro ao tentar fazer login.';
+              break;
+          }
           console.error("Erro de login:", error);
+          submitButton.disabled = false;
+          submitButton.textContent = 'Entrar';
         }
       });
     </script>

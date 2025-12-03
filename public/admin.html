@@ -302,16 +302,8 @@
           loadClients(); // Recarrega a lista
         } catch (error) {
           console.error("Erro ao criar álbum:", error);
-          let displayError = error.message;
-          // Tenta analisar a mensagem de erro para uma exibição mais amigável.
-          try {
-            const errorObj = JSON.parse(error.message);
-            // Prioriza a exibição de uma mensagem de erro estruturada, se houver
-            displayError = errorObj.error?.message || errorObj.error || error.message;
-          } catch (e) {
-            // Se não for um JSON válido, usa a mensagem de erro como está.
-          }
-          showFeedback(`Erro: ${displayError}`, true);
+          // O erro de uma httpsCallable já vem com uma propriedade 'message' clara.
+          showFeedback(`Erro: ${error.message}`, true);
         } finally {
           // Garante que o botão seja reativado mesmo se ocorrer um erro
           createAlbumBtn.disabled = false;
@@ -320,6 +312,7 @@
       });
 
       // --- Funções de Dados (Firestore) ---
+
       async function loadClients() {
         try {
           const clientsRef = collection(db, 'clients');
@@ -331,67 +324,90 @@
             ...doc.data()
           }));
 
-          clientListDiv.innerHTML = ''; // Limpa a mensagem de "carregando"
-
-          if (clients.length === 0) {
-            clientListDiv.innerHTML = '<p>Nenhum cliente cadastrado ainda.</p>';
-            return;
-          }
-
-          clients.forEach(client => {
-            const clientDiv = document.createElement('div');
-            clientDiv.className = 'client-item';
-            clientDiv.innerHTML = `
-              <div class="client-info">
-                <span style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
-                  ${client.name}
-                </span>
-                <span style="font-size: 0.85rem; color: var(--muted-foreground); margin-top: 0.25rem;">
-                  ${client.email}
-                </span>
-                <a href="${client.driveLink}" target="_blank" style="font-size: 0.85rem; color: var(--primary); margin-top: 0.25rem; text-decoration: none;">
-                  Ver Álbum no Drive
-                </a>
-              </div>
-              <div class="client-actions">
-                <button data-client-id="${client.id}" class="btn-manage" title="Gerenciar Álbum">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-                </button>
-                <button data-client-id="${client.id}" class="btn-delete" title="Deletar Álbum">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                </button>
-              </div>
-            `;
-            clientListDiv.appendChild(clientDiv);
-          });
-
-          // Adiciona os event listeners para os novos botões
-          document.querySelectorAll('.btn-manage').forEach(button => {
-            button.addEventListener('click', (e) => {
-              const clientId = e.currentTarget.dataset.clientId;
-              window.location.href = `./gerenciar-album.html?cliente=${clientId}`;
-            });
-          });
-
-          document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', async (e) => {
-              const clientId = e.currentTarget.dataset.clientId;
-              if (confirm('Tem certeza que deseja deletar este álbum? Esta ação não pode ser desfeita.')) {
-                await deleteClient(clientId);
-              }
-            });
-          });
+          renderClients(clients);
         } catch (error) {
           console.error("Erro ao carregar clientes:", error);
           clientListDiv.innerHTML = `<p style="color: red;">Erro ao carregar a lista de clientes: ${error.message}</p>`;
         }
       }
 
+      function renderClients(clients) {
+        clientListDiv.innerHTML = ''; // Limpa a lista atual
+
+        if (clients.length === 0) {
+          const p = document.createElement('p');
+          p.textContent = 'Nenhum cliente cadastrado ainda.';
+          clientListDiv.appendChild(p);
+          return;
+        }
+
+        clients.forEach(client => {
+          const clientDiv = document.createElement('div');
+          clientDiv.className = 'client-item';
+
+          // Usar textContent e createElement para evitar vulnerabilidades XSS
+          const clientInfo = document.createElement('div');
+          clientInfo.className = 'client-info';
+
+          const nameSpan = document.createElement('span');
+          nameSpan.style.cssText = "font-weight: 600; display: flex; align-items: center; gap: 0.5rem;";
+          nameSpan.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>`;
+          nameSpan.appendChild(document.createTextNode(client.name));
+
+          const emailSpan = document.createElement('span');
+          emailSpan.style.cssText = "font-size: 0.85rem; color: var(--muted-foreground); margin-top: 0.25rem;";
+          emailSpan.textContent = client.email;
+
+          const driveLink = document.createElement('a');
+          driveLink.href = client.driveLink;
+          driveLink.target = '_blank';
+          driveLink.style.cssText = "font-size: 0.85rem; color: var(--primary); margin-top: 0.25rem; text-decoration: none;";
+          driveLink.textContent = 'Ver Álbum no Drive';
+
+          clientInfo.append(nameSpan, emailSpan, driveLink);
+
+          const clientActions = document.createElement('div');
+          clientActions.className = 'client-actions';
+          clientActions.innerHTML = `
+            <button data-client-id="${client.id}" class="btn-manage" title="Gerenciar Álbum">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+            </button>
+            <button data-client-id="${client.id}" data-client-name="${client.name}" class="btn-delete" title="Deletar Álbum">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+            </button>
+          `;
+
+          clientDiv.append(clientInfo, clientActions);
+          clientListDiv.appendChild(clientDiv);
+        });
+
+        addClientActionListeners();
+      }
+
+      function addClientActionListeners() {
+        document.querySelectorAll('.btn-manage').forEach(button => {
+          button.addEventListener('click', (e) => {
+            const clientId = e.currentTarget.dataset.clientId;
+            window.location.href = `./gerenciar-album.html?cliente=${clientId}`;
+          });
+        });
+
+        document.querySelectorAll('.btn-delete').forEach(button => {
+          button.addEventListener('click', async (e) => {
+            const { clientId, clientName } = e.currentTarget.dataset;
+            if (confirm(`Tem certeza que deseja deletar o álbum de "${clientName}"? Esta ação não pode ser desfeita.`)) {
+              await deleteClient(clientId);
+            }
+          });
+        });
+      }
+
       async function deleteClient(clientId) {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
         try {
           // Desabilita todos os botões de exclusão para evitar cliques múltiplos
-          document.querySelectorAll('.btn-delete').forEach(b => b.disabled = true);
+          deleteButtons.forEach(b => b.disabled = true);
+          showFeedback('Deletando álbum...', false);
 
           // 1. Excluir o documento do cliente no Firestore.
           await deleteDoc(doc(db, "clients", clientId));
@@ -410,13 +426,13 @@
           });
           */
 
-          alert('Álbum e dados do cliente deletados com sucesso.');
+          showFeedback('Álbum deletado com sucesso.', false);
           loadClients(); // Recarrega a lista
         } catch (error) {
           console.error("Erro ao deletar cliente:", error);
-          alert(`Erro ao deletar cliente: ${error.message}`);
+          showFeedback(`Erro ao deletar: ${error.message}`, true);
           // Reabilita os botões em caso de erro
-          document.querySelectorAll('.btn-delete').forEach(b => b.disabled = false);
+          deleteButtons.forEach(b => b.disabled = false);
         }
       }
     </script>
