@@ -50,8 +50,15 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
         console.error("Erro de autenticação: ID Token não encontrado no cabeçalho 'Authorization'.");
         return response.status(401).send({ error: "A requisição deve ser feita por um usuário autenticado." });
       }
-      // Verificamos se o token pertence a um usuário válido (poderia adicionar uma verificação de admin aqui)
-      await admin.auth().verifyIdToken(idToken);
+
+      // 4. Verificamos se o token pertence a um usuário válido E se ele é um admin.
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      if (decodedToken.admin !== true) {
+        console.error(`Acesso negado. Usuário ${decodedToken.email} não é um administrador.`);
+        return response.status(403).send({ error: "Acesso negado. Permissão de administrador necessária." });
+      }
+
+      console.log(`Requisição autorizada para o admin: ${decodedToken.email}`);
 
       const { clientName, clientEmail, clientPassword, photoUrls } = request.body;
 
@@ -68,7 +75,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
         return response.status(400).send({ error: `Campos obrigatórios ausentes: ${missingFields}` });
       }
 
-      // 2. Cria um novo usuário para o cliente no Firebase Authentication.
+      // 5. Cria um novo usuário para o cliente no Firebase Authentication.
       const clientUser = await admin.auth().createUser({
         email: clientEmail,
         password: clientPassword,
@@ -77,7 +84,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
 
       const clientId = clientUser.uid;
 
-      // 3. Salva os dados do álbum no Firestore, usando o UID do cliente como ID do documento.
+      // 6. Salva os dados do álbum no Firestore, usando o UID do cliente como ID do documento.
       await firestore.collection("clients").doc(clientId).set({
         name: clientName,
         email: clientEmail,
