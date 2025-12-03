@@ -26,19 +26,14 @@ jobs:
       - name: Compilar o Projeto
         run: npm run build
 
-      # 4. Instala as dependências da Cloud Function
-      - name: Instalar Dependências da Função
-        run: npm install --prefix functions
-
-      # 4. Copia as páginas de admin para dentro da pasta de build
+      # 4. Copia as páginas de admin para dentro da pasta de build (se ainda for necessário)
       - name: Copiar páginas de admin para a pasta dist
         run: rsync -av --exclude='firebase.json' --exclude='index.html' public/ dist/
 
-      # 5. Faz o deploy para o Firebase Hosting e Functions
-      - name: Fazer Deploy para o Firebase
+      # 5. Faz o deploy APENAS para o Firebase Hosting
+      - name: Fazer Deploy para o Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TOKEN }}'
           projectId: brunonascimento-fotografia
-          channelId: live

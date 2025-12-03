@@ -182,11 +182,11 @@
             <input type="password" id="client-password" name="client-password" required />
           </div>
           <div class="form-group">
-            <label for="photos">Selecione as Fotos</label>
-            <input type="file" id="photos" name="photos" multiple required accept="image/*" />
+            <label for="photo-urls">Link do Álbum (Google Drive, etc.)</label>
+            <input type="url" id="photo-urls" name="photo-urls" placeholder="https://drive.google.com/..." required />
           </div>
-          <p id="success-message" style="color: green; height: 1rem; margin-bottom: 1rem;"></p>
-          <button type="submit" id="create-album-btn" style="width: 100%;">Criar Álbum</button>
+          <p id="feedback-message" style="min-height: 1rem; margin-bottom: 1rem; color: red;"></p>
+          <button type="submit" id="create-album-btn" style="width: 100%;">Criar Cliente</button>
         </form>
       </div>
 
@@ -204,15 +204,14 @@
 
     <script type="module">
       // Importações do Firebase
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+      import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
       import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
-      import { getFirestore, collection, getDocs, orderBy, query, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
-      import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
       import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-functions.js";
+      import { getFirestore, collection, getDocs, orderBy, query, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
       // Suas credenciais do Firebase
       const firebaseConfig = {
-        apiKey: "AIzaSyAgY_VUl7Koe1r9KVuNa9yqn7eBFywvgPQ",
+        apiKey: "AIzaSyAgY_VUl7Koe1r9KVuNa9yqn7eBFywvgPQ", // Lembre-se de proteger suas chaves de API se o projeto for público.
         authDomain: "brunonascimento-fotografia.firebaseapp.com",
         projectId: "brunonascimento-fotografia",
         storageBucket: "brunonascimento-fotografia.firebasestorage.app",
@@ -224,12 +223,11 @@
       // Inicialização dos serviços do Firebase
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
-      const firestore = getFirestore(app);
-      const storage = getStorage(app);
+      const db = getFirestore(app);
       const functions = getFunctions(app, 'southamerica-east1'); // Use a região correta!
 
       const form = document.getElementById('create-album-form');
-      const successMessage = document.getElementById('success-message');
+      const feedbackMessage = document.getElementById('feedback-message');
       const clientListDiv = document.getElementById('client-list');
       const logoutButton = document.getElementById('logout-button');
       const createAlbumBtn = document.getElementById('create-album-btn');
@@ -255,53 +253,44 @@
 
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
-        successMessage.textContent = 'Enviando...';
+        feedbackMessage.textContent = 'Criando álbum...';
+        feedbackMessage.style.color = 'var(--muted-foreground)';
         createAlbumBtn.disabled = true;
-        createAlbumBtn.textContent = 'Enviando...';
+        createAlbumBtn.textContent = 'Criando...';
 
         const clientName = document.getElementById('client-name').value;
         const clientEmail = document.getElementById('client-email').value;
         const clientPassword = document.getElementById('client-password').value;
-        const photoFiles = document.getElementById('photos').files;
-        const tempClientId = `temp_${Date.now()}`; // ID temporário para a pasta
-
+        const photoUrls = document.getElementById('photo-urls').value; // Corrigido para photoUrls
+        
         try {
-          // 1. Fazer upload das fotos para o Firebase Storage
-          successMessage.textContent = `Enviando ${photoFiles.length} fotos...`;
-          const uploadPromises = Array.from(photoFiles).map(file => {
-            const filePath = `galleries/${tempClientId}/${Date.now()}-${file.name}`;
-            const storageRef = ref(storage, filePath);
-            return uploadBytes(storageRef, file).then(snapshot => getDownloadURL(snapshot.ref));
-          });
-
-          const photoUrls = await Promise.all(uploadPromises);
-
-          // 2. Chamar a Cloud Function para criar o usuário e o álbum
-          successMessage.textContent = 'Criando álbum...';
+          // Chama a Cloud Function segura para criar o álbum.
           const createAlbumFn = httpsCallable(functions, 'createAlbum');
           const result = await createAlbumFn({
-            clientName,
-            clientEmail,
-            clientPassword,
-            photoUrls
+            name: clientName,
+            email: clientEmail,
+            password: clientPassword,
+            photoUrls: [photoUrls] // Envia como um array, conforme esperado pela função
           });
 
-          successMessage.textContent = result.data.message;
+          console.log(result.data.message);
+          feedbackMessage.textContent = result.data.message;
+          feedbackMessage.style.color = 'green'; // Sucesso
           form.reset();
           loadClients(); // Recarrega a lista
-
         } catch (error) {
           console.error("Erro ao criar álbum:", error);
-          successMessage.textContent = `Erro: ${error.message}`;
+          // Agora exibe a mensagem de erro real vinda da Cloud Function
+          feedbackMessage.textContent = `Erro: ${error.message}`;
         } finally {
           createAlbumBtn.disabled = false;
-          createAlbumBtn.textContent = 'Criar Álbum';
+          createAlbumBtn.textContent = 'Criar Cliente';
         }
       });
 
       async function loadClients() {
         try {
-          const clientsRef = collection(firestore, 'clients');
+          const clientsRef = collection(db, 'clients'); // Corrigido para 'clients'
           const q = query(clientsRef, orderBy('createdAt', 'desc'));
           const querySnapshot = await getDocs(q);
 
@@ -327,7 +316,7 @@
                   ${client.name}
                 </span>
                 <span style="font-size: 0.85rem; color: var(--muted-foreground); margin-top: 0.25rem;">
-                  ${client.photos.length} ${client.photos.length === 1 ? 'foto' : 'fotos'} no álbum
+                  ${client.email}
                 </span>
               </div>
               <div class="client-actions">
@@ -366,11 +355,19 @@
 
       async function deleteClient(clientId) {
         try {
-          // ATENÇÃO: Esta função deleta apenas o registro no Firestore.
-          // As fotos no Storage e o usuário no Auth NÃO serão deletados.
-          // Para uma exclusão completa, seria necessária outra Cloud Function.
-          await deleteDoc(doc(firestore, "clients", clientId));
-          alert('Álbum deletado do Firestore. O usuário e as fotos ainda existem.');
+          // TODO: Implementar a função de exclusão no backend.
+          // Por enquanto, vamos apenas deletar do Firestore para o frontend funcionar.
+          // A exclusão completa (incluindo Firebase Auth) deve ser feita por uma Cloud Function.
+          
+          // 1. Deleta o documento do cliente no Firestore.
+          await deleteDoc(doc(db, "clients", clientId));
+
+          // 2. (FUTURO) Chamar uma Cloud Function para deletar o usuário do Firebase Auth.
+          // const deleteUserFn = httpsCallable(functions, 'deleteUserAndData');
+          // const result = await deleteUserFn({ uid: clientId });
+          // alert(result.data.message);
+
+          alert('Álbum deletado do Firestore com sucesso. Lembre-se de implementar a exclusão do usuário no Auth.');
           loadClients(); // Recarrega a lista
         } catch (error) {
           console.error("Erro ao deletar cliente:", error);
