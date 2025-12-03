@@ -1,0 +1,22 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Regras para a coleção 'clients', onde ficam os álbuns
+    match /clients/{clientId} {
+
+      // Leitura (get, list):
+      // Permite a leitura de um documento se:
+      // 1. O ID do usuário logado (request.auth.uid) for o mesmo que o ID do documento (clientId).
+      // OU
+      // 2. O usuário logado tiver a claim de administrador (request.auth.token.admin == true).
+      allow read: if request.auth.uid == clientId || request.auth.token.admin == true;
+
+      // Escrita (create, update, delete):
+      // A criação é feita pela Cloud Function, que já tem sua própria segurança.
+      // Para evitar que clientes modifiquem seus próprios álbuns diretamente, bloqueamos a escrita aqui.
+      allow write: if false;
+    }
+  }
+}
