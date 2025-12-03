@@ -288,11 +288,13 @@
             body: JSON.stringify(albumData)
           });
 
-          const result = await response.json();
           if (!response.ok) {
+            // Tenta ler o corpo do erro como JSON, se falhar, usa uma mensagem padrão.
+            const result = await response.json().catch(() => ({ error: "Erro inesperado do servidor." }));
             throw new Error(result.error || 'Ocorreu um erro no servidor.');
           }
 
+          const result = await response.json();
           successMessage.textContent = result.message;
           form.reset();
           loadClients(); // Recarrega a lista
