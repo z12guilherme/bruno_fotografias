@@ -292,7 +292,9 @@
           // 3. Obter o token do usuário admin logado
           const user = auth.currentUser;
           if (!user) throw new Error("Administrador não está logado.");
-          const idToken = await user.getIdToken();
+          // Força a atualização do token para garantir que as permissões mais recentes (como a de admin) sejam incluídas.
+          // O 'true' é o argumento que força a atualização.
+          const idToken = await user.getIdToken(true);
 
           // 4. Chamar a Cloud Function usando fetch
           const response = await fetch('https://southamerica-east1-brunonascimento-fotografia.cloudfunctions.net/createAlbum', {
