@@ -11,7 +11,7 @@ const db = admin.firestore();
  * documento de álbum correspondente no Firestore.
  * Apenas administradores autenticados podem chamar esta função.
  */
-exports.createAlbumAndUser = functions
+exports.createAlbum = functions
   .region("southamerica-east1") // Garante que a função está na mesma região
   .https.onRequest((req, res) => {
     // Habilita o CORS para permitir chamadas do seu site

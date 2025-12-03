@@ -89,13 +89,14 @@
       input[type='password'],
       input[type='url'],
       input[type='file'] {
-        width: 100%;
+        width: calc(100% - 1.6rem); /* Ajuste para o padding */
         padding: 0.8rem;
         border: 1px solid var(--input);
         border-radius: 0.5rem;
         box-sizing: border-box;
         background-color: var(--background);
-        transition: border-color 0.2s;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
       }
       input:focus {
         outline: none;
@@ -113,10 +114,12 @@
         font-weight: 600;
         cursor: pointer;
         font-size: 1rem;
-        transition: background-color 0.2s;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       }
       button:hover {
-        background-color: #9c7b4b; /* Dourado mais escuro no hover */
+        background-color: #9c7b4b;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       }
       .client-item {
         display: flex;
@@ -124,6 +127,10 @@
         align-items: center;
         padding: 1rem;
         border-bottom: 1px solid var(--border);
+        transition: background-color 0.2s;
+      }
+      .client-item:hover {
+        background-color: #f9fafb;
       }
       .client-item:last-child {
         border-bottom: none;
@@ -184,10 +191,14 @@
             <input type="password" id="client-password" name="client-password" required minlength="6" />
           </div>
           <div class="form-group">
+            <label for="client-password">Senha para o Cliente</label>
+            <input type="password" id="client-password" name="client-password" required minlength="6" />
+          </div>
+          <div class="form-group">
             <label for="drive-link">Link do Google Drive</label>
             <input type="url" id="drive-link" name="drive-link" required placeholder="Cole o link da pasta compartilhada aqui" />
           </div>
-          <p id="feedback-message" style="min-height: 1rem; margin-bottom: 1rem; color: red;"></p>
+          <p id="feedback-message" style="min-height: 1rem; margin-bottom: 1.5rem; text-align: center; font-weight: 500;"></p>
           <button type="submit" id="create-album-btn" style="width: 100%;">Criar Cliente</button>
         </form>
       </div>
@@ -269,8 +280,8 @@
 
           // Obter o token do admin logado para autorizar a chamada da função
           const idToken = await user.getIdToken(true);
-          
-          // Chama a Cloud Function existente 'createAlbum' para criar o usuário e o álbum
+
+          // Chama a Cloud Function 'createAlbum' para criar o usuário e o álbum
           const response = await fetch('https://southamerica-east1-brunonascimento-fotografia.cloudfunctions.net/createAlbum', {
             method: 'POST',
             headers: {
