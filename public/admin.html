@@ -360,7 +360,9 @@
           emailSpan.textContent = client.email;
 
           const driveLink = document.createElement('a');
-          driveLink.href = client.driveLink;
+          // Correção: Usa 'driveLink' se existir, senão, usa 'photoUrls' como fallback.
+          // Isso garante compatibilidade com o que a Cloud Function está salvando.
+          driveLink.href = client.driveLink || client.photoUrls;
           driveLink.target = '_blank';
           driveLink.style.cssText = "font-size: 0.85rem; color: var(--primary); margin-top: 0.25rem; text-decoration: none;";
           driveLink.textContent = 'Ver Álbum no Drive';
