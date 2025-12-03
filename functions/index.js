@@ -58,19 +58,18 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
       console.log("Execução iniciada. Cabeçalhos:", JSON.stringify(request.headers));
       console.log("Corpo da requisição:", JSON.stringify(request.body));
 
-      // Etapa 2: Validação do Método HTTP
+      // Etapa 2: Validação do Método HTTP e Autenticação
       if (request.method !== 'POST') {
         return response.status(405).send('Method Not Allowed');
       }
 
-      // Etapa 3: Verificação de Autenticação e Autorização
       const idToken = request.headers.authorization?.split('Bearer ')[1];
       if (!idToken) {
         console.error("Erro de autenticação: ID Token não encontrado no cabeçalho 'Authorization'.");
         return response.status(401).send({ error: "A requisição deve ser feita por um usuário autenticado." });
       }
 
-      // Verifica se o token é válido e se o usuário tem a claim de admin
+      // Etapa 3: Verificação de Autorização (Admin)
       const decodedToken = await admin.auth().verifyIdToken(idToken);
       if (decodedToken.admin !== true) {
         console.error(`Acesso negado. Usuário ${decodedToken.email} não é um administrador.`);
