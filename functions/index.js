@@ -34,7 +34,7 @@ const corsHandler = cors({
  */
 exports.addAdminRole = functions.region('southamerica-east1').https.onRequest(async (req, res) => {
   // !!! SUBSTITUA PELO SEU EMAIL DE ADMIN !!!
-  const email = "seu-email-de-admin@exemplo.com";
+  const email = "mguimarcos39@gmail.com";
   try {
     const user = await admin.auth().getUserByEmail(email);
     await admin.auth().setCustomUserClaims(user.uid, { admin: true });
