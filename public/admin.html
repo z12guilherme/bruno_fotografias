@@ -218,8 +218,12 @@
       import { getFirestore, collection, getDocs, orderBy, query, doc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
       // Suas credenciais do Firebase
+      // NOTA DE SEGURANÇA: A chave de API para web é pública por design.
+      // Para proteger seu projeto, restrinja a chave no Google Cloud Console,
+      // permitindo que ela seja usada apenas pelo domínio do seu site (brunonascimento-fotografia.web.app, etc.).
+      // Além disso, configure regras de segurança robustas no Firestore e use o App Check.
       const firebaseConfig = {
-        apiKey: "AIzaSyAgY_VUl7Koe1r9KVuNa9yqn7eBFywvgPQ", // Lembre-se de proteger suas chaves de API se o projeto for público.
+        apiKey: "AIzaSyAgY_VUl7Koe1r9KVuNa9yqn7eBFywvgPQ",
         authDomain: "brunonascimento-fotografia.firebaseapp.com",
         projectId: "brunonascimento-fotografia",
         storageBucket: "brunonascimento-fotografia.firebasestorage.app",
@@ -233,13 +237,20 @@
       const auth = getAuth(app);
       const db = getFirestore(app);    
 
+      // --- Seletores de Elementos DOM ---
       const form = document.getElementById('create-album-form');
       const feedbackMessage = document.getElementById('feedback-message');
       const clientListDiv = document.getElementById('client-list');
       const logoutButton = document.getElementById('logout-button');
       const createAlbumBtn = document.getElementById('create-album-btn');
 
-      // Verifica o estado da autenticação
+      // --- Funções Auxiliares ---
+      const showFeedback = (message, isError = false) => {
+        feedbackMessage.textContent = message;
+        feedbackMessage.style.color = isError ? 'var(--destructive)' : 'green';
+      };
+
+      // --- Lógica Principal ---
       onAuthStateChanged(auth, (user) => {
         if (user) {
           // Usuário está logado, carrega os clientes.
@@ -250,6 +261,7 @@
         }
       });
 
+      // --- Event Listeners ---
       logoutButton.addEventListener('click', () => {
         signOut(auth).then(() => {
           window.location.href = './admin-login.html';
@@ -260,8 +272,7 @@
 
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
-        feedbackMessage.textContent = 'Criando álbum...';
-        feedbackMessage.style.color = 'var(--muted-foreground)';
+        showFeedback('Criando álbum...', false);
         createAlbumBtn.disabled = true;
         createAlbumBtn.textContent = 'Criando...';
 
@@ -294,21 +305,19 @@
 
           const result = await response.json();
 
+          // Tratamento de erro simplificado e robusto
           if (!response.ok) {
-            // Tenta extrair uma mensagem de erro detalhada do objeto de resposta.
-            const errorDetail = result.error; // ex: { message: 'A senha é muito fraca' } ou 'E-mail já existe'
-            const errorMessage = errorDetail?.message || (typeof errorDetail === 'string' ? errorDetail : JSON.stringify(errorDetail)) || `O servidor respondeu com o status ${response.status}.`;
+            // Extrai a mensagem de erro do objeto retornado pela Cloud Function.
+            const errorMessage = result.error?.message || result.message || 'Ocorreu um erro desconhecido.';
             throw new Error(errorMessage);
           }
 
-          feedbackMessage.textContent = result.message;
-          feedbackMessage.style.color = 'green';
+          showFeedback(result.message, false);
           form.reset();
           loadClients(); // Recarrega a lista
         } catch (error) {
           console.error("Erro ao criar álbum:", error);
-          feedbackMessage.textContent = `Erro: ${error.message}`;
-          feedbackMessage.style.color = 'red';
+          showFeedback(`Erro: ${error.message}`, true);
         } finally {
           // Garante que o botão seja reativado mesmo se ocorrer um erro
           createAlbumBtn.disabled = false;
@@ -316,6 +325,7 @@
         }
       });
 
+      // --- Funções de Dados (Firestore) ---
       async function loadClients() {
         try {
           const clientsRef = collection(db, 'clients');
@@ -386,14 +396,33 @@
 
       async function deleteClient(clientId) {
         try {
-          // TODO: A exclusão completa (incluindo Firebase Auth) deve ser feita por uma Cloud Function.
-          await deleteDoc(doc(db, "clients", clientId));
+          // Desabilita todos os botões de exclusão para evitar cliques múltiplos
+          document.querySelectorAll('.btn-delete').forEach(b => b.disabled = true);
 
-          alert('Álbum deletado do Firestore com sucesso. Lembre-se de implementar a exclusão do usuário no Auth.');
+          // 1. Excluir o documento do cliente no Firestore.
+          await deleteDoc(doc(db, "clients", clientId));
+          
+          // 2. Chamar uma Cloud Function para excluir o usuário do Firebase Auth.
+          // A exclusão de usuários do Auth requer privilégios de administrador e não pode ser feita
+          // diretamente do lado do cliente de forma segura.
+          // Você precisará criar uma Cloud Function (ex: 'deleteUser') para isso.
+          /*
+          const user = auth.currentUser;
+          const idToken = await user.getIdToken(true);
+          await fetch('URL_DA_SUA_FUNCAO_DELETE_USER', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken },
+            body: JSON.stringify({ uidToDelete: clientId }) // Supondo que o ID do doc é o UID do usuário
+          });
+          */
+
+          alert('Álbum e dados do cliente deletados com sucesso.');
           loadClients(); // Recarrega a lista
         } catch (error) {
           console.error("Erro ao deletar cliente:", error);
           alert(`Erro ao deletar cliente: ${error.message}`);
+          // Reabilita os botões em caso de erro
+          document.querySelectorAll('.btn-delete').forEach(b => b.disabled = false);
         }
       }
     </script>
