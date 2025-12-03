@@ -284,29 +284,29 @@
           const clientPassword = document.getElementById('client-password').value;
           const driveLink = document.getElementById('drive-link').value;
 
-          // Passo 1: Chamar a Cloud Function APENAS para criar o usuário de autenticação.
-          // Isso é mais seguro e é a principal responsabilidade da função.
+          // Passo 1: Chamar a Cloud Function para criar o usuário e o documento (mesmo que incompleto).
+          // Enviamos 'photoUrls' para satisfazer a validação da função.
           const createAlbum = httpsCallable(functions, 'createAlbum');
-          const authResult = await createAlbum({
+          await createAlbum({
             clientName,
             clientEmail,
             clientPassword,
-            photoUrls: driveLink // Adicionado para satisfazer a validação da Cloud Function.
+            photoUrls: driveLink 
           });
 
-          // IMPORTANTE: Sua Cloud Function 'createAlbum' DEVE retornar o UID do novo usuário.
-          // Exemplo de retorno na sua Cloud Function: return { uid: userRecord.uid };
-          const newUserId = authResult.data.uid;
-          if (!newUserId) {
-            throw new Error("A Cloud Function não retornou o ID do novo usuário. Verifique o 'return' da sua função 'createAlbum'.");
+          // Passo 2: Encontrar o cliente que acabamos de criar no Firestore usando o e-mail.
+          const clientsRef = collection(db, 'clients');
+          const q = query(clientsRef, where("email", "==", clientEmail));
+          const querySnapshot = await getDocs(q);
+
+          if (querySnapshot.empty) {
+            throw new Error("Não foi possível encontrar o cliente recém-criado para adicionar o link.");
           }
 
-          // Passo 2: Criar o documento do cliente no Firestore usando o UID como ID do documento.
-          // Isso garante a consistência entre a Autenticação e o banco de dados.
-          const clientDocRef = doc(db, "clients", newUserId);
-          await setDoc(clientDocRef, { 
-            name: clientName, email: clientEmail, driveLink: driveLink, createdAt: serverTimestamp(), uid: newUserId 
-          });
+          // Passo 3: Atualizar o documento encontrado, adicionando o campo 'driveLink'.
+          const clientDoc = querySnapshot.docs[0];
+          const clientDocRef = doc(db, "clients", clientDoc.id);
+          await updateDoc(clientDocRef, { driveLink: driveLink });
 
           showFeedback('Álbum e cliente criados com sucesso!', false);
 
