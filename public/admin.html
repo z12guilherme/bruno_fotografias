@@ -278,16 +278,17 @@
         createAlbumBtn.disabled = true;
         createAlbumBtn.textContent = 'Criando...';
 
-        try {          
+        try {
           const clientName = document.getElementById('client-name').value;
           const clientEmail = document.getElementById('client-email').value;
           const clientPassword = document.getElementById('client-password').value;
           const driveLink = document.getElementById('drive-link').value;
 
-          // Cria uma referência para a Função Chamável 'createAlbum'
+          // Cria uma referência para a Função Chamável 'createAlbum'.
           const createAlbum = httpsCallable(functions, 'createAlbum');
 
-          // Chama a função com os dados. O SDK cuida da autenticação e formatação.
+          // Chama a função com os dados. O SDK do Firebase cuida da autenticação
+          // e da formatação correta da requisição para você.
           const result = await createAlbum({
             clientName,
             clientEmail,
@@ -295,14 +296,13 @@
             driveLink
           });
 
-          // Para Funções Chamáveis, o resultado bem-sucedido está em result.data
+          // Para Funções Chamáveis, a resposta de sucesso está em result.data.
           showFeedback(result.data.message, false);
 
           form.reset();
           loadClients(); // Recarrega a lista
         } catch (error) {
           console.error("Erro ao criar álbum:", error);
-          // O erro de uma httpsCallable já vem com uma propriedade 'message' clara.
           showFeedback(`Erro: ${error.message}`, true);
         } finally {
           // Garante que o botão seja reativado mesmo se ocorrer um erro
