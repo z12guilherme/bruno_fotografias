@@ -40,4 +40,4 @@ jobs:
       - name: Fazer Deploy para o Firebase
         run: |
           npm install -g firebase-tools
-          firebase deploy --project brunonascimento-fotografia --only hosting,functions
+          firebase deploy --project brunonascimento-fotografia --only hosting,functions --force
