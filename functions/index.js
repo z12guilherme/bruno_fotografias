@@ -94,14 +94,36 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
         return response.status(400).send({ error: `Campos obrigatórios ausentes: ${missingFields}` });
       }
 
-      // Etapa 5: Criação do Usuário Cliente
-      const clientUser = await admin.auth().createUser({
-        email: clientEmail,
-        password: clientPassword,
-        displayName: clientName,
-      });
+      // Etapa 5: Lógica de Criação/Atualização Resiliente
+      let userRecord;
+      let clientId;
+      let message = "Álbum criado com sucesso!";
 
-      const clientId = clientUser.uid;
+      try {
+        // Tenta buscar o usuário pelo e-mail.
+        userRecord = await admin.auth().getUserByEmail(clientEmail);
+        clientId = userRecord.uid;
+        console.log(`Usuário com e-mail ${clientEmail} já existe (UID: ${clientId}). Verificando álbum no Firestore.`);
+
+        const clientDoc = await firestore.collection("clients").doc(clientId).get();
+        if (clientDoc.exists) {
+          // Se o usuário e o álbum já existem, retorna erro.
+          throw { code: 'auth/email-already-exists' };
+        }
+        // Se o usuário existe mas o álbum não (usuário órfão), prossegue para criar o documento no Firestore.
+        message = "Cliente já existia na autenticação. Álbum no Firestore foi criado agora.";
+
+      } catch (error) {
+        if (error.code === 'auth/user-not-found') {
+          // Se o usuário não existe, cria um novo.
+          console.log(`Usuário com e-mail ${clientEmail} não encontrado. Criando novo usuário.`);
+          userRecord = await admin.auth().createUser({ email: clientEmail, password: clientPassword, displayName: clientName });
+          clientId = userRecord.uid;
+        } else {
+          // Se o erro for outro (como 'auth/email-already-exists'), joga para o catch principal.
+          throw error;
+        }
+      }
 
       // Etapa 6: Criação do Documento no Firestore
       await firestore.collection("clients").doc(clientId).set({
@@ -112,7 +134,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
       });
 
       // Etapa 7: Resposta de Sucesso
-      return response.status(200).send({ success: true, message: "Álbum criado com sucesso!", clientId: clientId });
+      return response.status(200).send({ success: true, message: message, clientId: clientId });
 
     } catch (error) {
       console.error("Erro ao criar álbum:", error);
