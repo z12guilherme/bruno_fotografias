@@ -293,7 +293,8 @@
             clientName,
             clientEmail,
             clientPassword,
-            driveLink: driveLink // Correção: envia o link com a chave que o frontend espera.
+            driveLink: driveLink, // Chave correta para o frontend.
+            photoUrls: driveLink  // Chave de compatibilidade para o backend antigo.
           });
 
           // Para Funções Chamáveis, a resposta de sucesso está em result.data.
