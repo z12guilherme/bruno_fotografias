@@ -21,18 +21,14 @@ jobs:
         with:
           node-version: '20'
       - run: npm install
-
-      # 3. Compila o projeto React (cria a pasta 'dist')
+      
+      # 3. Compila o projeto React (cria a pasta 'dist'). O Vite automaticamente copia o conteúdo da pasta 'public' para 'dist'.
       - name: Compilar o Projeto
         run: npm run build
 
       # 4. Instala as dependências da Cloud Function
       - name: Instalar Dependências da Função
         run: npm install --prefix functions
-
-      # 4. Copia as páginas de admin para dentro da pasta de build
-      - name: Copiar páginas de admin para a pasta dist
-        run: rsync -av --exclude='firebase.json' --exclude='index.html' public/ dist/
 
       # 5. Faz o deploy para o Firebase Hosting e Functions
       - name: Fazer Deploy para o Firebase
