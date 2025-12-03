@@ -259,34 +259,57 @@
         createAlbumBtn.disabled = true;
         createAlbumBtn.textContent = 'Enviando...';
 
-        const clientName = document.getElementById('client-name').value;
-        const clientEmail = document.getElementById('client-email').value;
-        const clientPassword = document.getElementById('client-password').value;
-        const photoFiles = document.getElementById('photos').files;
-        const tempClientId = `temp_${Date.now()}`; // ID temporário para a pasta
-
         try {
+          const clientName = document.getElementById('client-name').value;
+          const clientEmail = document.getElementById('client-email').value;
+          const clientPassword = document.getElementById('client-password').value;
+          const photoFiles = document.getElementById('photos').files;
+          const tempClientId = `temp_${Date.now()}`; // ID temporário para a pasta
+
+          if (photoFiles.length === 0) {
+            throw new Error("Selecione pelo menos uma foto.");
+          }
+
           // 1. Fazer upload das fotos para o Firebase Storage
           successMessage.textContent = `Enviando ${photoFiles.length} fotos...`;
           const uploadPromises = Array.from(photoFiles).map(file => {
-            const filePath = `galleries/${tempClientId}/${Date.now()}-${file.name}`;
+            const filePath = `client-galleries/${tempClientId}/${Date.now()}-${file.name}`;
             const storageRef = ref(storage, filePath);
             return uploadBytes(storageRef, file).then(snapshot => getDownloadURL(snapshot.ref));
           });
 
           const photoUrls = await Promise.all(uploadPromises);
 
-          // 2. Chamar a Cloud Function para criar o usuário e o álbum
+          // 2. Montar os dados para enviar para a Cloud Function
           successMessage.textContent = 'Criando álbum...';
-          const createAlbumFn = httpsCallable(functions, 'createAlbum');
-          const result = await createAlbumFn({
+          const albumData = {
             clientName,
             clientEmail,
             clientPassword,
             photoUrls
+          };
+
+          // 3. Obter o token do usuário admin logado
+          const user = auth.currentUser;
+          if (!user) throw new Error("Administrador não está logado.");
+          const idToken = await user.getIdToken();
+
+          // 4. Chamar a Cloud Function usando fetch
+          const response = await fetch('https://southamerica-east1-brunonascimento-fotografia.cloudfunctions.net/createAlbum', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + idToken
+            },
+            body: JSON.stringify(albumData)
           });
 
-          successMessage.textContent = result.data.message;
+          const result = await response.json();
+          if (!response.ok) {
+            throw new Error(result.error || 'Ocorreu um erro no servidor.');
+          }
+
+          successMessage.textContent = result.message;
           form.reset();
           loadClients(); // Recarrega a lista
 
@@ -294,6 +317,7 @@
           console.error("Erro ao criar álbum:", error);
           successMessage.textContent = `Erro: ${error.message}`;
         } finally {
+          // Garante que o botão seja reativado mesmo se ocorrer um erro
           createAlbumBtn.disabled = false;
           createAlbumBtn.textContent = 'Criar Álbum';
         }
