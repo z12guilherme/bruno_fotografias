@@ -33,7 +33,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
   // 1. Primeiro, deixe o corsHandler processar a requisição.
   // Ele vai responder automaticamente às requisições OPTIONS e passar para o próximo passo.
   corsHandler(request, response, async () => {
-    try {
+    try { // O restante da lógica permanece igual.
       // LOG INICIAL: Vamos verificar cabeçalhos e corpo da requisição assim que a função for chamada.
       console.log("Execução iniciada. Cabeçalhos:", JSON.stringify(request.headers));
       console.log("Corpo da requisição:", JSON.stringify(request.body));
@@ -43,15 +43,13 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
         return response.status(405).send('Method Not Allowed');
       }
 
-      // 3. Extrai e verifica o token de autenticação.
+      // 3. A verificação de autenticação precisa ser feita manualmente com o token.
       // O frontend deve enviar o ID Token do admin no cabeçalho Authorization.
       const idToken = request.headers.authorization?.split('Bearer ')[1];
       if (!idToken) {
         console.error("Erro de autenticação: ID Token não encontrado no cabeçalho 'Authorization'.");
         return response.status(401).send({ error: "A requisição deve ser feita por um usuário autenticado." });
       }
-
-      // 4. Verificamos se o token pertence a um usuário válido E se ele é um admin.
       const decodedToken = await admin.auth().verifyIdToken(idToken);
       if (decodedToken.admin !== true) {
         console.error(`Acesso negado. Usuário ${decodedToken.email} não é um administrador.`);
