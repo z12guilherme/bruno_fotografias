@@ -287,7 +287,11 @@
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken },
               body: JSON.stringify({ filePath: item.filePath, contentType: item.file.type })
-            }).then(res => res.json())
+            }).then(async res => {
+              const data = await res.json();
+              if (!res.ok) throw new Error(data.error || 'Falha ao obter URL de upload.');
+              return data;
+            })
           );
 
           const signedUrlResponses = await Promise.all(signedUrlPromises);
