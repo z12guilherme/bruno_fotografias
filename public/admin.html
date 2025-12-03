@@ -300,9 +300,11 @@
             throw new Error("A função não retornou o ID do novo usuário.");
           }
 
-          // Passo 2: Salvar os detalhes do cliente no Firestore diretamente, garantindo que o link seja salvo.
-          // Usamos o UID retornado como ID do documento para manter a consistência.
-          await addDoc(collection(db, "clients"), { name: clientName, email: clientEmail, driveLink: driveLink, photoUrls: driveLink, createdAt: serverTimestamp(), uid: newUserId });
+          // Passo 2: Salvar os detalhes do cliente no Firestore usando o UID como ID do documento.
+          // Usar setDoc nos permite definir o ID do documento, garantindo a consistência entre Auth e Firestore.
+          // Isso resolve o problema do link 'undefined'.
+          const clientDocRef = doc(db, "clients", newUserId);
+          await setDoc(clientDocRef, { name: clientName, email: clientEmail, driveLink: driveLink, photoUrls: driveLink, createdAt: serverTimestamp(), uid: newUserId });
 
           showFeedback('Álbum e cliente criados com sucesso!', false);
 
