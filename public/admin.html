@@ -308,8 +308,11 @@
           // Tratamento de erro simplificado e robusto
           if (!response.ok) {
             // Extrai a mensagem de erro do objeto retornado pela Cloud Function.
-            const errorMessage = result.error?.message || result.message || 'Ocorreu um erro desconhecido.';
-            throw new Error(errorMessage);
+            // Se a resposta não for OK, lança um erro com o corpo da resposta para depuração.
+            // Isso garante que veremos a mensagem de erro exata da Cloud Function,
+            // independentemente do seu formato.
+            const errorPayload = JSON.stringify(result);
+            throw new Error(errorPayload);
           }
 
           showFeedback(result.message, false);
@@ -317,7 +320,16 @@
           loadClients(); // Recarrega a lista
         } catch (error) {
           console.error("Erro ao criar álbum:", error);
-          showFeedback(`Erro: ${error.message}`, true);
+          let displayError = error.message;
+          // Tenta analisar a mensagem de erro para uma exibição mais amigável.
+          try {
+            const errorObj = JSON.parse(error.message);
+            // Prioriza a exibição de uma mensagem de erro estruturada, se houver.
+            displayError = errorObj.error?.message || errorObj.error || error.message;
+          } catch (e) {
+            // Se não for um JSON válido, usa a mensagem de erro como está.
+          }
+          showFeedback(`Erro: ${displayError}`, true);
         } finally {
           // Garante que o botão seja reativado mesmo se ocorrer um erro
           createAlbumBtn.disabled = false;
