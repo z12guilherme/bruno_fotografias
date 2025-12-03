@@ -1,215 +1,77 @@
-const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const cors = require("cors");
+const cors = require("cors")({ origin: true });
 
 admin.initializeApp();
 
-const firestore = admin.firestore();
-
-// Crie um manipulador de CORS. Para desenvolvimento, permita o localhost.
-// Em produção, você deve adicionar a URL do seu site.
-const allowedOrigins = [
-  'http://localhost:5173', // Para desenvolvimento local
-  'https://brunonascimento-fotografia.web.app', // URL padrão do Firebase Hosting
-  'https://brunonascimento-fotografia.firebaseapp.com' // URL alternativa do Firebase
-  // Adicione aqui seu domínio personalizado se tiver um, ex: 'https://www.seusite.com'
-];
-
-const corsHandler = cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Não permitido pela política de CORS'));
-    }
-  },
-  methods: ["POST"]
-});
+const db = admin.firestore();
 
 /**
- * (FUNÇÃO UTILITÁRIA - EXECUTAR APENAS UMA VEZ)
- * Adiciona a claim de administrador a um usuário específico.
- * Após o deploy, acesse a URL desta função no navegador para executar.
- * Depois de executar com sucesso, você pode remover este código.
+ * Cloud Function para criar um usuário no Firebase Authentication e um
+ * documento de álbum correspondente no Firestore.
+ * Apenas administradores autenticados podem chamar esta função.
  */
-exports.addAdminRole = functions.region('southamerica-east1').https.onRequest(async (req, res) => {
-  // !!! SUBSTITUA PELO SEU EMAIL DE ADMIN !!!
-  const email = "mguimarcos39@gmail.com";
-  try {
-    const user = await admin.auth().getUserByEmail(email);
-    await admin.auth().setCustomUserClaims(user.uid, { admin: true });
-    return res.send(`Sucesso! O usuário ${email} agora é um administrador.`);
-  } catch (error) {
-    console.error("Erro ao adicionar claim de admin:", error);
-    return res.status(500).send({ error: "Erro ao adicionar claim de admin.", details: error.message });
-  }
-});
-
-/**
- * Cloud Function para criar um novo usuário cliente e seu álbum no Firestore.
- * Esta função é chamada pelo painel de administração.
- */
-<<<<<<< HEAD
-exports.createAlbum = onCall({ region: 'southamerica-east1' }, async (request) => {
-  // 1. Verifica se o usuário que está chamando a função é um administrador autenticado.
-  if (!request.auth || !request.auth.token.admin) {
-    throw new HttpsError(
-      "permission-denied",
-      "A requisição deve ser feita por um usuário administrador."
-    );
-  }
-
-  const { clientName, clientEmail, clientPassword, photoUrls } = request.data;
-
-  if (!clientName || !clientEmail || !clientPassword || !photoUrls) {
-    throw new HttpsError(
-      "invalid-argument",
-      "Todos os campos (clientName, clientEmail, clientPassword, photoUrls) são obrigatórios."
-    );
-  }
-=======
-exports.createAlbum = functions.region('southamerica-east1').https.onRequest((request, response) => {
-  // 1. Primeiro, deixe o corsHandler processar a requisição.
-  // Ele vai responder automaticamente às requisições OPTIONS e passar para o próximo passo.
-  corsHandler(request, response, async () => {
-    try {
-      // Etapa 1: Logs de Depuração
-      console.log("Execução iniciada. Cabeçalhos:", JSON.stringify(request.headers));
-      console.log("Corpo da requisição:", JSON.stringify(request.body));
-
-      // Etapa 2: Validação do Método HTTP
-      if (request.method !== 'POST') {
-        return response.status(405).send('Method Not Allowed');
+exports.createAlbumAndUser = functions
+  .region("southamerica-east1") // Garante que a função está na mesma região
+  .https.onRequest((req, res) => {
+    // Habilita o CORS para permitir chamadas do seu site
+    cors(req, res, async () => {
+      // As funções onRequest não validam o token automaticamente, faremos isso manualmente.
+      if (req.method !== "POST") {
+        return res.status(405).send("Method Not Allowed");
       }
 
-      // Etapa 3: Verificação de Autenticação e Autorização
-      const idToken = request.headers.authorization?.split('Bearer ')[1];
+      const idToken = req.headers.authorization?.split("Bearer ")[1];
       if (!idToken) {
-        console.error("Erro de autenticação: ID Token não encontrado no cabeçalho 'Authorization'.");
-        return response.status(401).send({ error: "A requisição deve ser feita por um usuário autenticado." });
-      }
->>>>>>> 7223884271c6191732d1834e2cb12ffe2c463c57
-
-      // Verifica se o token é válido e se o usuário tem a claim de admin
-      const decodedToken = await admin.auth().verifyIdToken(idToken);
-      if (decodedToken.admin !== true) {
-        console.error(`Acesso negado. Usuário ${decodedToken.email} não é um administrador.`);
-        return response.status(403).send({ error: "Acesso negado. Permissão de administrador necessária." });
+        return res.status(401).json({ error: "Unauthorized: No token provided." });
       }
 
-      // Log de sucesso na autorização
-      console.log(`Requisição autorizada para o admin: ${decodedToken.email}`);
+      try {
+        // 1. Verifica se o token pertence a um administrador válido
+        // Aqui, estamos assumindo que qualquer usuário logado no admin é um admin.
+        // Para maior segurança, você poderia adicionar 'custom claims'.
+        await admin.auth().verifyIdToken(idToken);
 
-      const { clientName, clientEmail, clientPassword, driveLink } = request.body;
-      
-      // Etapa 4: Validação dos Dados do Formulário
-      if (!clientName || !clientEmail || !clientPassword || !driveLink) {
-        // Log aprimorado para depuração
-        const missingFields = [
-          !clientName && "clientName",
-          !clientEmail && "clientEmail",
-          !clientPassword && "clientPassword",
-          !driveLink && "driveLink",
-        ].filter(Boolean).join(', ');
-        console.error(`Validação falhou. Campos ausentes: [${missingFields}]`);
-        return response.status(400).send({ error: `Campos obrigatórios ausentes: ${missingFields}` });
+        // 2. Valida os dados recebidos do formulário
+        const { clientName, clientEmail, clientPassword, driveLink } = req.body;
+        if (!clientName || !clientEmail || !clientPassword || !driveLink) {
+          return res.status(400).json({ error: "Todos os campos são obrigatórios." });
+        }
+
+        // 3. Cria o novo usuário no Firebase Authentication
+        const userRecord = await admin.auth().createUser({
+          email: clientEmail,
+          password: clientPassword,
+          displayName: clientName,
+        });
+
+        // 4. Cria o documento do álbum no Firestore, usando o UID do usuário como ID
+        await db.collection("clients").doc(userRecord.uid).set({
+          name: clientName,
+          email: clientEmail,
+          driveLink: driveLink,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+
+        return res.status(201).json({
+          message: `Usuário e álbum para ${clientName} criados com sucesso!`,
+        });
+
+      } catch (error) {
+        console.error("Erro ao criar usuário e álbum:", error);
+
+        // Retorna mensagens de erro mais amigáveis
+        if (error.code === "auth/email-already-exists") {
+          return res.status(409).json({ error: "O e-mail fornecido já está em uso." });
+        }
+        if (error.code === "auth/invalid-password") {
+          return res.status(400).json({ error: "A senha deve ter no mínimo 6 caracteres." });
+        }
+        if (error.code === "auth/argument-error") {
+            return res.status(401).json({ error: "Unauthorized: Invalid token." });
+        }
+
+        return res.status(500).json({ error: "Ocorreu um erro interno no servidor." });
       }
-
-<<<<<<< HEAD
-    return {
-      success: true,
-      message: "Álbum criado com sucesso!",
-      clientId: clientId,
-    };
-  } catch (error) {
-    console.error("Erro ao criar álbum:", error);
-    // Transforma o erro do Firebase Auth em um erro que o frontend entende.
-    if (error.code === "auth/email-already-exists") {
-      throw new HttpsError(
-        "already-exists",
-        "Este e-mail já está em uso por outro cliente."
-      );
-    }
-    throw new HttpsError(
-      "internal",
-      "Ocorreu um erro interno ao criar o álbum.",
-      error.message
-    );
-  }
-});
-
-/**
- * Cloud Function para atribuir a um usuário a permissão de administrador.
- * Apenas outro administrador pode chamar esta função.
- */
-exports.addAdminRole = onCall({ region: 'southamerica-east1' }, async (request) => {
-  // 1. Verifica se o usuário que está chamando a função já é um administrador.
-  if (!request.auth || !request.auth.token.admin) {
-    throw new HttpsError(
-      "permission-denied",
-      "Apenas administradores podem adicionar outros administradores."
-    );
-  }
-
-  const { email } = request.data;
-  if (!email) {
-    throw new HttpsError(
-      "invalid-argument",
-      "O campo 'email' é obrigatório."
-    );
-  }
-
-  try {
-    // 2. Busca o usuário pelo e-mail e define a custom claim 'admin'.
-    const user = await admin.auth().getUserByEmail(email);
-    await admin.auth().setCustomUserClaims(user.uid, { admin: true });
-
-    return {
-      success: true,
-      message: `Sucesso! ${email} agora é um administrador.`,
-    };
-  } catch (error) {
-    console.error("Erro ao adicionar permissão de admin:", error);
-    throw new HttpsError("internal", "Ocorreu um erro ao atribuir a permissão de administrador.", error.message);
-  }
-=======
-      // Etapa 5: Criação do Usuário Cliente
-      const clientUser = await admin.auth().createUser({
-        email: clientEmail,
-        password: clientPassword,
-        displayName: clientName,
-      });
-
-      const clientId = clientUser.uid;
-
-      // Etapa 6: Criação do Documento no Firestore
-      await firestore.collection("clients").doc(clientId).set({
-        name: clientName,
-        email: clientEmail,
-        driveLink: driveLink, // Salva o link do Google Drive
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-
-      // Etapa 7: Resposta de Sucesso
-      return response.status(200).send({ success: true, message: "Álbum criado com sucesso!", clientId: clientId });
-
-    } catch (error) {
-      console.error("Erro ao criar álbum:", error);
-
-      // Erro específico para e-mail já existente
-      if (error.code === "auth/email-already-exists") {
-        return response.status(409).send({ error: "Este e-mail já está em uso por outro cliente." });
-      }
-
-      // Erro para token de autenticação inválido, expirado ou malformado
-      if (error.code?.startsWith('auth/id-token-')) {
-        console.error("Erro de verificação de token:", error.message);
-        return response.status(401).send({ error: "Token de autenticação inválido ou expirado." });
-      }
-
-      // Erro genérico para qualquer outro problema
-      return response.status(500).send({ error: "Ocorreu um erro interno ao criar o álbum.", details: error.message });
-    }
+    });
   });
->>>>>>> 7223884271c6191732d1834e2cb12ffe2c463c57
-});
