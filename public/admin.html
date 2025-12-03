@@ -259,22 +259,67 @@
           const clientName = document.getElementById('client-name').value;
           const clientEmail = document.getElementById('client-email').value;
           const clientPassword = document.getElementById('client-password').value;
-          const driveLink = document.getElementById('drive-link').value;
+          const photoFiles = document.getElementById('photos').files;
+          const tempClientId = `temp_${Date.now()}`; // ID temporário para a pasta
 
-          // 1. Montar os dados para enviar para a Cloud Function
-          const albumData = {
-            clientName,
-            clientEmail,
-            clientPassword,
-            driveLink // Enviando o link do Drive em vez das URLs das fotos
-          };
+          if (photoFiles.length === 0) {
+            throw new Error("Selecione pelo menos uma foto.");
+          }
 
-          // 2. Obter o token do usuário admin logado
+          // 1. Obter o token do usuário admin logado
           const user = auth.currentUser;
           if (!user) throw new Error("Administrador não está logado.");
           const idToken = await user.getIdToken(true); // Força a atualização do token
 
-          // 3. Chamar a Cloud Function para criar o usuário e o álbum no Firestore
+          // 2. Para cada foto, obter uma URL de upload assinada
+          successMessage.textContent = `Preparando upload de ${photoFiles.length} fotos...`;
+          const filesToUpload = Array.from(photoFiles).map(file => ({
+            file,
+            filePath: `client-galleries/${tempClientId}/${Date.now()}-${file.name}`
+          }));
+
+          const signedUrlPromises = filesToUpload.map(item => 
+            fetch('https://southamerica-east1-brunonascimento-fotografia.cloudfunctions.net/getUploadUrl', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken },
+              body: JSON.stringify({ filePath: item.filePath, contentType: item.file.type })
+            }).then(async res => {
+              const data = await res.json();
+              if (!res.ok) throw new Error(data.error || 'Falha ao obter URL de upload.');
+              return data;
+            })
+          );
+
+          const signedUrlResponses = await Promise.all(signedUrlPromises);
+
+          // 3. Fazer o upload de cada foto para a sua URL assinada
+          successMessage.textContent = `Enviando ${photoFiles.length} fotos...`;
+          const uploadPromises = signedUrlResponses.map((res, index) => {
+            if (!res.uploadUrl) throw new Error('Não foi possível obter a URL de upload.');
+            return fetch(res.uploadUrl, {
+              method: 'PUT',
+              headers: { 'Content-Type': filesToUpload[index].file.type },
+              body: filesToUpload[index].file
+            });
+          });
+          await Promise.all(uploadPromises);
+          
+          // 4. Obter as URLs públicas para salvar no Firestore
+          const photoUrls = filesToUpload.map(item => {
+            const bucketName = firebaseConfig.storageBucket;
+            return `https://storage.googleapis.com/${bucketName}/${item.filePath}`;
+          });
+          
+          // 2. Montar os dados para enviar para a Cloud Function
+          successMessage.textContent = 'Criando álbum...';
+          const albumData = {
+            clientName,
+            clientEmail,
+            clientPassword,
+            photoUrls
+          };
+
+          // 5. Chamar a Cloud Function para criar o usuário e o álbum no Firestore
           const response = await fetch('https://southamerica-east1-brunonascimento-fotografia.cloudfunctions.net/createAlbum', {
             method: 'POST',
             headers: {
@@ -284,13 +329,11 @@
             body: JSON.stringify(albumData)
           });
 
+          const result = await response.json();
           if (!response.ok) {
-            // Tenta ler o corpo do erro como JSON, se falhar, usa uma mensagem padrão.
-            const result = await response.json().catch(() => ({ error: "Erro inesperado do servidor." }));
             throw new Error(result.error || 'Ocorreu um erro no servidor.');
           }
 
-          const result = await response.json();
           successMessage.textContent = result.message;
           form.reset();
           loadClients(); // Recarrega a lista
