@@ -295,8 +295,9 @@
           const result = await response.json();
 
           if (!response.ok) {
-            // Tenta extrair uma mensagem de erro mais detalhada do objeto de resposta.
-            const errorMessage = result.error?.message || (typeof result.error === 'string' ? result.error : JSON.stringify(result.error)) || `O servidor respondeu com o status ${response.status}.`;
+            // Tenta extrair uma mensagem de erro detalhada do objeto de resposta.
+            const errorDetail = result.error; // ex: { message: 'A senha é muito fraca' } ou 'E-mail já existe'
+            const errorMessage = errorDetail?.message || (typeof errorDetail === 'string' ? errorDetail : JSON.stringify(errorDetail)) || `O servidor respondeu com o status ${response.status}.`;
             throw new Error(errorMessage);
           }
 
