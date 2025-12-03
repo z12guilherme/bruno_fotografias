@@ -30,8 +30,14 @@ jobs:
       - name: Instalar Dependências da Função
         run: npm install --prefix functions
 
-      # 5. Faz o deploy para o Firebase (Hosting e Functions) usando o Firebase CLI
+      # 5. Autentica no Google Cloud usando a chave de serviço
+      - name: Autenticar no Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TOKEN }}'
+
+      # 6. Faz o deploy para o Firebase (Hosting e Functions) usando o Firebase CLI
       - name: Fazer Deploy para o Firebase
         run: |
           npm install -g firebase-tools
-          firebase deploy --token "${{ secrets.FIREBASE_TOKEN }}" --project brunonascimento-fotografia --only hosting,functions
+          firebase deploy --project brunonascimento-fotografia --only hosting,functions
