@@ -1,0 +1,18 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Permite que administradores autenticados leiam e escrevam em qualquer lugar.
+    // Isso é necessário para que o painel de admin possa fazer upload de fotos para novas galerias.
+    match /{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Regra específica para galerias de clientes
+    match /client-galleries/{clientId}/{allPaths=**} {
+      // Permite que um cliente logado leia as fotos da sua própria galeria.
+      allow read: if request.auth != null && request.auth.uid == clientId;
+    }
+  }
+}

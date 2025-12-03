@@ -5,33 +5,31 @@ name: Compilar e Fazer Deploy para o Firebase
 on:
   push:
     branches:
-      - main # Ou 'master', dependendo da sua branch principal
+      - main
 
 jobs:
   compilar_e_fazer_deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. Baixa o código do seu repositório
+      # 1. Clona o repositório
       - name: Baixar o código do repositório
         uses: actions/checkout@v4
 
-      # 2. Configura o Node.js e instala dependências do projeto React
-      - name: Configurar Node.js e Instalar Dependências
+      # 2. Configura o ambiente Node.js
+      - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm install
 
-      # 3. Compila o projeto React (cria a pasta 'dist')
-      - name: Compilar o Projeto
-        run: npm run build
+      # 3. Instala dependências, compila o projeto e instala dependências das functions
+      - name: Instalar dependências e compilar
+        run: |
+          npm install
+          npm run build
+          npm install --prefix functions
 
-      # 4. Copia as páginas de admin para dentro da pasta de build (se ainda for necessário)
-      - name: Copiar páginas de admin para a pasta dist
-        run: rsync -av --exclude='firebase.json' --exclude='index.html' public/ dist/
-
-      # 5. Faz o deploy APENAS para o Firebase Hosting
-      - name: Fazer Deploy para o Firebase Hosting
+      # 4. Faz o deploy para o Firebase (Hosting e Functions)
+      - name: Fazer Deploy para o Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
