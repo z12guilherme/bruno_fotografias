@@ -25,6 +25,26 @@ const corsHandler = cors({
   },
   methods: ["POST"]
 });
+
+/**
+ * (FUNÇÃO UTILITÁRIA - EXECUTAR APENAS UMA VEZ)
+ * Adiciona a claim de administrador a um usuário específico.
+ * Após o deploy, acesse a URL desta função no navegador para executar.
+ * Depois de executar com sucesso, você pode remover este código.
+ */
+exports.addAdminRole = functions.region('southamerica-east1').https.onRequest(async (req, res) => {
+  // !!! SUBSTITUA PELO SEU EMAIL DE ADMIN !!!
+  const email = "seu-email-de-admin@exemplo.com";
+  try {
+    const user = await admin.auth().getUserByEmail(email);
+    await admin.auth().setCustomUserClaims(user.uid, { admin: true });
+    return res.send(`Sucesso! O usuário ${email} agora é um administrador.`);
+  } catch (error) {
+    console.error("Erro ao adicionar claim de admin:", error);
+    return res.status(500).send({ error: "Erro ao adicionar claim de admin.", details: error.message });
+  }
+});
+
 /**
  * Cloud Function para criar um novo usuário cliente e seu álbum no Firestore.
  * Esta função é chamada pelo painel de administração.
@@ -33,34 +53,36 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
   // 1. Primeiro, deixe o corsHandler processar a requisição.
   // Ele vai responder automaticamente às requisições OPTIONS e passar para o próximo passo.
   corsHandler(request, response, async () => {
-    try { // O restante da lógica permanece igual.
-      // LOG INICIAL: Vamos verificar cabeçalhos e corpo da requisição assim que a função for chamada.
+    try {
+      // Etapa 1: Logs de Depuração
       console.log("Execução iniciada. Cabeçalhos:", JSON.stringify(request.headers));
       console.log("Corpo da requisição:", JSON.stringify(request.body));
 
-      // 2. Verificamos o método.
+      // Etapa 2: Validação do Método HTTP
       if (request.method !== 'POST') {
         return response.status(405).send('Method Not Allowed');
       }
 
-      // 3. A verificação de autenticação precisa ser feita manualmente com o token.
-      // O frontend deve enviar o ID Token do admin no cabeçalho Authorization.
+      // Etapa 3: Verificação de Autenticação e Autorização
       const idToken = request.headers.authorization?.split('Bearer ')[1];
       if (!idToken) {
         console.error("Erro de autenticação: ID Token não encontrado no cabeçalho 'Authorization'.");
         return response.status(401).send({ error: "A requisição deve ser feita por um usuário autenticado." });
       }
+
+      // Verifica se o token é válido e se o usuário tem a claim de admin
       const decodedToken = await admin.auth().verifyIdToken(idToken);
       if (decodedToken.admin !== true) {
         console.error(`Acesso negado. Usuário ${decodedToken.email} não é um administrador.`);
         return response.status(403).send({ error: "Acesso negado. Permissão de administrador necessária." });
       }
 
+      // Log de sucesso na autorização
       console.log(`Requisição autorizada para o admin: ${decodedToken.email}`);
 
       const { clientName, clientEmail, clientPassword, photoUrls } = request.body;
-
-      // 5. Validação dos dados recebidos no corpo da requisição.
+      
+      // Etapa 4: Validação dos Dados do Formulário
       if (!clientName || !clientEmail || !clientPassword || !Array.isArray(photoUrls) || photoUrls.length === 0) {
         // Log aprimorado para depuração
         const missingFields = [
@@ -73,7 +95,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
         return response.status(400).send({ error: `Campos obrigatórios ausentes: ${missingFields}` });
       }
 
-      // 6. Cria um novo usuário para o cliente no Firebase Authentication.
+      // Etapa 5: Criação do Usuário Cliente
       const clientUser = await admin.auth().createUser({
         email: clientEmail,
         password: clientPassword,
@@ -82,7 +104,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
 
       const clientId = clientUser.uid;
 
-      // 7. Salva os dados do álbum no Firestore, usando o UID do cliente como ID do documento.
+      // Etapa 6: Criação do Documento no Firestore
       await firestore.collection("clients").doc(clientId).set({
         name: clientName,
         email: clientEmail,
@@ -90,6 +112,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
+      // Etapa 7: Resposta de Sucesso
       return response.status(200).send({ success: true, message: "Álbum criado com sucesso!", clientId: clientId });
 
     } catch (error) {
@@ -102,6 +125,7 @@ exports.createAlbum = functions.region('southamerica-east1').https.onRequest((re
 
       // Erro para token de autenticação inválido, expirado ou malformado
       if (error.code?.startsWith('auth/id-token-')) {
+        console.error("Erro de verificação de token:", error.message);
         return response.status(401).send({ error: "Token de autenticação inválido ou expirado." });
       }
 
