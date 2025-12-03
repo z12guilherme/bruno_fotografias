@@ -293,7 +293,7 @@
             clientName,
             clientEmail,
             clientPassword,
-            photoUrls: driveLink // Ajuste: envia o link com a chave que o backend espera.
+            driveLink: driveLink // Correção: envia o link com a chave que o frontend espera.
           });
 
           // Para Funções Chamáveis, a resposta de sucesso está em result.data.
@@ -359,7 +359,7 @@
           emailSpan.textContent = client.email;
 
           const driveLink = document.createElement('a');
-          driveLink.href = client.photoUrls;
+          driveLink.href = client.driveLink;
           driveLink.target = '_blank';
           driveLink.style.cssText = "font-size: 0.85rem; color: var(--primary); margin-top: 0.25rem; text-decoration: none;";
           driveLink.textContent = 'Ver Álbum no Drive';
