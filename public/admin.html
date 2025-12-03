@@ -290,7 +290,8 @@
           const authResult = await createAlbum({
             clientName,
             clientEmail,
-            clientPassword
+            clientPassword,
+            photoUrls: driveLink // Adicionado para satisfazer a validação da Cloud Function.
           });
 
           // Se a função retornar o UID do novo usuário, podemos usá-lo.
