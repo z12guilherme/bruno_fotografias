@@ -182,8 +182,8 @@
             <input type="password" id="client-password" name="client-password" required />
           </div>
           <div class="form-group">
-            <label for="photos">Selecione as Fotos</label>
-            <input type="file" id="photos" name="photos" multiple required accept="image/*" />
+            <label for="drive-link">Link do Google Drive</label>
+            <input type="text" id="drive-link" name="drive-link" required placeholder="Cole o link da pasta compartilhada aqui" />
           </div>
           <p id="success-message" style="color: green; height: 1rem; margin-bottom: 1rem;"></p>
           <button type="submit" id="create-album-btn" style="width: 100%;">Criar Álbum</button>
@@ -263,67 +263,22 @@
           const clientName = document.getElementById('client-name').value;
           const clientEmail = document.getElementById('client-email').value;
           const clientPassword = document.getElementById('client-password').value;
-          const photoFiles = document.getElementById('photos').files;
-          const tempClientId = `temp_${Date.now()}`; // ID temporário para a pasta
+          const driveLink = document.getElementById('drive-link').value;
 
-          if (photoFiles.length === 0) {
-            throw new Error("Selecione pelo menos uma foto.");
-          }
-
-          // 1. Obter o token do usuário admin logado
-          const user = auth.currentUser;
-          if (!user) throw new Error("Administrador não está logado.");
-          const idToken = await user.getIdToken(true); // Força a atualização do token
-
-          // 2. Para cada foto, obter uma URL de upload assinada
-          successMessage.textContent = `Preparando upload de ${photoFiles.length} fotos...`;
-          const filesToUpload = Array.from(photoFiles).map(file => ({
-            file,
-            filePath: `client-galleries/${tempClientId}/${Date.now()}-${file.name}`
-          }));
-
-          const signedUrlPromises = filesToUpload.map(item => 
-            fetch('https://southamerica-east1-brunonascimento-fotografia.cloudfunctions.net/getUploadUrl', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + idToken },
-              body: JSON.stringify({ filePath: item.filePath, contentType: item.file.type })
-            }).then(async res => {
-              const data = await res.json();
-              if (!res.ok) throw new Error(data.error || 'Falha ao obter URL de upload.');
-              return data;
-            })
-          );
-
-          const signedUrlResponses = await Promise.all(signedUrlPromises);
-
-          // 3. Fazer o upload de cada foto para a sua URL assinada
-          successMessage.textContent = `Enviando ${photoFiles.length} fotos...`;
-          const uploadPromises = signedUrlResponses.map((res, index) => {
-            if (!res.uploadUrl) throw new Error('Não foi possível obter a URL de upload.');
-            return fetch(res.uploadUrl, {
-              method: 'PUT',
-              headers: { 'Content-Type': filesToUpload[index].file.type },
-              body: filesToUpload[index].file
-            });
-          });
-          await Promise.all(uploadPromises);
-          
-          // 4. Obter as URLs públicas para salvar no Firestore
-          const photoUrls = filesToUpload.map(item => {
-            const bucketName = firebaseConfig.storageBucket;
-            return `https://storage.googleapis.com/${bucketName}/${item.filePath}`;
-          });
-          
-          // 2. Montar os dados para enviar para a Cloud Function
-          successMessage.textContent = 'Criando álbum...';
+          // 1. Montar os dados para enviar para a Cloud Function
           const albumData = {
             clientName,
             clientEmail,
             clientPassword,
-            photoUrls
+            driveLink // Enviando o link do Drive em vez das URLs das fotos
           };
 
-          // 5. Chamar a Cloud Function para criar o usuário e o álbum no Firestore
+          // 2. Obter o token do usuário admin logado
+          const user = auth.currentUser;
+          if (!user) throw new Error("Administrador não está logado.");
+          const idToken = await user.getIdToken(true); // Força a atualização do token
+
+          // 3. Chamar a Cloud Function para criar o usuário e o álbum no Firestore
           const response = await fetch('https://southamerica-east1-brunonascimento-fotografia.cloudfunctions.net/createAlbum', {
             method: 'POST',
             headers: {
@@ -376,12 +331,12 @@
             clientDiv.innerHTML = `
               <div class="client-info">
                 <span style="font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
                   ${client.name}
                 </span>
-                <span style="font-size: 0.85rem; color: var(--muted-foreground); margin-top: 0.25rem;">
-                  ${client.photos.length} ${client.photos.length === 1 ? 'foto' : 'fotos'} no álbum
-                </span>
+                <a href="${client.driveLink}" target="_blank" style="font-size: 0.85rem; color: var(--primary); margin-top: 0.25rem; text-decoration: none;">
+                  Ver Álbum no Drive
+                </a>
               </div>
               <div class="client-actions">
                 <button data-client-id="${client.id}" class="btn-manage" title="Gerenciar Álbum">
