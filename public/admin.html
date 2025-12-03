@@ -294,7 +294,12 @@
           loadClients(); // Recarrega a lista
         } catch (error) {
           console.error("Erro ao criar álbum:", error);
-          feedbackMessage.textContent = `Erro: ${error.message}`;
+          // Tenta extrair uma mensagem de erro mais específica, se disponível.
+          // A Cloud Function pode retornar um objeto como { error: { message: '...' } }
+          const errorMessage = error.cause?.message || error.message || "Ocorreu um erro desconhecido.";
+          // Remove o prefixo "Error: " se ele já existir.
+          feedbackMessage.textContent = `Erro: ${errorMessage.replace(/^Error:\s*/, '')}`;
+          feedbackMessage.style.color = 'red';
         } finally {
           // Garante que o botão seja reativado mesmo se ocorrer um erro
           createAlbumBtn.disabled = false;
