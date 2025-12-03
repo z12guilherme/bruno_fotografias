@@ -287,26 +287,26 @@
           // Passo 1: Chamar a Cloud Function APENAS para criar o usuário de autenticação.
           // Isso é mais seguro e é a principal responsabilidade da função.
           const createAlbum = httpsCallable(functions, 'createAlbum');
-          const result = await createAlbum({
+          const authResult = await createAlbum({
             clientName,
             clientEmail,
             clientPassword,
             photoUrls: driveLink // Adicionado para satisfazer a validação da Cloud Function.
           });
 
-          // Passo 2: Encontrar o cliente recém-criado no Firestore pelo e-mail.
-          const clientsRef = collection(db, 'clients');
-          const q = query(clientsRef, where("email", "==", clientEmail));
-          const querySnapshot = await getDocs(q);
-
-          if (querySnapshot.empty) {
-            throw new Error("Não foi possível encontrar o cliente recém-criado para adicionar o link.");
+          // IMPORTANTE: Sua Cloud Function 'createAlbum' DEVE retornar o UID do novo usuário.
+          // Exemplo de retorno na sua Cloud Function: return { uid: userRecord.uid };
+          const newUserId = authResult.data.uid;
+          if (!newUserId) {
+            throw new Error("A Cloud Function não retornou o ID do novo usuário. Verifique o 'return' da sua função 'createAlbum'.");
           }
 
-          // Passo 3: Atualizar o documento do cliente com o link do Drive.
-          const clientDoc = querySnapshot.docs[0];
-          const clientDocRef = doc(db, "clients", clientDoc.id);
-          await updateDoc(clientDocRef, { driveLink: driveLink });
+          // Passo 2: Criar o documento do cliente no Firestore usando o UID como ID do documento.
+          // Isso garante a consistência entre a Autenticação e o banco de dados.
+          const clientDocRef = doc(db, "clients", newUserId);
+          await setDoc(clientDocRef, { 
+            name: clientName, email: clientEmail, driveLink: driveLink, createdAt: serverTimestamp(), uid: newUserId 
+          });
 
           showFeedback('Álbum e cliente criados com sucesso!', false);
 
