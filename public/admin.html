@@ -284,21 +284,27 @@
           const clientPassword = document.getElementById('client-password').value;
           const driveLink = document.getElementById('drive-link').value;
 
-          // Cria uma referência para a Função Chamável 'createAlbum'.
+          // Passo 1: Chamar a Cloud Function APENAS para criar o usuário de autenticação.
+          // Isso é mais seguro e é a principal responsabilidade da função.
           const createAlbum = httpsCallable(functions, 'createAlbum');
-
-          // Chama a função com os dados. O SDK do Firebase cuida da autenticação
-          // e da formatação correta da requisição para você.
-          const result = await createAlbum({
+          const authResult = await createAlbum({
             clientName,
             clientEmail,
-            clientPassword,
-            driveLink: driveLink, // Chave correta para o frontend.
-            photoUrls: driveLink  // Chave de compatibilidade para o backend antigo.
+            clientPassword
           });
 
-          // Para Funções Chamáveis, a resposta de sucesso está em result.data.
-          showFeedback(result.data.message, false);
+          // Se a função retornar o UID do novo usuário, podemos usá-lo.
+          // Supondo que a função retorne { uid: '...' }
+          const newUserId = authResult.data.uid;
+          if (!newUserId) {
+            throw new Error("A função não retornou o ID do novo usuário.");
+          }
+
+          // Passo 2: Salvar os detalhes do cliente no Firestore diretamente, garantindo que o link seja salvo.
+          // Usamos o UID retornado como ID do documento para manter a consistência.
+          await addDoc(collection(db, "clients"), { name: clientName, email: clientEmail, driveLink: driveLink, photoUrls: driveLink, createdAt: serverTimestamp(), uid: newUserId });
+
+          showFeedback('Álbum e cliente criados com sucesso!', false);
 
           form.reset();
           loadClients(); // Recarrega a lista
