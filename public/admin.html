@@ -182,10 +182,8 @@
             <input type="password" id="client-password" name="client-password" required />
           </div>
           <div class="form-group">
-            <label for="photo-urls">Link do Álbum (Google Drive, etc.)</label>
-            <input type="url" id="photo-urls" name="photo-urls" placeholder="https://drive.google.com/..." required />
             <label for="drive-link">Link do Google Drive</label>
-            <input type="text" id="drive-link" name="drive-link" required placeholder="Cole o link da pasta compartilhada aqui" />
+            <input type="url" id="drive-link" name="drive-link" required placeholder="Cole o link da pasta compartilhada aqui" />
           </div>
           <p id="feedback-message" style="min-height: 1rem; margin-bottom: 1rem; color: red;"></p>
           <button type="submit" id="create-album-btn" style="width: 100%;">Criar Cliente</button>
@@ -206,11 +204,9 @@
 
     <script type="module">
       // Importações do Firebase
-      import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
       import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
-      import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-functions.js";
       import { getFirestore, collection, getDocs, orderBy, query, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
-      import { getFirestore, collection, getDocs, orderBy, query, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";      
 
       // Suas credenciais do Firebase
       const firebaseConfig = {
@@ -226,9 +222,7 @@
       // Inicialização dos serviços do Firebase
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
-      const db = getFirestore(app);
-      const functions = getFunctions(app, 'southamerica-east1'); // Use a região correta!
-      const firestore = getFirestore(app);      
+      const db = getFirestore(app);    
 
       const form = document.getElementById('create-album-form');
       const feedbackMessage = document.getElementById('feedback-message');
@@ -262,31 +256,12 @@
         createAlbumBtn.disabled = true;
         createAlbumBtn.textContent = 'Criando...';
 
-        const clientName = document.getElementById('client-name').value;
-        const clientEmail = document.getElementById('client-email').value;
-        const clientPassword = document.getElementById('client-password').value;
-        const photoUrls = document.getElementById('photo-urls').value; // Corrigido para photoUrls
-        
-        try {
-          // Chama a Cloud Function segura para criar o álbum.
-          const createAlbumFn = httpsCallable(functions, 'createAlbum');
-          const result = await createAlbumFn({
-            name: clientName,
-            email: clientEmail,
-            password: clientPassword,
-            photoUrls: [photoUrls] // Envia como um array, conforme esperado pela função
-          });
-
-          console.log(result.data.message);
-          feedbackMessage.textContent = result.data.message;
-          feedbackMessage.style.color = 'green'; // Sucesso
         try {          
           const clientName = document.getElementById('client-name').value;
           const clientEmail = document.getElementById('client-email').value;
           const clientPassword = document.getElementById('client-password').value;
           const driveLink = document.getElementById('drive-link').value;
 
-          // 1. Montar os dados para enviar para a Cloud Function
           const albumData = {
             clientName,
             clientEmail,
@@ -294,12 +269,10 @@
             driveLink // Enviando o link do Drive
           };
 
-          // 2. Obter o token do usuário admin logado
           const user = auth.currentUser;
           if (!user) throw new Error("Administrador não está logado.");
           const idToken = await user.getIdToken(true); // Força a atualização do token
 
-          // 3. Chamar a Cloud Function para criar o usuário e o álbum no Firestore
           const response = await fetch('https://southamerica-east1-brunonascimento-fotografia.cloudfunctions.net/createAlbum', {
             method: 'POST',
             headers: {
@@ -310,18 +283,17 @@
           });
 
           if (!response.ok) {
-            // Tenta ler o corpo do erro como JSON, se falhar, usa uma mensagem padrão.
             const result = await response.json().catch(() => ({ error: "Erro inesperado do servidor." }));
             throw new Error(result.error || 'Ocorreu um erro no servidor.');
           }
 
           const result = await response.json();
-          successMessage.textContent = result.message;
+          feedbackMessage.textContent = result.message;
+          feedbackMessage.style.color = 'green';
           form.reset();
           loadClients(); // Recarrega a lista
         } catch (error) {
           console.error("Erro ao criar álbum:", error);
-          // Agora exibe a mensagem de erro real vinda da Cloud Function
           feedbackMessage.textContent = `Erro: ${error.message}`;
         } finally {
           // Garante que o botão seja reativado mesmo se ocorrer um erro
@@ -332,7 +304,7 @@
 
       async function loadClients() {
         try {
-          const clientsRef = collection(db, 'clients'); // Corrigido para 'clients'
+          const clientsRef = collection(db, 'clients');
           const q = query(clientsRef, orderBy('createdAt', 'desc'));
           const querySnapshot = await getDocs(q);
 
@@ -400,17 +372,8 @@
 
       async function deleteClient(clientId) {
         try {
-          // TODO: Implementar a função de exclusão no backend.
-          // Por enquanto, vamos apenas deletar do Firestore para o frontend funcionar.
-          // A exclusão completa (incluindo Firebase Auth) deve ser feita por uma Cloud Function.
-          
-          // 1. Deleta o documento do cliente no Firestore.
+          // TODO: A exclusão completa (incluindo Firebase Auth) deve ser feita por uma Cloud Function.
           await deleteDoc(doc(db, "clients", clientId));
-
-          // 2. (FUTURO) Chamar uma Cloud Function para deletar o usuário do Firebase Auth.
-          // const deleteUserFn = httpsCallable(functions, 'deleteUserAndData');
-          // const result = await deleteUserFn({ uid: clientId });
-          // alert(result.data.message);
 
           alert('Álbum deletado do Firestore com sucesso. Lembre-se de implementar a exclusão do usuário no Auth.');
           loadClients(); // Recarrega a lista
