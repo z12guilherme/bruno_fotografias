@@ -43,9 +43,9 @@ O projeto foi construído com um stack moderno, separando claramente as responsa
 ### **Backend**
 *   **Ambiente**: Node.js
 *   **Framework**: Express.js
-*   **Banco de Dados**: Firebase Firestore (banco de dados NoSQL escalável)
-*   **Autenticação**: Firebase Authentication
-*   **Armazenamento de Arquivos**: Firebase Storage
+*   **Banco de Dados**: Supabase (PostgreSQL)
+*   **Autenticação**: Supabase Auth
+*   **Armazenamento de Arquivos**: Supabase Storage
 
 ##  Como Executar o Projeto Localmente
 

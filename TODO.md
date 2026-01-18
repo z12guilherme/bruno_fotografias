@@ -23,15 +23,15 @@ O objetivo desta fase é ter todas as telas (páginas HTML) necessárias, mesmo 
 
 ---
 
-### Fase 3: Migração para Firebase (Backend)
+### Fase 3: Migração para Supabase (Backend)
 
-- [x] **Configurar Firebase Admin SDK**: Inicializar o Firebase no `server.js` com a chave de serviço.
-- [x] **Refatorar Autenticação**: Substituir JWT local pelo Firebase Authentication para validar tokens.
-- [x] **Refatorar Upload de Arquivos**: Mudar o `multer` para salvar arquivos em memória e prepará-lo para o Cloud Storage.
-- [x] **Refatorar Rotas de Criação e Leitura**: Substituir a lógica do banco de dados local pelas operações do Firestore e Cloud Storage.
+- [ ] **Configurar Supabase Client**: Inicializar o cliente do Supabase no projeto.
+- [ ] **Refatorar Autenticação**: Substituir a autenticação atual pelo Supabase Auth.
+- [ ] **Refatorar Upload de Arquivos**: Utilizar o Supabase Storage para o gerenciamento de imagens.
+- [ ] **Refatorar Banco de Dados**: Migrar a lógica de dados para o PostgreSQL do Supabase.
 - [ ] **Próximos Passos (Frontend)**:
-    - [ ] Implementar o login do administrador no frontend usando o SDK do Firebase para obter o token.
+    - [ ] Implementar o login do administrador no frontend usando o SDK do Supabase.
     - [ ] Modificar o formulário de criação de álbum (`admin.html`) para permitir o upload de múltiplos arquivos (`<input type="file" multiple>`).
     - [ ] Ajustar o JavaScript do `admin.html` para enviar os arquivos como `FormData` em vez de JSON.
-    - [ ] Criar uma página de login para o cliente no frontend que use o Firebase Authentication.
-    - [ ] Ajustar a página da galeria (`galeria-cliente.html`) para buscar os dados do Firestore após o login do cliente.
+    - [ ] Criar uma página de login para o cliente no frontend que use o Supabase Auth.
+    - [ ] Ajustar a página da galeria (`galeria-cliente.html`) para buscar os dados do Supabase após o login do cliente.
