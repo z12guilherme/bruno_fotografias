@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
@@ -10,10 +10,14 @@ import { PortfolioCategoriesPage } from "@/components/PortfolioCategoriesPage";
 import { PortfolioCategoryDetail } from "@/components/PortfolioCategoryDetail";
 import { ContactPage } from "@/components/ContactPage";
 
+
 function App() {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <Header />
+      {!isHomePage && <Header />}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/sobre" element={<AboutPage />} />
@@ -23,7 +27,7 @@ function App() {
         <Route path="/contato" element={<ContactPage />} />
         <Route path="*" element={<HomePage />} /> {/* Fallback para a página inicial */}
       </Routes>
-      <Footer />
+      {!isHomePage && <Footer />}
       <Toaster />
     </ThemeProvider>
   );
