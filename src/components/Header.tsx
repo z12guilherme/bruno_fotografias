@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Menu, X, Instagram, Facebook, Search } from "lucide-react";
+import { Menu, X, Instagram, Facebook, Search, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const Header = () => {
@@ -11,8 +11,7 @@ export const Header = () => {
     { label: "SOBRE", href: "/sobre" },
     { label: "PORTFÓLIO", href: "/portfolio" },
     { label: "CONTATO", href: "/contato" },
-    { label: "ÁREA DO CLIENTE", href: "/cliente-login.html", external: true },
-    { label: "AREA ADMINISTRATIVA", href: "/admin-login.html", external: true },
+    { label: "ÁREA DO CLIENTE", href: "/area-do-cliente" },
   ];
 
   return (
@@ -55,6 +54,13 @@ export const Header = () => {
               )
             )}
           </nav>
+          
+          {/* Admin Icon (Desktop) */}
+          <div className="hidden lg:flex items-center ml-4 border-l pl-4 border-gray-200">
+             <Link to="/admin/login" title="Área Administrativa">
+                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary"><Lock className="h-4 w-4" /></Button>
+             </Link>
+          </div>
 
           {/* Social Icons & Search */}
           <div className="hidden lg:flex items-center space-x-4">
@@ -105,6 +111,13 @@ export const Header = () => {
                 </NavLink>
               )
             )}
+            <Link 
+              to="/admin/login" 
+              onClick={() => setIsMenuOpen(false)}
+              className="block py-3 text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center"
+            >
+              <Lock className="h-4 w-4 mr-2" /> ÁREA ADMINISTRATIVA
+            </Link>
             <div className="flex items-center space-x-4 mt-4 pt-4 border-t border-border">
               <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
                 <Instagram className="h-5 w-5" />

@@ -3,18 +3,25 @@ import { motion } from 'framer-motion';
 import { Menu, X, Instagram, Linkedin, Mail, ChevronDown, Camera, Lock } from 'lucide-react';
 import brunoBg from '@/assets/bruno.png';
 
+import portfolio1 from "@/assets/portfolio1.jpg";
+import portfolio2 from "@/assets/portfolio2.jpg";
+import portfolio3 from "@/assets/portfolio3.jpg";
+import portfolio4 from "@/assets/portfolio4.jpg";
+import portfolio5 from "@/assets/portfolio5.jpg";
+import portfolio6 from "@/assets/portfolio6.jpg";
+
 export function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Imagens de exemplo para o portfólio
   const portfolioImages = [
-    "https://images.unsplash.com/photo-1511285560921-4c92a495f426?w=800",
-    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800",
-    "https://images.unsplash.com/photo-1542838132-350bf6847545?w=800",
-    "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800",
-    "https://images.unsplash.com/photo-1597157639079-52413a340b41?w=600",
-    "https://images.unsplash.com/photo-1484981138541-3d074aa97716?w=600",
+    portfolio1,
+    portfolio2,
+    portfolio3,
+    portfolio4,
+    portfolio5,
+    portfolio6,
   ];
 
   // Detecta o scroll para mudar o estilo da navbar
