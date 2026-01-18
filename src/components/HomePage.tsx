@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Menu, X, Instagram, Linkedin, Mail, ChevronDown, Camera, Lock } from 'lucide-react';
 import brunoBg from '@/assets/bruno.png';
@@ -74,8 +75,8 @@ export function HomePage() {
                 {item}
               </button>
             ))}
-            <a
-              href="/cliente-login.html"
+            <Link
+              to="/area-do-cliente"
               className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all ${
                 isScrolled
                   ? 'border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white'
@@ -84,7 +85,7 @@ export function HomePage() {
             >
               <Lock size={14} />
               <span className="text-xs font-bold uppercase">Área do Cliente</span>
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -112,9 +113,9 @@ export function HomePage() {
                 {item}
               </button>
             ))}
-            <a href="/cliente-login.html" className="text-left text-amber-600 font-bold uppercase text-sm flex items-center gap-2">
+            <Link to="/area-do-cliente" className="text-left text-amber-600 font-bold uppercase text-sm flex items-center gap-2">
               <Lock size={14} /> Área do Cliente
-            </a>
+            </Link>
           </motion.div>
         )}
       </nav>
@@ -169,11 +170,11 @@ export function HomePage() {
       <section id="sobre" className="py-20 md:py-32 bg-white">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="w-full md:w-1/2">
+            <div className="w-full md:w-1/2 mt-20">
               <img 
                 src={brunoPortrait} 
                 alt="Bruno Nascimento" 
-                className="rounded shadow-xl w-full object-cover h-[500px]"
+                className="rounded shadow-xl w-full object-cover object-top h-[500px]"
               />
             </div>
             <div className="w-full md:w-1/2">

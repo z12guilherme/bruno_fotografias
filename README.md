@@ -21,9 +21,9 @@ Este projeto é uma aplicação **full-stack** que transcende o conceito de um s
 
 *   🎨 **Galeria de Portfólio**: Exibição de trabalhos com navegação por categorias.
 *   👤 **Página "Sobre Mim"**: Espaço com foto e biografia para apresentação do profissional.
-*   � **Formulário de Contato**: Canal direto para orçamentos e informações.
-*   🔐 **Área do Cliente**: Sistema de login para que clientes possam visualizar suas galerias de fotos privadas.
-*   ⚙️ **Painel Administrativo**: Área restrita para o fotógrafo gerenciar clientes e fazer upload de novas galerias.
+*   📧 **Formulário de Contato**: Canal direto para orçamentos e informações.
+*   🔐 **Área do Cliente**: Sistema de acesso seguro onde clientes visualizam suas galerias privadas utilizando um código de acesso exclusivo.
+*   ⚙️ **Painel Administrativo**: Área restrita para o fotógrafo criar álbuns, gerenciar senhas de acesso e fazer upload de fotos (drag-and-drop).
 *   📱 **Design Responsivo**: Experiência de usuário otimizada para desktops, tablets e celulares.
 
 ## 🛠️ Tecnologias Utilizadas
@@ -40,12 +40,12 @@ O projeto foi construído com um stack moderno, separando claramente as responsa
 *   **Layouts de Galeria**: [React Masonry CSS](https://github.com/paulcollett/react-masonry-css)
 *   **Ícones**: [Lucide React](https://lucide.dev/)
 
-### **Backend**
-*   **Ambiente**: Node.js
-*   **Framework**: Express.js
-*   **Banco de Dados**: Supabase (PostgreSQL)
-*   **Autenticação**: Supabase Auth
-*   **Armazenamento de Arquivos**: Supabase Storage
+### **Backend & Infraestrutura**
+*   **BaaS (Backend as a Service)**: [Supabase](https://supabase.com/)
+    *   **Banco de Dados**: PostgreSQL
+    *   **Autenticação**: Supabase Auth (Gerenciamento de Admin)
+    *   **Storage**: Supabase Storage (Hospedagem de imagens)
+*   **Hospedagem Frontend**: [Firebase Hosting](https://firebase.google.com/docs/hosting)
 
 ##  Como Executar o Projeto Localmente
 
