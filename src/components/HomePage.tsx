@@ -2,13 +2,17 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Menu, X, Instagram, Linkedin, Mail, ChevronDown, Camera, Lock } from 'lucide-react';
 import brunoBg from '@/assets/bruno.png';
+import brunoPortrait from '@/assets/bruno.jpg';
 
+import logo from '@/assets/logo.jpg';
 import portfolio1 from "@/assets/portfolio1.jpg";
 import portfolio2 from "@/assets/portfolio2.jpg";
 import portfolio3 from "@/assets/portfolio3.jpg";
 import portfolio4 from "@/assets/portfolio4.jpg";
 import portfolio5 from "@/assets/portfolio5.jpg";
 import portfolio6 from "@/assets/portfolio6.jpg";
+import videoPortfolio from "@/assets/videos/video_portfolio.mp4";
+import videoPortfolio2 from "@/assets/videos/video_portfolio2.mp4";
 
 export function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -50,9 +54,11 @@ export function HomePage() {
         }`}
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="text-2xl font-bold tracking-wider uppercase cursor-pointer" onClick={() => scrollToSection('hero')}>
-            <span className={isScrolled ? 'text-gray-900' : 'text-white'}>Bruno</span>
-            <span className="text-amber-600">.</span>
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollToSection('hero')}>
+            <img src={logo} alt="Bruno Nascimento" className="h-10 w-10 rounded-full object-cover" />
+            <div className="text-2xl font-bold tracking-wider uppercase">
+              <span className={isScrolled ? 'text-gray-900' : 'text-white'}>Bruno Fotografias </span>
+            </div>
           </div>
 
           {/* Desktop Menu */}
@@ -137,7 +143,7 @@ export function HomePage() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-xl md:text-2xl font-light text-gray-200 mb-8"
           >
-            Fotógrafo Profissional & Artista Visual
+            Especialista em Fotografia de Nascimento & Família
           </motion.p>
           <motion.button
             initial={{ opacity: 0 }}
@@ -165,7 +171,7 @@ export function HomePage() {
           <div className="flex flex-col md:flex-row items-center gap-12">
             <div className="w-full md:w-1/2">
               <img 
-                src={brunoBg} 
+                src={brunoPortrait} 
                 alt="Bruno Nascimento" 
                 className="rounded shadow-xl w-full object-cover h-[500px]"
               />
@@ -177,7 +183,7 @@ export function HomePage() {
               </div>
               <p className="text-gray-600 leading-relaxed mb-6">
                 Olá, sou Bruno Nascimento. A fotografia para mim não é apenas capturar momentos, mas criar memórias eternas com uma estética de luxo e sofisticação.
-                Especializado em retratos e eventos, busco a luz perfeita e a emoção genuína em cada clique.
+                Especializado em registrar o milagre do nascimento, busco a luz perfeita e a emoção genuína em cada clique.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                 <div>
@@ -252,8 +258,39 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* --- Video Portfolio Section --- */}
+      <section id="videos" className="py-20 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Filmes</h2>
+            <div className="w-16 h-1 bg-amber-600 mx-auto"></div>
+            <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+              Histórias contadas através de movimento e som.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Vídeo 1 - Local */}
+            <div className="aspect-[9/16] bg-gray-100 rounded-lg overflow-hidden shadow-xl">
+              <video className="w-full h-full" controls>
+                <source src={videoPortfolio} type="video/mp4" />
+                Seu navegador não suporta a tag de vídeo.
+              </video>
+            </div>
+
+            {/* Vídeo 2 */}
+            <div className="aspect-[9/16] bg-gray-100 rounded-lg overflow-hidden shadow-xl">
+              <video className="w-full h-full" controls>
+                <source src={videoPortfolio2} type="video/mp4" />
+                Seu navegador não suporta a tag de vídeo.
+              </video>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* --- Contact Section --- */}
-      <section id="contato" className="py-20 bg-white">
+      <section id="contato" className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Entre em Contato</h2>

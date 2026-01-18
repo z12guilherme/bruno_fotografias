@@ -34,9 +34,9 @@ export function SobreSection() {
               lugar.
             </p>
             <p>
-              Seja em um casamento, um ensaio de família ou um evento
-              corporativo, meu objetivo é sempre o mesmo: entregar um trabalho de
-              luxo que supere suas expectativas.
+              Seja na sala de parto registrando o primeiro suspiro ou em um ensaio de família, 
+              meu objetivo é sempre o mesmo: entregar um trabalho de
+              luxo que supere suas expectativas e eternize o milagre da vida.
             </p>
           </div>
 
