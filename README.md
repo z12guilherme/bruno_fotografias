@@ -14,6 +14,10 @@
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white"/>
 </div>
 
+<div align="center">
+  <img src="public/print.png" alt="Screenshot do Sistema" width="100%">
+</div>
+
 ## ✨ Visão Geral
  
 Este projeto é uma aplicação **full-stack** que transcende o conceito de um simples site. Ele oferece uma experiência digital completa: uma vitrine pública para exibir seu trabalho, uma área de cliente exclusiva para entrega de galerias privadas e um painel de controle intuitivo para gerenciamento total do conteúdo.
