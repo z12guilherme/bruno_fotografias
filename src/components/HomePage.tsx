@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Menu, X, Instagram, Mail, ChevronDown, Camera, Lock } from 'lucide-react';
+import { Menu, X, Instagram, Mail, ChevronDown, Camera, Lock, Sun, Moon } from 'lucide-react';
 import brunoBg from '@/assets/bruno.png';
 
 import logo from '@/assets/logo.jpg';
@@ -21,6 +21,9 @@ import videoPortfolio2 from "@/assets/videos/video_portfolio2.mp4";
 export function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
   // Imagens de exemplo para o portfólio
   const portfolioImages = [
@@ -53,18 +56,20 @@ export function HomePage() {
   };
 
   return (
-    <div className="font-sans text-gray-800 bg-white">
+    <div className={`font-sans transition-colors duration-300 ${isDarkMode ? 'text-gray-100 bg-gray-900' : 'text-gray-800 bg-white'}`}>
       {/* --- Navigation --- */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'
+          isScrolled 
+            ? (isDarkMode ? 'bg-gray-900/90 backdrop-blur-md shadow-sm py-3' : 'bg-white/90 backdrop-blur-md shadow-sm py-3') 
+            : 'bg-transparent py-5'
         }`}
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollToSection('hero')}>
             <img src={logo} alt="Bruno Nascimento" className="h-10 w-10 rounded-full object-cover" />
             <div className="text-2xl font-bold tracking-wider uppercase">
-              <span className={isScrolled ? 'text-gray-900' : 'text-white'}>Bruno | Fotografia de Nascimento </span>
+              <span className={isScrolled ? (isDarkMode ? 'text-white' : 'text-gray-900') : 'text-white'}>Bruno | Fotografia de Nascimento </span>
             </div>
           </div>
 
@@ -75,12 +80,21 @@ export function HomePage() {
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase() === 'home' ? 'hero' : item.toLowerCase().replace('ó', 'o'))}
                 className={`text-sm font-medium uppercase tracking-wide hover:text-amber-600 transition-colors ${
-                  isScrolled ? 'text-gray-700' : 'text-white/90'
+                  isScrolled ? (isDarkMode ? 'text-gray-200' : 'text-gray-700') : 'text-white/90'
                 }`}
               >
                 {item}
               </button>
             ))}
+            
+            <button 
+              onClick={toggleTheme} 
+              className={`p-2 rounded-full transition-colors ${isScrolled ? (isDarkMode ? 'hover:bg-gray-800 text-yellow-400' : 'hover:bg-gray-100 text-gray-600') : 'text-white hover:bg-white/10'}`}
+              title={isDarkMode ? "Mudar para modo claro" : "Mudar para modo escuro"}
+            >
+              {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+
             <Link
               to="/area-do-cliente"
               className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all ${
@@ -95,12 +109,20 @@ export function HomePage() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-amber-600 focus:outline-none"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X size={28} /> : <Menu size={28} className={isScrolled ? 'text-gray-900' : 'text-white'} />}
-          </button>
+          <div className="md:hidden flex items-center gap-4">
+            <button 
+              onClick={toggleTheme} 
+              className={`p-2 rounded-full transition-colors ${isScrolled ? (isDarkMode ? 'text-yellow-400' : 'text-gray-600') : 'text-white'}`}
+            >
+              {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
+            </button>
+            <button
+              className="text-amber-600 focus:outline-none"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X size={28} /> : <Menu size={28} className={isScrolled ? (isDarkMode ? 'text-white' : 'text-gray-900') : 'text-white'} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu Overlay */}
@@ -108,13 +130,13 @@ export function HomePage() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg py-4 px-6 flex flex-col space-y-4"
+            className={`md:hidden absolute top-full left-0 right-0 shadow-lg py-4 px-6 flex flex-col space-y-4 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}
           >
             {['Home', 'Sobre', 'Portfólio', 'Contato'].map((item) => (
               <button
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase() === 'home' ? 'hero' : item.toLowerCase().replace('ó', 'o'))}
-                className="text-left text-gray-700 hover:text-amber-600 font-medium uppercase text-sm"
+                className={`text-left font-medium uppercase text-sm hover:text-amber-600 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}
               >
                 {item}
               </button>
@@ -173,15 +195,15 @@ export function HomePage() {
       </section>
 
       {/* --- Quem Sou Section --- */}
-      <QuemSou />
+      <QuemSou isDarkMode={isDarkMode} />
 
       {/* --- Portfolio Section --- */}
-      <section id="portfolio" className="py-20 bg-gray-50">
+      <section id="portfolio" className={`py-20 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Meu Portfólio</h2>
+            <h2 className={`text-3xl md:text-4xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Meu Portfólio</h2>
             <div className="w-16 h-1 bg-amber-600 mx-auto"></div>
-            <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+            <p className={`mt-4 max-w-2xl mx-auto ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Uma seleção dos meus melhores trabalhos, capturando a essência e a beleza em cada detalhe.
             </p>
           </div>
@@ -192,7 +214,7 @@ export function HomePage() {
               <motion.div 
                 key={index}
                 whileHover={{ y: -5 }}
-                className="group relative overflow-hidden rounded-lg shadow-md bg-white aspect-[3/4]"
+                className={`group relative overflow-hidden rounded-lg shadow-md aspect-[3/4] ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}
               >
                 <img 
                   src={imgSrc} 
@@ -216,19 +238,19 @@ export function HomePage() {
       </section>
 
       {/* --- Video Portfolio Section --- */}
-      <section id="videos" className="py-20 bg-white">
+      <section id="videos" className={`py-20 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Filmes</h2>
+            <h2 className={`text-3xl md:text-4xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Filmes</h2>
             <div className="w-16 h-1 bg-amber-600 mx-auto"></div>
-            <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+            <p className={`mt-4 max-w-2xl mx-auto ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Histórias contadas através de movimento e som.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Vídeo 1 - Local */}
-            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden shadow-xl">
+            <div className={`aspect-video rounded-lg overflow-hidden shadow-xl ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
               <video className="w-full h-full" controls preload="none">
                 <source src={videoPortfolio} type="video/mp4" />
                 Seu navegador não suporta a tag de vídeo.
@@ -236,7 +258,7 @@ export function HomePage() {
             </div>
 
             {/* Vídeo 2 */}
-            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden shadow-xl">
+            <div className={`aspect-video rounded-lg overflow-hidden shadow-xl ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
               <video className="w-full h-full" controls preload="none">
                 <source src={videoPortfolio2} type="video/mp4" />
                 Seu navegador não suporta a tag de vídeo.
@@ -247,14 +269,14 @@ export function HomePage() {
       </section>
 
       {/* --- Contact Section --- */}
-      <section id="contato" className="py-20 bg-gray-50">
+      <section id="contato" className={`py-20 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Entre em Contato</h2>
+            <h2 className={`text-3xl md:text-4xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Entre em Contato</h2>
             <div className="w-16 h-1 bg-amber-600 mx-auto"></div>
           </div>
 
-          <div className="max-w-3xl mx-auto bg-white shadow-2xl rounded-lg overflow-hidden flex flex-col md:flex-row">
+          <div className={`max-w-3xl mx-auto shadow-2xl rounded-lg overflow-hidden flex flex-col md:flex-row ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <div className="bg-gray-900 text-white p-8 md:w-1/3 flex flex-col justify-between">
               <div>
                 <h3 className="text-xl font-bold mb-4">Informações</h3>
@@ -286,11 +308,11 @@ export function HomePage() {
                 }}
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input name="name" type="text" placeholder="Seu Nome" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" required />
-                  <input name="email" type="email" placeholder="Seu Email" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" />
+                  <input name="name" type="text" placeholder="Seu Nome" className={`w-full p-3 border rounded focus:outline-none focus:border-amber-600 transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'}`} required />
+                  <input name="email" type="email" placeholder="Seu Email" className={`w-full p-3 border rounded focus:outline-none focus:border-amber-600 transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'}`} />
                 </div>
-                <input name="subject" type="text" placeholder="Assunto" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" />
-                <textarea name="message" rows={4} placeholder="Sua Mensagem" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" required></textarea>
+                <input name="subject" type="text" placeholder="Assunto" className={`w-full p-3 border rounded focus:outline-none focus:border-amber-600 transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'}`} />
+                <textarea name="message" rows={4} placeholder="Sua Mensagem" className={`w-full p-3 border rounded focus:outline-none focus:border-amber-600 transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'}`} required></textarea>
                 <button type="submit" className="px-6 py-3 bg-amber-600 text-white font-bold rounded hover:bg-amber-700 transition-colors w-full md:w-auto">
                   Enviar Mensagem
                 </button>
