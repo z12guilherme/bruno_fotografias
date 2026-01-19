@@ -5,11 +5,14 @@
   <br />
 </div>
 
-<p align="center">
-  <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg"/>
-  <img alt="Repo size" src="https://img.shields.io/github/repo-size/z12guilherme/bruno_fotografias"/>
-  <img alt="Last commit" src="https://img.shields.io/github/last-commit/z12guilherme/bruno_fotografias"/>
-</p>
+<div align="center">
+  <img alt="React" src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"/>
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white"/>
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E"/>
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white"/>
+  <img alt="Supabase" src="https://img.shields.io/badge/Supabase-181818?style=for-the-badge&logo=supabase&logoColor=3ECF8E"/>
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white"/>
+</div>
 
 ## ✨ Visão Geral
  
@@ -35,70 +38,19 @@ Confira o vídeo de apresentação do sistema: [Assistir no YouTube](https://www
 O projeto foi construído com um stack moderno, separando claramente as responsabilidades entre o frontend e o backend.
 
 ### **Frontend**
-*   **Framework**: [React](https://react.dev/) com [TypeScript](https://www.typescriptlang.org/)
-*   **Build Tool**: [Vite](https://vitejs.dev/)
-*   **Estilização**: [Tailwind CSS](https://tailwindcss.com/)
-*   **Componentes UI**: [shadcn/ui](https://ui.shadcn.com/)
-*   **Roteamento**: [React Router](https://reactrouter.com/)
-*   **Animações**: [Framer Motion](https://www.framer.com/motion/)
-*   **Layouts de Galeria**: [React Masonry CSS](https://github.com/paulcollett/react-masonry-css)
-*   **Ícones**: [Lucide React](https://lucide.dev/)
+*   ![React](https://img.shields.io/badge/-React-20232A?style=flat&logo=react&logoColor=61DAFB) **React**
+*   ![TypeScript](https://img.shields.io/badge/-TypeScript-007ACC?style=flat&logo=typescript&logoColor=white) **TypeScript**
+*   ![Vite](https://img.shields.io/badge/-Vite-B73BFE?style=flat&logo=vite&logoColor=white) **Vite**
+*   ![Tailwind CSS](https://img.shields.io/badge/-Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white) **Tailwind CSS**
+*   **Componentes UI**: shadcn/ui
+*   **Animações**: Framer Motion
 
 ### **Backend & Infraestrutura**
-*   **BaaS (Backend as a Service)**: [Supabase](https://supabase.com/)
-    *   **Banco de Dados**: PostgreSQL
-    *   **Autenticação**: Supabase Auth (Gerenciamento de Admin)
-    *   **Storage**: Supabase Storage (Hospedagem de imagens)
+*   !Supabase **Supabase**
+*   !PostgreSQL **PostgreSQL**
 
-##  Como Executar o Projeto Localmente
+## 🔒 Acesso Restrito
 
-Para executar o projeto completo em sua máquina, siga os passos abaixo. Você precisará ter o Node.js (versão 18 ou superior) e o npm instalados.
+Este projeto é proprietário e de uso exclusivo. O código-fonte não está disponível para clonagem pública ou distribuição.
 
-### 1. Clonar o Repositório
-```bash
-git clone https://github.com/z12guilherme/bruno_fotografias.git
-cd bruno_fotografias
-```
-
-### 2. Configurar o Backend
-```bash
-# Navegue até a pasta do servidor
-cd server
-
-# Instale as dependências do backend
-npm install
-
-# (Opcional, mas recomendado) Crie um arquivo .env para suas variáveis de ambiente
-# Exemplo: JWT_SECRET=seu_segredo_super_secreto
-
-# Volte para a pasta raiz do projeto
-cd ..
-```
-
-### 3. Configurar o Frontend
-```bash
-# Instale as dependências do frontend
-npm install
-```
-
-### 4. Executar a Aplicação
-Para uma melhor experiência de desenvolvimento, inicie o backend e o frontend em terminais separados.
-
-**Terminal 1: Iniciar o Backend**
-```bash
-# A partir da pasta raiz
-cd server
-npm start 
-# O servidor backend estará rodando em http://localhost:3001 (ou a porta configurada)
-```
-
-**Terminal 2: Iniciar o Frontend**
-```bash
-# A partir da pasta raiz
-npm run dev
-# O site estará disponível em http://localhost:5173 (ou a porta indicada pelo Vite)
-```
-
-## 📄 Licença
-
-Distribuído sob a Licença MIT. Veja o arquivo `LICENSE` para mais informações.
+Todos os direitos reservados.
