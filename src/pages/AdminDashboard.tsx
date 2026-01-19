@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, Upload, LogOut, FolderOpen, ArrowLeft, Pencil, FolderPlus, Folder } from "lucide-react";
+import { Loader2, Plus, Trash2, Upload, LogOut, FolderOpen, ArrowLeft, Pencil, FolderPlus, Folder, Link as LinkIcon } from "lucide-react";
 
 // Tipos para nossos dados
 interface Album {
@@ -14,6 +14,7 @@ interface Album {
   description: string | null;
   cover_image_url: string | null;
   access_code?: string;
+  external_url?: string | null;
   created_at: string;
 }
 
@@ -44,6 +45,7 @@ export default function AdminDashboard() {
   // Estados do formulário
   const [newAlbumTitle, setNewAlbumTitle] = useState("");
   const [newAlbumCode, setNewAlbumCode] = useState("");
+  const [newExternalUrl, setNewExternalUrl] = useState("");
   const [newFolderName, setNewFolderName] = useState("");
   const [creatingFolder, setCreatingFolder] = useState(false);
   const [editingAlbum, setEditingAlbum] = useState<Album | null>(null);
@@ -118,7 +120,7 @@ export default function AdminDashboard() {
       // Modo de Edição
       const { error } = await supabase
         .from('albums')
-        .update({ title: newAlbumTitle, access_code: newAlbumCode })
+        .update({ title: newAlbumTitle, access_code: newAlbumCode, external_url: newExternalUrl })
         .eq('id', editingAlbum.id);
 
       if (error) {
@@ -132,7 +134,7 @@ export default function AdminDashboard() {
       // Modo de Criação
       const { error } = await supabase
         .from('albums')
-        .insert([{ title: newAlbumTitle, access_code: newAlbumCode }]);
+        .insert([{ title: newAlbumTitle, access_code: newAlbumCode, external_url: newExternalUrl }]);
 
       if (error) {
         toast({ title: "Erro ao criar álbum", description: error.message, variant: "destructive" });
@@ -140,6 +142,7 @@ export default function AdminDashboard() {
         toast({ title: "Álbum criado com sucesso!" });
         setNewAlbumTitle("");
         setNewAlbumCode("");
+        setNewExternalUrl("");
         fetchAlbums();
       }
     }
@@ -262,12 +265,14 @@ export default function AdminDashboard() {
     setEditingAlbum(album);
     setNewAlbumTitle(album.title);
     setNewAlbumCode(album.access_code || "");
+    setNewExternalUrl(album.external_url || "");
   }
 
   function cancelEditing() {
     setEditingAlbum(null);
     setNewAlbumTitle("");
     setNewAlbumCode("");
+    setNewExternalUrl("");
   }
 
   async function handleLogout() {
@@ -320,6 +325,18 @@ export default function AdminDashboard() {
                     onChange={e => setNewAlbumCode(e.target.value)} 
                     placeholder="Ex: mariajoao2024" 
                   />
+                </div>
+                <div>
+                  <Label htmlFor="externalUrl" className="flex items-center gap-2">
+                    <LinkIcon className="h-3 w-3" /> Link Externo (Opcional)
+                  </Label>
+                  <Input 
+                    id="externalUrl" 
+                    value={newExternalUrl} 
+                    onChange={e => setNewExternalUrl(e.target.value)} 
+                    placeholder="https://selpics.com/galeria..." 
+                  />
+                  <p className="text-[10px] text-gray-500 mt-1">Se preenchido, o cliente será redirecionado para este link ao entrar.</p>
                 </div>
                 <Button type="submit" className="w-full">
                   {editingAlbum ? "Salvar Alterações" : <><Plus className="mr-2 h-4 w-4" /> Criar Álbum</>}

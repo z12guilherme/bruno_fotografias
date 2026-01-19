@@ -33,4 +33,6 @@ O objetivo desta fase é ter todas as telas (páginas HTML) necessárias, mesmo 
     - [x] Implementar o login do administrador no frontend usando o SDK do Supabase (`src/pages/AdminLogin.tsx`).
     - [x] Criar Painel Administrativo em React (`src/pages/AdminDashboard.tsx`) para substituir `admin.html` e integrar com Supabase.
     - [ ] Criar uma página de login para o cliente no frontend que use o Supabase Auth.
+    - [ ] **Feature Link Externo**: Adicionar campo `external_url` na tabela `albums` e no formulário do Admin.
+    - [ ] **Feature Link Externo**: Implementar lógica no login do cliente para redirecionar (`window.location.href`) se houver link externo salvo.
     - [ ] Ajustar a página da galeria (`galeria-cliente.html`) para buscar os dados do Supabase após o login do cliente.

@@ -27,6 +27,7 @@ O sistema foi projetado para atender a três objetivos principais:
 ### 1.2. Área do Cliente (Acesso Restrito)
 *   **Login Simplificado**: Acesso via código de acesso único (sem necessidade de cadastro de usuário/senha complexos para o cliente).
 *   **Galeria Privada**: Visualização das fotos do evento/ensaio específico do cliente.
+*   **Redirecionamento Externo**: Suporte para redirecionar o cliente automaticamente para plataformas de seleção externas (ex: Selpics, Google Drive) após o login.
 *   **Download**: Opção para baixar as fotos (se habilitado).
 
 ### 1.3. Painel Administrativo (Gestão)
@@ -63,7 +64,7 @@ O banco de dados PostgreSQL foi estruturado para garantir a integridade e segura
 
 | Tabela | Descrição |
 | :--- | :--- |
-| `albums` | Armazena os dados dos álbuns (título, data, código de acesso, capa). |
+| `albums` | Armazena os dados dos álbuns (título, data, código de acesso, capa, link externo). |
 | `photos` | Armazena as referências das imagens vinculadas a um álbum. |
 | `profiles` | Gerencia os perfis de administradores do sistema. |
 

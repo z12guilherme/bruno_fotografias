@@ -17,6 +17,7 @@ interface Photo {
 interface Album {
   id: string;
   title: string;
+  external_url?: string | null;
 }
 
 interface Subfolder {
@@ -49,6 +50,12 @@ export const ClientAreaPage = () => {
 
       const foundAlbum = albumData as Album;
       setAlbum(foundAlbum);
+
+      // Verifica se há um link externo configurado e redireciona
+      if (foundAlbum.external_url && foundAlbum.external_url.trim() !== "") {
+        window.location.href = foundAlbum.external_url;
+        return;
+      }
 
       // 2. Busca as fotos do álbum encontrado
       // Usamos outra RPC ou garantimos que a policy permita leitura se souber o ID (mas RPC é mais seguro aqui)

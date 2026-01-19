@@ -1,10 +1,14 @@
 import bruno from '@/assets/bruno.png';
-import premiacao from '@/assets/premiacao.png';
-
+// Caso não tenha a imagem local ainda, usamos uma URL externa para não quebrar o build
+// import premiacao from '@/assets/premiacao.png'; 
+const premiacao = "https://images.unsplash.com/photo-1531545514256-b1400bc00f31?q=80&w=1974&auto=format&fit=crop";
 
 export function QuemSou() {
   return (
-    <section id="sobre" className="py-20 bg-white">
+    <section id="sobre" className="py-20 bg-white" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap');
+      `}</style>
       <div className="container mx-auto px-6 max-w-5xl">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 tracking-widest uppercase text-gray-900">
           QUEM SOU?
