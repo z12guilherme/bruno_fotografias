@@ -38,15 +38,16 @@ export const ClientAreaPage = () => {
 
       if (albumError || !albumData) throw new Error("Senha incorreta ou álbum não encontrado.");
 
-      setAlbum(albumData);
+      const foundAlbum = albumData as Album;
+      setAlbum(foundAlbum);
 
       // 2. Busca as fotos do álbum encontrado
       // Usamos outra RPC ou garantimos que a policy permita leitura se souber o ID (mas RPC é mais seguro aqui)
       const { data: photosData, error: photosError } = await supabase
-        .rpc('get_photos_by_album_id', { p_album_id: albumData.id });
+        .rpc('get_photos_by_album_id', { p_album_id: foundAlbum.id });
 
       if (photosError) throw photosError;
-      setPhotos(photosData || []);
+      setPhotos((photosData as Photo[]) || []);
 
     } catch (error: any) {
       console.error(error);

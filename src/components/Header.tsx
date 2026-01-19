@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const menuItems = [    
+  const menuItems: { label: string; href: string; external?: boolean }[] = [    
     { label: "INÍCIO", href: "/" },
     { label: "SOBRE", href: "/sobre" },
     { label: "PORTFÓLIO", href: "/portfolio" },
