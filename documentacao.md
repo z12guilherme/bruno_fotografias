@@ -91,17 +91,9 @@ src/
 
 ---
 
-## 🚀 Deploy
+##  Build
 
-O projeto está configurado para deploy no **Firebase Hosting**.
-
-### Comandos de Deploy
-
-1.  **Build**: Gera os arquivos estáticos na pasta `dist`.
-    ```bash
-    npm run build
-    ```
-2.  **Deploy**: Envia a pasta `dist` para o Firebase.
-    ```bash
-    firebase deploy
-    ```
+Para gerar o build de produção:
+```bash
+npm run build
+```

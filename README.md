@@ -49,7 +49,6 @@ O projeto foi construído com um stack moderno, separando claramente as responsa
     *   **Banco de Dados**: PostgreSQL
     *   **Autenticação**: Supabase Auth (Gerenciamento de Admin)
     *   **Storage**: Supabase Storage (Hospedagem de imagens)
-*   **Hospedagem Frontend**: [Firebase Hosting](https://firebase.google.com/docs/hosting)
 
 ##  Como Executar o Projeto Localmente
 
