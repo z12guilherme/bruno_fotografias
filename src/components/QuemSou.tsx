@@ -1,7 +1,7 @@
 import bruno from '@/assets/bruno.png';
-// Caso não tenha a imagem local ainda, usamos uma URL externa para não quebrar o build
-// import premiacao from '@/assets/premiacao.png'; 
-const premiacao = "https://images.unsplash.com/photo-1531545514256-b1400bc00f31?q=80&w=1974&auto=format&fit=crop";
+// import premiacao from '@/assets/premiacao.png';
+const premiacao = "@assets/premiacao.png"; // Placeholder path for premiacao image
+
 
 export function QuemSou() {
   return (
