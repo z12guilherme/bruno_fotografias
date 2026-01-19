@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, Upload, LogOut, FolderOpen, ArrowLeft, Pencil } from "lucide-react";
+import { Loader2, Plus, Trash2, Upload, LogOut, FolderOpen, ArrowLeft, Pencil, FolderPlus, Folder } from "lucide-react";
 
 // Tipos para nossos dados
 interface Album {
@@ -17,10 +17,18 @@ interface Album {
   created_at: string;
 }
 
+interface Subfolder {
+  id: string;
+  title: string;
+  album_id: string;
+  created_at: string;
+}
+
 interface Photo {
   id: string;
   image_url: string;
   title: string | null;
+  subfolder_id: string | null;
 }
 
 export default function AdminDashboard() {
@@ -29,11 +37,15 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [albums, setAlbums] = useState<Album[]>([]);
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
+  const [subfolders, setSubfolders] = useState<Subfolder[]>([]);
+  const [currentSubfolder, setCurrentSubfolder] = useState<Subfolder | null>(null);
   const [photos, setPhotos] = useState<Photo[]>([]);
   
   // Estados do formulário
   const [newAlbumTitle, setNewAlbumTitle] = useState("");
   const [newAlbumCode, setNewAlbumCode] = useState("");
+  const [newFolderName, setNewFolderName] = useState("");
+  const [creatingFolder, setCreatingFolder] = useState(false);
   const [editingAlbum, setEditingAlbum] = useState<Album | null>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -47,6 +59,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (selectedAlbum) {
       fetchPhotos(selectedAlbum.id);
+      fetchSubfolders(selectedAlbum.id);
+      setCurrentSubfolder(null);
     }
   }, [selectedAlbum]);
 
@@ -68,6 +82,18 @@ export default function AdminDashboard() {
     
     if (error) console.error(error);
     else setAlbums(data || []);
+  }
+
+  async function fetchSubfolders(albumId: string) {
+    const { data, error } = await supabase
+      .from("subfolders")
+      .select("*")
+      .eq("album_id", albumId)
+      .order("created_at", { ascending: true });
+
+    if (!error) {
+      setSubfolders(data || []);
+    }
   }
 
   async function fetchPhotos(albumId: string) {
@@ -119,6 +145,56 @@ export default function AdminDashboard() {
     }
   }
 
+  async function handleCreateSubfolder(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selectedAlbum || !newFolderName) return;
+
+    setCreatingFolder(true);
+    const { data, error } = await supabase
+      .from("subfolders")
+      .insert([{ 
+        album_id: selectedAlbum.id, 
+        title: newFolderName 
+      }])
+      .select()
+      .single();
+
+    if (error) {
+      toast({ variant: "destructive", title: "Erro ao criar pasta", description: error.message });
+    } else {
+      setSubfolders([...subfolders, data]);
+      setNewFolderName("");
+      toast({ title: "Pasta criada com sucesso!" });
+    }
+    setCreatingFolder(false);
+  }
+
+  async function handleDeleteSubfolder(subfolderId: string) {
+    if (!confirm("Tem certeza que deseja excluir esta pasta? As fotos contidas nela também serão excluídas.")) return;
+
+    // 1. Excluir fotos da pasta
+    const { error: photosError } = await supabase
+      .from('photos')
+      .delete()
+      .eq('subfolder_id', subfolderId);
+
+    if (photosError) {
+      toast({ title: "Erro ao excluir fotos da pasta", description: photosError.message, variant: "destructive" });
+      return;
+    }
+
+    // 2. Excluir a pasta
+    const { error } = await supabase.from('subfolders').delete().eq('id', subfolderId);
+    
+    if (error) {
+      toast({ title: "Erro ao deletar pasta", description: error.message, variant: "destructive" });
+    } else {
+      setSubfolders(subfolders.filter(f => f.id !== subfolderId));
+      setPhotos(photos.filter(p => p.subfolder_id !== subfolderId));
+      toast({ title: "Pasta removida com sucesso" });
+    }
+  }
+
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files || !selectedAlbum) return;
     setUploading(true);
@@ -148,6 +224,7 @@ export default function AdminDashboard() {
       // 3. Salvar referência no Banco de Dados
       await supabase.from('photos').insert({
         album_id: selectedAlbum.id,
+        subfolder_id: currentSubfolder?.id || null,
         image_url: publicUrl,
         title: file.name
       });
@@ -197,6 +274,13 @@ export default function AdminDashboard() {
     await supabase.auth.signOut();
     navigate("/admin/login");
   }
+
+  // Filtra as fotos para exibir apenas as da pasta atual (ou raiz)
+  const displayedPhotos = photos.filter(photo => 
+    currentSubfolder 
+      ? photo.subfolder_id === currentSubfolder.id 
+      : photo.subfolder_id === null
+  );
 
   if (loading) return <div className="flex justify-center items-center h-screen"><Loader2 className="animate-spin" /></div>;
 
@@ -278,10 +362,72 @@ export default function AdminDashboard() {
         ) : (
           <div className="bg-white p-6 rounded-xl shadow-sm border animate-in fade-in slide-in-from-bottom-4">
             <div className="flex items-center mb-6">
-              <Button variant="ghost" onClick={() => setSelectedAlbum(null)} className="mr-4">
-                <ArrowLeft className="h-4 w-4 mr-2" /> Voltar
-              </Button>
-              <h2 className="text-2xl font-bold">{selectedAlbum.title}</h2>
+              {currentSubfolder ? (
+                <Button variant="ghost" onClick={() => setCurrentSubfolder(null)} className="mr-4">
+                  <ArrowLeft className="h-4 w-4 mr-2" /> Voltar para Raiz
+                </Button>
+              ) : (
+                <Button variant="ghost" onClick={() => setSelectedAlbum(null)} className="mr-4">
+                  <ArrowLeft className="h-4 w-4 mr-2" /> Voltar
+                </Button>
+              )}
+              <h2 className="text-2xl font-bold">
+                {selectedAlbum.title}
+                {currentSubfolder && <span className="text-gray-400 font-normal text-lg"> / {currentSubfolder.title}</span>}
+              </h2>
+            </div>
+
+            {/* Navegação e Criação de Pastas */}
+            <div className="mb-6 space-y-4 border-b pb-6">
+              {!currentSubfolder && (
+                <form onSubmit={handleCreateSubfolder} className="flex items-end gap-2">
+                  <div className="grid w-full max-w-sm items-center gap-1.5">
+                    <Label htmlFor="folderName">Criar Nova Pasta</Label>
+                    <div className="flex gap-2">
+                      <Input 
+                        id="folderName"
+                        placeholder="Ex: Making Of, Cerimônia..." 
+                        value={newFolderName}
+                        onChange={(e) => setNewFolderName(e.target.value)}
+                        className="bg-white"
+                      />
+                      <Button type="submit" disabled={creatingFolder}>
+                        {creatingFolder ? <Loader2 className="w-4 h-4 animate-spin" /> : <FolderPlus className="w-4 h-4" />}
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              )}
+
+              {/* Lista de Subpastas (só mostra se estiver na raiz) */}
+              {!currentSubfolder && subfolders.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-4">
+                  {subfolders.map(folder => (
+                    <div key={folder.id} className="relative group">
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-start h-auto py-3 px-4 border-dashed border-2 hover:border-primary hover:bg-primary/5 pr-12"
+                        onClick={() => setCurrentSubfolder(folder)}
+                      >
+                        <Folder className="w-5 h-5 mr-2 text-amber-500 flex-shrink-0" />
+                        <span className="truncate">{folder.title}</span>
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-gray-400 hover:text-red-500 hover:bg-red-50"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteSubfolder(folder.id);
+                        }}
+                        title="Excluir pasta"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Área de Upload */}
@@ -290,7 +436,7 @@ export default function AdminDashboard() {
                 <div className="flex flex-col items-center justify-center">
                   <Upload className="h-12 w-12 text-gray-400 mb-3" />
                   <span className="text-lg font-medium text-gray-700">
-                    {uploading ? "Enviando fotos..." : "Clique para fazer upload de fotos"}
+                    {uploading ? "Enviando fotos..." : `Clique para fazer upload de fotos em: ${currentSubfolder ? currentSubfolder.title : "Raiz"}`}
                   </span>
                   <span className="text-sm text-gray-500 mt-1">Suporta múltiplas imagens</span>
                 </div>
@@ -308,7 +454,7 @@ export default function AdminDashboard() {
 
             {/* Grid de Fotos */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {photos.map(photo => (
+              {displayedPhotos.map(photo => (
                 <div key={photo.id} className="relative group aspect-square bg-gray-100 rounded-lg overflow-hidden shadow-sm">
                   <img src={photo.image_url} alt={photo.title || ""} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -318,9 +464,9 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               ))}
-              {photos.length === 0 && !uploading && (
+              {displayedPhotos.length === 0 && !uploading && (
                 <div className="col-span-full text-center py-10 text-gray-500">
-                  Este álbum ainda não tem fotos.
+                  {currentSubfolder ? "Esta pasta está vazia." : "Nenhuma foto na raiz deste álbum."}
                 </div>
               )}
             </div>

@@ -9,8 +9,8 @@ import logo from '@/assets/logo.jpg';
 import portfolio1 from "@/assets/portfolio1.jpg";
 import portfolio2 from "@/assets/portfolio2.jpg";
 import portfolio3 from "@/assets/portfolio3.jpg";
-import portfolio4 from "@/assets/portfolio4.jpg";
-import portfolio5 from "@/assets/portfolio5.jpg";
+import portfolio4 from "@/assets/portfolio4.JPG?url";
+import portfolio5 from "@/assets/portfolio5.JPG?url";
 import portfolio6 from "@/assets/portfolio6.jpg";
 import videoPortfolio from "@/assets/videos/video_portfolio.mp4";
 import videoPortfolio2 from "@/assets/videos/video_portfolio2.mp4";
@@ -174,6 +174,7 @@ export function HomePage() {
               <img 
                 src={brunoPortrait} 
                 alt="Bruno Nascimento" 
+                loading="lazy"
                 className="rounded shadow-xl w-full object-cover object-top h-[500px]"
               />
             </div>
@@ -242,6 +243,7 @@ export function HomePage() {
                 <img 
                   src={imgSrc} 
                   alt={`Portfolio ${index}`}
+                  loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -272,16 +274,16 @@ export function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Vídeo 1 - Local */}
-            <div className="aspect-[9/16] bg-gray-100 rounded-lg overflow-hidden shadow-xl">
-              <video className="w-full h-full" controls>
+            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden shadow-xl">
+              <video className="w-full h-full" controls preload="none">
                 <source src={videoPortfolio} type="video/mp4" />
                 Seu navegador não suporta a tag de vídeo.
               </video>
             </div>
 
             {/* Vídeo 2 */}
-            <div className="aspect-[9/16] bg-gray-100 rounded-lg overflow-hidden shadow-xl">
-              <video className="w-full h-full" controls>
+            <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden shadow-xl">
+              <video className="w-full h-full" controls preload="none">
                 <source src={videoPortfolio2} type="video/mp4" />
                 Seu navegador não suporta a tag de vídeo.
               </video>

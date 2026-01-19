@@ -5,17 +5,24 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Lock } from "lucide-react";
+import { Loader2, Lock, Folder, ArrowLeft } from "lucide-react";
 
 interface Photo {
   id: string;
   image_url: string;
   title: string | null;
+  subfolder_id: string | null;
 }
 
 interface Album {
   id: string;
   title: string;
+}
+
+interface Subfolder {
+  id: string;
+  title: string;
+  album_id: string;
 }
 
 export const ClientAreaPage = () => {
@@ -24,6 +31,8 @@ export const ClientAreaPage = () => {
   const [loading, setLoading] = useState(false);
   const [album, setAlbum] = useState<Album | null>(null);
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [subfolders, setSubfolders] = useState<Subfolder[]>([]);
+  const [currentSubfolder, setCurrentSubfolder] = useState<Subfolder | null>(null);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -49,6 +58,15 @@ export const ClientAreaPage = () => {
       if (photosError) throw photosError;
       setPhotos((photosData as Photo[]) || []);
 
+      // 3. Busca as subpastas do álbum
+      const { data: subfoldersData, error: subfoldersError } = await supabase
+        .from("subfolders")
+        .select("*")
+        .eq("album_id", foundAlbum.id)
+        .order("created_at", { ascending: true });
+
+      if (!subfoldersError) setSubfolders(subfoldersData || []);
+
     } catch (error: any) {
       console.error(error);
       toast({
@@ -62,21 +80,64 @@ export const ClientAreaPage = () => {
     }
   }
 
+  // Filtra as fotos com base na pasta atual (ou raiz se null)
+  const displayedPhotos = photos.filter(photo => 
+    currentSubfolder 
+      ? photo.subfolder_id === currentSubfolder.id 
+      : photo.subfolder_id === null
+  );
+
   if (album) {
     return (
       <section className="pt-32 pb-20 px-4 bg-background min-h-screen">
         <div className="container mx-auto">
           <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold">{album.title}</h1>
-            <Button variant="outline" onClick={() => { setAlbum(null); setAccessCode(""); }}>Sair</Button>
+            <div className="flex items-center gap-4">
+              {currentSubfolder && (
+                <Button variant="ghost" size="icon" onClick={() => setCurrentSubfolder(null)}>
+                  <ArrowLeft className="w-6 h-6" />
+                </Button>
+              )}
+              <h1 className="text-3xl font-bold">
+                {album.title}
+                {currentSubfolder && <span className="text-muted-foreground font-normal"> / {currentSubfolder.title}</span>}
+              </h1>
+            </div>
+            <Button variant="outline" onClick={() => { setAlbum(null); setAccessCode(""); setCurrentSubfolder(null); }}>Sair</Button>
           </div>
+
+          {/* Lista de Pastas (Apenas na raiz) */}
+          {!currentSubfolder && subfolders.length > 0 && (
+            <div className="mb-12">
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-700">
+                <Folder className="w-5 h-5 text-amber-500" /> Pastas
+              </h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {subfolders.map(folder => (
+                  <button
+                    key={folder.id}
+                    onClick={() => setCurrentSubfolder(folder)}
+                    className="flex flex-col items-center justify-center p-6 bg-white border border-gray-200 rounded-xl hover:border-amber-500 hover:shadow-md transition-all group"
+                  >
+                    <Folder className="w-12 h-12 text-amber-100 group-hover:text-amber-500 transition-colors mb-2" fill="currentColor" />
+                    <span className="font-medium text-gray-700 group-hover:text-amber-700 truncate w-full text-center">{folder.title}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {photos.map(photo => (
+            {displayedPhotos.map(photo => (
               <div key={photo.id} className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
                 <img src={photo.image_url} alt={photo.title || ""} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
               </div>
             ))}
-            {photos.length === 0 && <p className="text-gray-500">Nenhuma foto neste álbum.</p>}
+            {displayedPhotos.length === 0 && (
+              <div className="col-span-full text-center py-12 text-muted-foreground">
+                {currentSubfolder ? "Esta pasta está vazia." : "Nenhuma foto solta neste álbum."}
+              </div>
+            )}
           </div>
         </div>
       </section>
