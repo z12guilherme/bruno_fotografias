@@ -262,11 +262,11 @@ export function HomePage() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <Mail size={18} className="text-amber-600" />
-                    <span className="text-sm">contato@bruno.com</span>
+                    <span className="text-sm">brunofotografia111@gmail.com</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Instagram size={18} className="text-amber-600" />
-                    <span className="text-sm">@brunofoto</span>
+                    <span className="text-sm">@brunofotografias_</span>
                   </div>
                 </div>
               </div>
