@@ -1,6 +1,5 @@
 import bruno from '@/assets/bruno.png';
-// import premiacao from '@/assets/premiacao.png';
-const premiacao = "@assets/premiacao.png"; // Placeholder path for premiacao image
+import premiacao from '@/assets/premiacao.png';
 
 
 export function QuemSou() {
