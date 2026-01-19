@@ -272,14 +272,26 @@ export function HomePage() {
               </div>
             </div>
             <div className="p-8 md:w-2/3">
-              <form className="space-y-4">
+              <form 
+                className="space-y-4"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  const name = formData.get('name') as string;
+                  const subject = formData.get('subject') as string;
+                  const message = formData.get('message') as string;
+                  
+                  const text = `Olá, me chamo ${name}. ${subject ? `Assunto: ${subject}. ` : ''}${message}`;
+                  window.open(`https://wa.me/5581993162157?text=${encodeURIComponent(text)}`, '_blank');
+                }}
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input type="text" placeholder="Seu Nome" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" />
-                  <input type="email" placeholder="Seu Email" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" />
+                  <input name="name" type="text" placeholder="Seu Nome" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" required />
+                  <input name="email" type="email" placeholder="Seu Email" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" />
                 </div>
-                <input type="text" placeholder="Assunto" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" />
-                <textarea rows={4} placeholder="Sua Mensagem" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors"></textarea>
-                <button className="px-6 py-3 bg-amber-600 text-white font-bold rounded hover:bg-amber-700 transition-colors w-full md:w-auto">
+                <input name="subject" type="text" placeholder="Assunto" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" />
+                <textarea name="message" rows={4} placeholder="Sua Mensagem" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" required></textarea>
+                <button type="submit" className="px-6 py-3 bg-amber-600 text-white font-bold rounded hover:bg-amber-700 transition-colors w-full md:w-auto">
                   Enviar Mensagem
                 </button>
               </form>
