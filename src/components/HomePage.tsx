@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Menu, X, Instagram, Linkedin, Mail, ChevronDown, Camera, Lock } from 'lucide-react';
+import { Menu, X, Instagram, Mail, ChevronDown, Camera, Lock } from 'lucide-react';
 import brunoBg from '@/assets/bruno.png';
-import brunoPortrait from '@/assets/bruno.jpg';
 
 import logo from '@/assets/logo.jpg';
+import { QuemSou } from './QuemSou';
 import portfolio1 from "@/assets/portfolio1.jpg";
-import portfolio2 from "@/assets/portfolio2.jpg";
-import portfolio3 from "@/assets/portfolio3.jpg";
-import portfolio4 from "@/assets/portfolio4.JPG?url";
-import portfolio5 from "@/assets/portfolio5.JPG?url";
+import portfolio2 from "@/assets/portfolio7.jpg";
+import portfolio3 from "@/assets/portfolio3.png";
+import portfolio4 from "@/assets/portfolio8.jpg";
+import portfolio5 from "@/assets/portfolio9.jpg";
 import portfolio6 from "@/assets/portfolio6.jpg";
 import videoPortfolio from "@/assets/videos/video_portfolio.mp4";
 import videoPortfolio2 from "@/assets/videos/video_portfolio2.mp4";
@@ -166,60 +166,8 @@ export function HomePage() {
         </motion.div>
       </section>
 
-      {/* --- About Section --- */}
-      <section id="sobre" className="py-20 md:py-32 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="w-full md:w-1/2 mt-20">
-              <img 
-                src={brunoPortrait} 
-                alt="Bruno Nascimento" 
-                loading="lazy"
-                className="rounded shadow-xl w-full object-cover object-top h-[500px]"
-              />
-            </div>
-            <div className="w-full md:w-1/2">
-              <div className="mb-6">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Sobre Mim</h2>
-                <div className="w-16 h-1 bg-amber-600"></div>
-              </div>
-              <p className="text-gray-600 leading-relaxed mb-6">
-                Olá, sou Bruno Nascimento. A fotografia para mim não é apenas capturar momentos, mas criar memórias eternas com uma estética de luxo e sofisticação.
-                Especializado em registrar o milagre do nascimento, busco a luz perfeita e a emoção genuína em cada clique.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                <div>
-                  <span className="font-bold text-gray-900 block">Nome:</span>
-                  <span className="text-gray-600">Bruno Nascimento</span>
-                </div>
-                <div>
-                  <span className="font-bold text-gray-900 block">Email:</span>
-                  <span className="text-gray-600">contato@brunofoto.com</span>
-                </div>
-                <div>
-                  <span className="font-bold text-gray-900 block">Telefone:</span>
-                  <span className="text-gray-600">+55 (11) 99999-9999</span>
-                </div>
-                <div>
-                  <span className="font-bold text-gray-900 block">Cidade:</span>
-                  <span className="text-gray-600">São Paulo, SP</span>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <button className="p-2 rounded-full bg-gray-100 hover:bg-amber-600 hover:text-white transition-colors">
-                  <Instagram size={20} />
-                </button>
-                <button className="p-2 rounded-full bg-gray-100 hover:bg-amber-600 hover:text-white transition-colors">
-                  <Linkedin size={20} />
-                </button>
-                <button className="p-2 rounded-full bg-gray-100 hover:bg-amber-600 hover:text-white transition-colors">
-                  <Mail size={20} />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* --- Quem Sou Section --- */}
+      <QuemSou />
 
       {/* --- Portfolio Section --- */}
       <section id="portfolio" className="py-20 bg-gray-50">
