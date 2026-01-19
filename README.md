@@ -15,6 +15,10 @@
  
 Este projeto é uma aplicação **full-stack** que transcende o conceito de um simples site. Ele oferece uma experiência digital completa: uma vitrine pública para exibir seu trabalho, uma área de cliente exclusiva para entrega de galerias privadas e um painel de controle intuitivo para gerenciamento total do conteúdo.
 
+## 🎥 Vídeo de Apresentação
+
+Confira o vídeo de apresentação do sistema: [Assistir no YouTube](https://www.youtube.com/watch?v=lI_d72VdcoY)
+
 > **Nota:** Este repositório pode servir como um template completo e robusto para outros fotógrafos ou profissionais criativos que desejam ter uma presença online profissional e autogerenciável.
 
 ## 🚀 Funcionalidades Principais
