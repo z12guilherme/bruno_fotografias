@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import portfolio1 from "@/assets/portfolio1.jpg";
 import portfolio2 from "@/assets/portfolio2.jpg";
 import portfolio3 from "@/assets/portfolio3.jpg";
-import portfolio4 from "@/assets/portfolio4.jpg";
-import portfolio5 from "@/assets/portfolio5.jpg";
+import portfolio4 from "@/assets/portfolio4.JPG?url";
+import portfolio5 from "@/assets/portfolio5.JPG?url";
 import portfolio6 from "@/assets/portfolio6.jpg";
 
 const portfolioImages = [
