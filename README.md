@@ -15,7 +15,7 @@
 </div>
 
 <div align="center">
-  <img src="public/print.png" alt="Screenshot do Sistema" width="100%">
+  <img src="public/print.PNG" alt="Screenshot do Sistema" width="100%">
 </div>
 
 ## ✨ Visão Geral
