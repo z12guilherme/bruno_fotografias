@@ -49,8 +49,10 @@ O projeto foi construído com um stack moderno, separando claramente as responsa
 *   !Supabase **Supabase**
 *   !PostgreSQL **PostgreSQL**
 
-## 🔒 Acesso Restrito
+## 🔒 Licença e Direitos Autorais
 
-Este projeto é proprietário e de uso exclusivo. O código-fonte não está disponível para clonagem pública ou distribuição.
+**© 2026 Bruno Nascimento Fotografia e inovedev.com.br. Todos os direitos reservados.**
 
-Todos os direitos reservados.
+Este software é um produto comercial proprietário. O uso, cópia, modificação, distribuição ou engenharia reversa deste código-fonte, no todo ou em parte, sem a autorização expressa e por escrito do proprietário, é **estritamente proibido**.
+
+Este projeto não é open-source. Ele é destinado exclusivamente para uso comercial autorizado. Violações de direitos autorais serão processadas conforme a lei.
