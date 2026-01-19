@@ -1,4 +1,6 @@
-import React from 'react';
+import bruno from '@/assets/bruno.png';
+import premiacao from '@/assets/premiacao.png';
+
 
 export function QuemSou() {
   return (
@@ -23,7 +25,7 @@ export function QuemSou() {
             {/* Coluna Direita: Imagem do fotógrafo */}
             <div className="flex justify-center md:justify-end">
               <img
-                src="https://placehold.co/400x500"
+                src={bruno}
                 alt="Bruno Nascimento"
                 className="object-cover rounded-sm w-full max-w-sm shadow-lg"
               />
@@ -35,7 +37,7 @@ export function QuemSou() {
             {/* Coluna Esquerda: Imagem do prêmio */}
             <div className="flex justify-center md:justify-start">
               <img
-                src="https://placehold.co/400x500"
+                src={premiacao}
                 alt="Prêmio Outstanding Maternity Award"
                 className="object-cover rounded-sm w-full max-w-sm shadow-lg"
               />

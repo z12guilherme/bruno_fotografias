@@ -7,11 +7,14 @@ import brunoBg from '@/assets/bruno.png';
 import logo from '@/assets/logo.jpg';
 import { QuemSou } from './QuemSou';
 import portfolio1 from "@/assets/portfolio1.jpg";
-import portfolio2 from "@/assets/portfolio7.jpg";
+import portfolio2 from "@/assets/portfolio2.jpg";
 import portfolio3 from "@/assets/portfolio3.png";
-import portfolio4 from "@/assets/portfolio8.jpg";
-import portfolio5 from "@/assets/portfolio9.jpg";
+import portfolio4 from "@/assets/portfolio4.jpg";
+import portfolio5 from "@/assets/portfolio5.jpg";
 import portfolio6 from "@/assets/portfolio6.jpg";
+import portfolio7 from "@/assets/portfolio7.jpg";
+import portfolio8 from "@/assets/portfolio8.jpg";
+import portfolio9 from "@/assets/portfolio9.jpg";
 import videoPortfolio from "@/assets/videos/video_portfolio.mp4";
 import videoPortfolio2 from "@/assets/videos/video_portfolio2.mp4";
 
@@ -27,6 +30,9 @@ export function HomePage() {
     portfolio4,
     portfolio5,
     portfolio6,
+    portfolio7,
+    portfolio8,
+    portfolio9,
   ];
 
   // Detecta o scroll para mudar o estilo da navbar
@@ -58,7 +64,7 @@ export function HomePage() {
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollToSection('hero')}>
             <img src={logo} alt="Bruno Nascimento" className="h-10 w-10 rounded-full object-cover" />
             <div className="text-2xl font-bold tracking-wider uppercase">
-              <span className={isScrolled ? 'text-gray-900' : 'text-white'}>Bruno Fotografias </span>
+              <span className={isScrolled ? 'text-gray-900' : 'text-white'}>Bruno | Fotografia de Nascimento </span>
             </div>
           </div>
 

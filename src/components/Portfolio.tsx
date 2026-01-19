@@ -2,11 +2,14 @@ import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
 
 import portfolio1 from "@/assets/portfolio1.jpg";
-import portfolio2 from "@/assets/portfolio7.jpg";
+import portfolio2 from "@/assets/portfolio2.jpg";
 import portfolio3 from "@/assets/portfolio3.png";
 import portfolio4 from "@/assets/portfolio4.jpg";
 import portfolio5 from "@/assets/portfolio5.jpg";
 import portfolio6 from "@/assets/portfolio6.jpg";
+import portfolio7 from "@/assets/portfolio7.jpg";
+import portfolio8 from "@/assets/portfolio8.jpg";
+import portfolio9 from "@/assets/portfolio9.jpg";
 
 
 
@@ -17,6 +20,9 @@ const portfolioImages = [
   portfolio4,
   portfolio5,
   portfolio6,
+  portfolio7,
+  portfolio8,
+  portfolio9,
 ];
 
 const breakpointColumnsObj = {
