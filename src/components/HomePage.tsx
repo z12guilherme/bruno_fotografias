@@ -15,6 +15,8 @@ import portfolio6 from "@/assets/portfolio6.jpg";
 import portfolio7 from "@/assets/portfolio7.jpg";
 import portfolio8 from "@/assets/portfolio8.jpg";
 import portfolio9 from "@/assets/portfolio9.jpg";
+import videoPortfolio from "@/assets/videos/video_portfolio.mp4";
+import videoPortfolio2 from "@/assets/videos/video_portfolio2.mp4";
 
 export function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -257,7 +259,7 @@ export function HomePage() {
             {/* Vídeo 1 - Local */}
             <div className={`aspect-video rounded-lg overflow-hidden shadow-xl ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
               <video className="w-full h-full" controls preload="metadata">
-                <source src="/videos/video_portfolio.mp4" type="video/mp4" />
+                <source src={videoPortfolio} type="video/mp4" />
                 Seu navegador não suporta a tag de vídeo.
               </video>
             </div>
@@ -265,7 +267,7 @@ export function HomePage() {
             {/* Vídeo 2 */}
             <div className={`aspect-video rounded-lg overflow-hidden shadow-xl ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
               <video className="w-full h-full" controls preload="metadata">
-                <source src="/videos/video_portfolio2.mp4" type="video/mp4" />
+                <source src={videoPortfolio2} type="video/mp4" />
                 Seu navegador não suporta a tag de vídeo.
               </video>
             </div>
