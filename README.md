@@ -37,6 +37,7 @@ Confira o vídeo de apresentação do sistema: [Assistir no YouTube](https://www
 *   🔗 **Integração com Plataformas de Seleção**: Funcionalidade de link externo que permite integrar a entrega de fotos com plataformas especializadas (como Selpics), mantendo o acesso centralizado pelo seu site.
 *   ⚙️ **Painel Administrativo**: Área restrita para o fotógrafo criar álbuns, gerenciar senhas de acesso e fazer upload de fotos (drag-and-drop).
 *   📱 **Design Responsivo**: Experiência de usuário otimizada para desktops, tablets e celulares.
+*   📲 **Aplicativo Móvel**: Aplicativo nativo para Android e versão otimizada (PWA) para iOS, permitindo que clientes instalem o portfólio diretamente em seus dispositivos.
 
 ## 🛠️ Tecnologias Utilizadas
 
@@ -48,6 +49,7 @@ O projeto foi construído com um stack moderno, separando claramente as responsa
 *   ![Vite](https://img.shields.io/badge/-Vite-B73BFE?style=flat&logo=vite&logoColor=white) **Vite**
 *   ![Tailwind CSS](https://img.shields.io/badge/-Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white) **Tailwind CSS**
 *   **Componentes UI**: shadcn/ui
+*   **Mobile**: Capacitor (Android/iOS PWA)
 *   **Animações**: Framer Motion
 
 ### **Backend & Infraestrutura**

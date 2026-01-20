@@ -1,6 +1,6 @@
 # Documentação do Sistema - Bruno Nascimento Fotografia
 
-Este documento detalha o escopo funcional, a arquitetura técnica e os termos de uso do sistema desenvolvido para **Bruno Nascimento Fotografia**.
+Este documento detalha o escopo funcional, a arquitetura técnica, o guia de desenvolvimento e os procedimentos para gerar o aplicativo móvel.
 
 > ⚠️ **AVISO DE PROPRIEDADE E USO RESTRITO**
 >
@@ -20,6 +20,7 @@ O sistema foi projetado para atender a três objetivos principais:
 ### 1.1. Funcionalidades Públicas (Frontend)
 *   **Home Page**: Apresentação impactante com vídeo ou imagem de destaque.
 *   **Portfólio**: Galeria de fotos organizada, com visualização em alta resolução.
+*   **Download do App**: Seção inteligente que oferece o APK para Android ou instruções PWA para iOS.
 *   **Sobre Mim**: Seção biográfica com foto do profissional.
 *   **Contato**: Formulário para captação de leads (orçamentos).
 *   **Design Responsivo**: Adaptação perfeita para celulares, tablets e desktops.
@@ -44,6 +45,7 @@ O sistema utiliza uma arquitetura moderna **Serverless**, focada em performance 
 
 ### 2.1. Stack Tecnológico
 *   **Frontend**: React (v18+), TypeScript, Vite.
+*   **Mobile**: Capacitor (Android).
 *   **Estilização**: Tailwind CSS, shadcn/ui, Framer Motion (animações).
 *   **Backend as a Service (BaaS)**: Supabase.
 *   **Banco de Dados**: PostgreSQL.
@@ -83,24 +85,88 @@ src/
 ├── components/      # Componentes React reutilizáveis
 │   ├── ui/          # Componentes base (shadcn/ui) - botões, inputs, cards
 │   ├── Header.tsx   # Cabeçalho de navegação
+│   ├── DownloadApp.tsx # Componente de download do APK
 │   ├── Footer.tsx   # Rodapé
 │   └── ...          # Outros componentes de seção (Hero, About, etc.)
 ├── lib/             # Configurações de bibliotecas externas
 │   ├── supabase.ts  # Cliente Supabase configurado
 │   └── utils.ts     # Funções utilitárias (cn para tailwind)
 ├── pages/           # Páginas completas da aplicação
-│   ├── AdminDashboard.tsx # Painel de controle do fotógrafo
-│   ├── AdminLogin.tsx     # Login do administrador
+│   ├── AdminDashboard.tsx
+│   ├── AdminLogin.tsx
 │   └── ...
 ├── App.tsx          # Configuração de rotas principal
 └── main.tsx         # Ponto de entrada da aplicação
+├── android/         # Projeto nativo Android (Gerado pelo Capacitor)
+└── public/          # Arquivos estáticos públicos (incluindo o .apk)
 ```
 
 ---
 
-##  Build
+## 5. Guia de Instalação e Desenvolvimento
 
-Para gerar o build de produção:
+### 5.1. Pré-requisitos
+*   **Node.js** (versão 18 ou superior).
+*   **Android Studio** (necessário apenas para compilar o App Android).
+
+### 5.2. Instalação
+1.  Clone o repositório ou extraia os arquivos.
+2.  Instale as dependências:
+    ```bash
+    npm install
+    ```
+3.  Crie um arquivo `.env` na raiz com as chaves do Supabase:
+    ```env
+    VITE_SUPABASE_URL=sua_url_do_supabase
+    VITE_SUPABASE_ANON_KEY=sua_chave_anonima
+    ```
+
+### 5.3. Executar Localmente
+Para iniciar o servidor de desenvolvimento:
 ```bash
-npm run build
+npm run dev
 ```
+
+---
+
+## 6. Aplicativo Móvel (Android)
+
+O projeto utiliza **Capacitor** para converter a aplicação web em um aplicativo nativo Android.
+
+### 6.1. Comandos Principais
+
+| Comando | Descrição |
+| :--- | :--- |
+| `npm run generate:assets` | Gera ícones e splash screen a partir da pasta `assets/`. |
+| `npm run build:apk` | Compila o site, sincroniza com o Android e gera o arquivo APK. |
+
+### 6.2. Passo a Passo para Gerar o APK
+
+1.  **Atualizar Ícones (Opcional)**:
+    *   Substitua `assets/icon.png` (1024x1024px) pelo logo desejado.
+    *   Substitua `assets/splash.png` (2732x2732px) pela tela de abertura desejada.
+    *   Execute: `npm run generate:assets`
+
+2.  **Compilar e Gerar APK**:
+    *   Execute: `npm run build:apk`
+    *   O processo fará o build do React, atualizará o projeto Android e compilará o binário.
+
+3.  **Localização do Arquivo**:
+    *   O APK gerado será copiado automaticamente para: `public/bruno-fotografias.apk`.
+    *   Este arquivo pode ser baixado diretamente pelo site ou instalado via USB.
+
+### 6.3. Solução de Problemas (Build Android)
+*   **Erro de JAVA_HOME**: O projeto já está configurado (`gradle.properties`) para usar o JDK embutido no Android Studio. Se falhar, verifique se o caminho em `android/gradle.properties` corresponde à sua instalação.
+*   **Caracteres Especiais no Caminho**: O projeto está configurado para ignorar verificações de caminho (`android.overridePathCheck=true`), permitindo pastas de usuário com acentos (ex: "Padrão").
+
+---
+
+## 7. Deploy (Web)
+
+Para colocar o site no ar (Vercel, Netlify, etc.):
+
+1.  Execute o build de produção:
+    ```bash
+    npm run build
+    ```
+2.  Faça o upload da pasta `dist/` gerada para o seu provedor de hospedagem.
