@@ -254,20 +254,28 @@ export function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* Vídeo 1 - Local */}
+            {/* Vídeo 1 - YouTube */}
             <div className={`aspect-video rounded-lg overflow-hidden shadow-xl ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
-              <video className="w-full h-full" controls preload="metadata">
-                <source src="/videos/video_portfolio.mp4" type="video/mp4" />
-                Seu navegador não suporta a tag de vídeo.
-              </video>
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/eIbfqoUCnYo"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
             </div>
 
-            {/* Vídeo 2 */}
+            {/* Vídeo 2 - YouTube */}
             <div className={`aspect-video rounded-lg overflow-hidden shadow-xl ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
-              <video className="w-full h-full" controls preload="metadata">
-                <source src="/videos/video_portfolio2.mp4" type="video/mp4" />
-                Seu navegador não suporta a tag de vídeo.
-              </video>
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/JwPPpDyG3xw"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
             </div>
           </div>
         </div>
