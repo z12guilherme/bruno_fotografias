@@ -34,6 +34,7 @@ Confira o vídeo de apresentação do sistema: [Assistir no YouTube](https://www
 *   👤 **Página "Sobre Mim"**: Espaço com foto e biografia para apresentação do profissional.
 *   📧 **Formulário de Contato**: Canal direto para orçamentos e informações.
 *   🔐 **Área do Cliente**: Sistema de acesso seguro onde clientes visualizam suas galerias privadas utilizando um código de acesso exclusivo.
+*   🔗 **Integração com Plataformas de Seleção**: Funcionalidade de link externo que permite integrar a entrega de fotos com plataformas especializadas (como Selpics), mantendo o acesso centralizado pelo seu site.
 *   ⚙️ **Painel Administrativo**: Área restrita para o fotógrafo criar álbuns, gerenciar senhas de acesso e fazer upload de fotos (drag-and-drop).
 *   📱 **Design Responsivo**: Experiência de usuário otimizada para desktops, tablets e celulares.
 

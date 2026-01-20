@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Menu, X, Instagram, Mail, ChevronDown, Camera, Lock, Sun, Moon } from 'lucide-react';
-import brunoBg from '@/assets/bruno.png';
+import capaBg from '@/assets/Capa.jpg';
 
 import logo from '@/assets/logo.jpg';
 import { QuemSou } from './QuemSou';
@@ -160,7 +160,7 @@ export function HomePage() {
         {/* Background Image Placeholder */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60"
-          style={{ backgroundImage: `url(${brunoBg})` }}
+          style={{ backgroundImage: `url(${capaBg})` }}
         />
         <div className="absolute inset-0 bg-black/40" /> {/* Overlay escuro */}
 
