@@ -10,6 +10,7 @@ import { Portfolio } from "@/components/Portfolio";
 import { ContactPage } from "@/components/ContactPage";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
+import { DownloadApp } from "@/components/DownloadApp";
 
 
 function App() {
@@ -20,7 +21,12 @@ function App() {
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       {!isHomePage && <Header />}
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={
+          <>
+            <HomePage />
+            <DownloadApp />
+          </>
+        } />
         <Route path="/sobre" element={<AboutPage />} />
         <Route path="/area-do-cliente" element={<ClientAreaPage />} />
         <Route path="/portfolio" element={<Portfolio />} />

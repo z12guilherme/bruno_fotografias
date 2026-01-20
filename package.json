@@ -8,9 +8,13 @@
     "build": "tsc --noEmit && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "deploy:rules": "firebase deploy --only firestore:rules --project brunonascimento-fotografia"
+    "deploy:rules": "firebase deploy --only firestore:rules --project brunonascimento-fotografia",
+    "build:apk": "cd android && gradlew assembleDebug && cd .. && copy android\\app\\build\\outputs\\apk\\debug\\app-debug.apk public\\bruno-fotografias.apk",
+    "generate:assets": "npx capacitor-assets generate --android"
   },
   "dependencies": {
+    "@capacitor/android": "^8.0.1",
+    "@capacitor/core": "^8.0.1",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.1",
@@ -65,6 +69,8 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.0.1",
     "@types/node": "^20.14.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

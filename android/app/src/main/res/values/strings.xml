@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Bruno Nascimento Fotografia</string>
+    <string name="title_activity_main">Bruno Nascimento Fotografia</string>
+    <string name="package_name">com.brunonascimento.fotografia</string>
+    <string name="custom_url_scheme">com.brunonascimento.fotografia</string>
+</resources>
