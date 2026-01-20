@@ -332,6 +332,7 @@ export function HomePage() {
       {/* --- Footer --- */}
       <footer className="bg-gray-900 text-white py-8 text-center">
         <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Bruno Nascimento Fotografia. Todos os direitos reservados.</p>
+        <p className="text-gray-600 text-xs mt-2">&copy; Desenvolvido por Inove Dev</p>
       </footer>
     </div>
   );
