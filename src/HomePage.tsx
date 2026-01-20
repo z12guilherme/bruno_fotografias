@@ -33,7 +33,7 @@ export function HomePage() {
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="text-2xl font-bold tracking-wider uppercase cursor-pointer" onClick={() => scrollToSection('hero')}>
-            <span className={isScrolled ? 'text-gray-900' : 'text-white'}>Bruno</span>
+            <span className="text-gray-900">Bruno</span>
             <span className="text-amber-600">.</span>
           </div>
 
@@ -43,9 +43,7 @@ export function HomePage() {
               <button
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase() === 'home' ? 'hero' : item.toLowerCase().replace('ó', 'o'))}
-                className={`text-sm font-medium uppercase tracking-wide hover:text-amber-600 transition-colors ${
-                  isScrolled ? 'text-gray-700' : 'text-white/90'
-                }`}
+                className="text-sm font-medium uppercase tracking-wide hover:text-amber-600 transition-colors text-gray-700"
               >
                 {item}
               </button>
@@ -55,7 +53,7 @@ export function HomePage() {
               className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all ${
                 isScrolled
                   ? 'border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white'
-                  : 'border-white text-white hover:bg-white hover:text-gray-900'
+                  : 'border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'
               }`}
             >
               <Lock size={14} />
@@ -68,7 +66,7 @@ export function HomePage() {
             className="md:hidden text-amber-600 focus:outline-none"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? <X size={28} /> : <Menu size={28} className={isScrolled ? 'text-gray-900' : 'text-white'} />}
+            {isMenuOpen ? <X size={28} /> : <Menu size={28} className="text-gray-900" />}
           </button>
         </div>
 
@@ -96,15 +94,15 @@ export function HomePage() {
       </nav>
 
       {/* --- Hero Section --- */}
-      <section id="hero" className="relative h-screen flex items-center justify-center bg-gray-900 overflow-hidden">
+      <section id="hero" className="relative h-screen flex items-center justify-center bg-gray-50 overflow-hidden">
         {/* Background Image Placeholder - Substitua pela sua foto principal */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60"
           style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")' }}
         />
-        <div className="absolute inset-0 bg-black/40" /> {/* Overlay escuro */}
+        <div className="absolute inset-0 bg-white/40" /> {/* Overlay claro */}
 
-        <div className="relative z-10 text-center text-white px-4">
+        <div className="relative z-10 text-center text-gray-900 px-4">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -117,7 +115,7 @@ export function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl font-light text-gray-200 mb-8"
+            className="text-xl md:text-2xl font-light text-gray-700 mb-8"
           >
             Fotógrafo Profissional & Artista Visual
           </motion.p>
@@ -135,7 +133,7 @@ export function HomePage() {
         <motion.div 
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white/50"
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-gray-400"
         >
           <ChevronDown size={32} />
         </motion.div>
@@ -277,7 +275,7 @@ export function HomePage() {
       </section>
 
       {/* --- Footer --- */}
-      <footer className="bg-gray-900 text-white py-8 text-center">
+      <footer className="bg-gray-100 text-gray-600 py-8 text-center">
         <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Bruno Nascimento Fotografia. Todos os direitos reservados.</p>
       </footer>
     </div>
