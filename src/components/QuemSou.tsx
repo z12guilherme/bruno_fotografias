@@ -51,7 +51,7 @@ export function QuemSou({ isDarkMode }: QuemSouProps) {
             {/* Coluna Direita: Texto */}
             <div className={`space-y-6 text-lg leading-relaxed text-left ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
               <p>
-                Cada parto é único e exige respeito absoluto. Meu compromisso é atuar de forma ética, discreta e responsável, sempre em harmonia com a equipe de saúde e os protocolos do ambiente cirúrgico ou da sala de parto, preservando a essência desse momento tão especial.
+                Cada parto é único e exige respeito absoluto. Meu compromisso é atuar de forma ética, discreta e responsável, sempre em harmonia com a equipe de saúde e os protocolos do ambiente cirúrgico ou da sala de parto, preservando a essência desse momento tão especial
               </p>
             </div>
           </div>
