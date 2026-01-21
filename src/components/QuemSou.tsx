@@ -53,9 +53,6 @@ export function QuemSou({ isDarkMode }: QuemSouProps) {
               <p>
                 Cada parto é único e exige respeito absoluto. Meu compromisso é atuar de forma ética, discreta e responsável, sempre em harmonia com a equipe de saúde e os protocolos do ambiente cirúrgico ou da sala de parto, preservando a essência desse momento tão especial.
               </p>
-              <p>
-                Leia atentamente as informações abaixo, onde estão descritos os detalhes dos pacotes e serviços.
-              </p>
             </div>
           </div>
         </div>
