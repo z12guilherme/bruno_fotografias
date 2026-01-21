@@ -25,7 +25,7 @@ export function QuemSou({ isDarkMode }: QuemSouProps) {
                 Sou Bruno Nascimento, fotógrafo de partos, e há 2 anos vivo o propósito de eternizar nascimentos cheios de amor, força e significado. Já registrei mais de 100 partos, sempre com sensibilidade, respeito e olhar atento aos detalhes que tornam cada história única.
               </p>
               <p>
-                Em 2025, tive o privilégio de ser premiado internacionalmente com uma fotografia pela Outstanding Maternity Award, um reconhecimento que reforça a credibilidade e a essência do meu trabalho.
+                Em 2025, tive o privilégio de ser premiado internacionalmente com uma fotografia pela Outstanding Maternity Award, um reconhecimento que reforça minha credibilidade e a essência do meu trabalho.
               </p>
             </div>
             {/* Coluna Direita: Imagem do fotógrafo */}
