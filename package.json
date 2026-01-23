@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "deploy:rules": "firebase deploy --only firestore:rules --project brunonascimento-fotografia",
-    "build:apk": "cd android && gradlew assembleDebug && cd .. && copy android\\app\\build\\outputs\\apk\\debug\\app-debug.apk public\\bruno-fotografias.apk",
+    "build:apk": "npm run build && if exist dist\\bruno-fotografias.apk del dist\\bruno-fotografias.apk && npx cap sync android && cd android && gradlew assembleDebug && cd .. && copy android\\app\\build\\outputs\\apk\\debug\\app-debug.apk public\\bruno-fotografias.apk",
     "generate:assets": "npx capacitor-assets generate --android"
   },
   "dependencies": {

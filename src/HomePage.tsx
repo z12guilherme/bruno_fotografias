@@ -1,10 +1,66 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Menu, X, Instagram, Linkedin, Mail, ChevronDown, Camera, Lock } from 'lucide-react';
+import { Menu, X, Instagram, Mail, ChevronDown, Camera, Lock, Sun, Moon } from 'lucide-react';
+import capaBg from '@/assets/Capa.jpg';
+
+import logo from '@/assets/logo.jpg';
+import { QuemSou } from './QuemSou';
+import portfolio1 from "@/assets/portfolio1.jpg";
+import portfolio2 from "@/assets/portfolio2.jpg";
+import portfolio3 from "@/assets/portfolio3.png";
+import portfolio4 from "@/assets/portfolio4.jpg";
+import portfolio5 from "@/assets/portfolio5.jpg";
+import portfolio6 from "@/assets/portfolio6.jpg";
+import portfolio7 from "@/assets/portfolio7.jpg";
+import portfolio8 from "@/assets/portfolio8.jpg";
+import portfolio9 from "@/assets/portfolio9.jpg";
 
 export function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme ? savedTheme === 'dark' : true;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
+
+  const toggleTheme = () => setIsDarkMode(!isDarkMode);
+
+  // Imagens de exemplo para o portfólio
+  const portfolioImages = [
+    portfolio1,
+    portfolio2,
+    portfolio3,
+    portfolio4,
+    portfolio5,
+    portfolio6,
+    portfolio7,
+    portfolio8,
+    portfolio9,
+  ];
+
+  // Dados dos depoimentos
+  const testimonials = [
+    {
+      id: 1,
+      name: "Josefa Tavares",
+      text: "Obrigada Bruno em participar da nossa alegria, foram muitas emoções, você faz um trabalho maravilhoso parabéns."
+    },
+    {
+      id: 2,
+      name: "Laiara Lima",
+      text: "Agradeço a você por toda sua atenção e profissionalismo! Que Deus continue abençoando esse trabalho lindo!"
+    },
+    {
+      id: 3,
+      name: "Rayane Valentim",
+      text: "Muito especial, você é um profissional incrível, superou minhas expectativas pra esse dia."
+    }
+  ];
 
   // Detecta o scroll para mudar o estilo da navbar
   useEffect(() => {
@@ -24,50 +80,73 @@ export function HomePage() {
   };
 
   return (
-    <div className="font-sans text-gray-800 bg-white">
+    <div className={`font-sans transition-colors duration-300 ${isDarkMode ? 'text-gray-100 bg-gray-900' : 'text-gray-800 bg-white'}`}>
       {/* --- Navigation --- */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-3' : 'bg-transparent py-5'
+          isScrolled 
+            ? (isDarkMode ? 'bg-gray-900/90 backdrop-blur-md shadow-sm py-3' : 'bg-white/90 backdrop-blur-md shadow-sm py-3') 
+            : 'bg-transparent py-5'
         }`}
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="text-2xl font-bold tracking-wider uppercase cursor-pointer" onClick={() => scrollToSection('hero')}>
-            <span className="text-gray-900">Bruno</span>
-            <span className="text-amber-600">.</span>
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollToSection('hero')}>
+            <img src={logo} alt="Bruno Nascimento" className="h-10 w-10 rounded-full object-cover" />
+            <div className="text-2xl font-bold tracking-wider uppercase">
+              <span className={isScrolled ? (isDarkMode ? 'text-white' : 'text-gray-900') : 'text-white'}>Bruno | Fotografia de Nascimento </span>
+            </div>
           </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            {['Home', 'Sobre', 'Portfólio', 'Contato'].map((item) => (
+            {['Home', 'Sobre', 'Portfólio', 'Depoimentos', 'Contato'].map((item) => (
               <button
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase() === 'home' ? 'hero' : item.toLowerCase().replace('ó', 'o'))}
-                className="text-sm font-medium uppercase tracking-wide hover:text-amber-600 transition-colors text-gray-700"
+                className={`text-sm font-medium uppercase tracking-wide hover:text-amber-600 transition-colors ${
+                  isScrolled ? (isDarkMode ? 'text-gray-200' : 'text-gray-700') : 'text-white/90'
+                }`}
               >
                 {item}
               </button>
             ))}
-            <a
-              href="/cliente-login.html"
+            
+            <button 
+              onClick={toggleTheme} 
+              className={`p-2 rounded-full transition-colors ${isScrolled ? (isDarkMode ? 'hover:bg-gray-800 text-yellow-400' : 'hover:bg-gray-100 text-gray-600') : 'text-white hover:bg-white/10'}`}
+              title={isDarkMode ? "Mudar para modo claro" : "Mudar para modo escuro"}
+            >
+              {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+
+            <Link
+              to="/area-do-cliente"
               className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all ${
                 isScrolled
                   ? 'border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white'
-                  : 'border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white'
+                  : 'border-white text-white hover:bg-white hover:text-gray-900'
               }`}
             >
               <Lock size={14} />
               <span className="text-xs font-bold uppercase">Área do Cliente</span>
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-amber-600 focus:outline-none"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X size={28} /> : <Menu size={28} className="text-gray-900" />}
-          </button>
+          <div className="md:hidden flex items-center gap-4">
+            <button 
+              onClick={toggleTheme} 
+              className={`p-2 rounded-full transition-colors ${isScrolled ? (isDarkMode ? 'text-yellow-400' : 'text-gray-600') : 'text-white'}`}
+            >
+              {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
+            </button>
+            <button
+              className="text-amber-600 focus:outline-none"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X size={28} /> : <Menu size={28} className={isScrolled ? (isDarkMode ? 'text-white' : 'text-gray-900') : 'text-white'} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu Overlay */}
@@ -75,34 +154,34 @@ export function HomePage() {
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="md:hidden absolute top-full left-0 right-0 bg-white shadow-lg py-4 px-6 flex flex-col space-y-4"
+            className={`md:hidden absolute top-full left-0 right-0 shadow-lg py-4 px-6 flex flex-col space-y-4 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}
           >
-            {['Home', 'Sobre', 'Portfólio', 'Contato'].map((item) => (
+            {['Home', 'Sobre', 'Portfólio', 'Depoimentos', 'Contato'].map((item) => (
               <button
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase() === 'home' ? 'hero' : item.toLowerCase().replace('ó', 'o'))}
-                className="text-left text-gray-700 hover:text-amber-600 font-medium uppercase text-sm"
+                className={`text-left font-medium uppercase text-sm hover:text-amber-600 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}
               >
                 {item}
               </button>
             ))}
-            <a href="/cliente-login.html" className="text-left text-amber-600 font-bold uppercase text-sm flex items-center gap-2">
+            <Link to="/area-do-cliente" className="text-left text-amber-600 font-bold uppercase text-sm flex items-center gap-2">
               <Lock size={14} /> Área do Cliente
-            </a>
+            </Link>
           </motion.div>
         )}
       </nav>
 
       {/* --- Hero Section --- */}
-      <section id="hero" className="relative h-screen flex items-center justify-center bg-gray-50 overflow-hidden">
-        {/* Background Image Placeholder - Substitua pela sua foto principal */}
+      <section id="hero" className="relative h-screen flex items-center justify-center bg-gray-900 overflow-hidden">
+        {/* Background Image Placeholder */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60"
-          style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80")' }}
+          style={{ backgroundImage: `url(${capaBg})` }}
         />
-        <div className="absolute inset-0 bg-white/40" /> {/* Overlay claro */}
+        <div className="absolute inset-0 bg-black/40" /> {/* Overlay escuro */}
 
-        <div className="relative z-10 text-center text-gray-900 px-4">
+        <div className="relative z-10 text-center text-white px-4">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -115,9 +194,9 @@ export function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl font-light text-gray-700 mb-8"
+            className="text-xl md:text-2xl font-light text-gray-200 mb-8"
           >
-            Fotógrafo Profissional & Artista Visual
+            Especialista em Fotografia de Nascimento & Família
           </motion.p>
           <motion.button
             initial={{ opacity: 0 }}
@@ -133,94 +212,44 @@ export function HomePage() {
         <motion.div 
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-gray-400"
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white/50"
         >
           <ChevronDown size={32} />
         </motion.div>
       </section>
 
-      {/* --- About Section --- */}
-      <section id="sobre" className="py-20 md:py-32 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="w-full md:w-1/2">
-              <img 
-                src="https://images.unsplash.com/photo-1554048612-387768052bf7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-                alt="Bruno Nascimento" 
-                className="rounded shadow-xl w-full object-cover h-[500px]"
-              />
-            </div>
-            <div className="w-full md:w-1/2">
-              <div className="mb-6">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Sobre Mim</h2>
-                <div className="w-16 h-1 bg-amber-600"></div>
-              </div>
-              <p className="text-gray-600 leading-relaxed mb-6">
-                Olá, sou Bruno Nascimento. A fotografia para mim não é apenas capturar momentos, mas criar memórias eternas com uma estética de luxo e sofisticação.
-                Especializado em retratos e eventos, busco a luz perfeita e a emoção genuína em cada clique.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                <div>
-                  <span className="font-bold text-gray-900 block">Nome:</span>
-                  <span className="text-gray-600">Bruno Nascimento</span>
-                </div>
-                <div>
-                  <span className="font-bold text-gray-900 block">Email:</span>
-                  <span className="text-gray-600">contato@brunofoto.com</span>
-                </div>
-                <div>
-                  <span className="font-bold text-gray-900 block">Telefone:</span>
-                  <span className="text-gray-600">+55 (11) 99999-9999</span>
-                </div>
-                <div>
-                  <span className="font-bold text-gray-900 block">Cidade:</span>
-                  <span className="text-gray-600">São Paulo, SP</span>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <button className="p-2 rounded-full bg-gray-100 hover:bg-amber-600 hover:text-white transition-colors">
-                  <Instagram size={20} />
-                </button>
-                <button className="p-2 rounded-full bg-gray-100 hover:bg-amber-600 hover:text-white transition-colors">
-                  <Linkedin size={20} />
-                </button>
-                <button className="p-2 rounded-full bg-gray-100 hover:bg-amber-600 hover:text-white transition-colors">
-                  <Mail size={20} />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* --- Quem Sou Section --- */}
+      <QuemSou isDarkMode={isDarkMode} />
 
       {/* --- Portfolio Section --- */}
-      <section id="portfolio" className="py-20 bg-gray-50">
+      <section id="portfolio" className={`py-20 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Meu Portfólio</h2>
+            <h2 className={`text-3xl md:text-4xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Meu Portfólio</h2>
             <div className="w-16 h-1 bg-amber-600 mx-auto"></div>
-            <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
+            <p className={`mt-4 max-w-2xl mx-auto ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
               Uma seleção dos meus melhores trabalhos, capturando a essência e a beleza em cada detalhe.
             </p>
           </div>
 
-          {/* Grid de Fotos (Masonry Style Simulado) */}
+          {/* Grid de Fotos */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((item) => (
+            {portfolioImages.map((imgSrc, index) => (
               <motion.div 
-                key={item}
+                key={index}
                 whileHover={{ y: -5 }}
-                className="group relative overflow-hidden rounded-lg shadow-md bg-white aspect-[3/4]"
+                className={`group relative overflow-hidden rounded-lg shadow-md aspect-[3/4] ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}
               >
                 <img 
-                  src={`https://source.unsplash.com/random/800x1000?wedding,portrait&sig=${item}`} 
-                  alt={`Portfolio ${item}`}
+                  src={imgSrc} 
+                  alt={`Portfolio ${index}`}
+                  loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                   <div className="text-center p-4">
-                    <h3 className="text-white text-xl font-bold mb-2">Título do Projeto</h3>
-                    <p className="text-gray-300 text-sm">Categoria</p>
+                    <h3 className="text-white text-xl font-bold mb-2">Projeto {index + 1}</h3>
+                    <p className="text-gray-300 text-sm">Fotografia</p>
                     <button className="mt-4 p-2 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors">
                       <Camera size={20} />
                     </button>
@@ -232,15 +261,87 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* --- Contact Section --- */}
-      <section id="contato" className="py-20 bg-white">
+      {/* --- Video Portfolio Section --- */}
+      <section id="videos" className={`py-20 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Entre em Contato</h2>
+            <h2 className={`text-3xl md:text-4xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Filmes</h2>
+            <div className="w-16 h-1 bg-amber-600 mx-auto"></div>
+            <p className={`mt-4 max-w-2xl mx-auto ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Histórias contadas através de movimento e som.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Vídeo 1 - YouTube */}
+            <div className={`aspect-video rounded-lg overflow-hidden shadow-xl ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/eIbfqoUCnYo"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
+            </div>
+
+            {/* Vídeo 2 - YouTube */}
+            <div className={`aspect-video rounded-lg overflow-hidden shadow-xl ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/JwPPpDyG3xw"
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- Testimonials Section --- */}
+      <section id="depoimentos" className={`py-20 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className={`text-3xl md:text-4xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Depoimentos</h2>
+            <div className="w-16 h-1 bg-amber-600 mx-auto"></div>
+            <p className={`mt-4 max-w-2xl mx-auto ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Histórias reais de quem confiou seus momentos mais preciosos ao meu olhar.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial) => (
+              <motion.div
+                key={testimonial.id}
+                whileHover={{ y: -5 }}
+                className={`p-8 rounded-lg shadow-lg flex flex-col items-center text-center ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}
+              >
+                <p className={`italic mb-6 text-sm leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>"{testimonial.text}"</p>
+                <h3 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{testimonial.name}</h3>
+                <div className="flex text-amber-500 mt-2 gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- Contact Section --- */}
+      <section id="contato" className={`py-20 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className={`text-3xl md:text-4xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Entre em Contato</h2>
             <div className="w-16 h-1 bg-amber-600 mx-auto"></div>
           </div>
 
-          <div className="max-w-3xl mx-auto bg-white shadow-2xl rounded-lg overflow-hidden flex flex-col md:flex-row">
+          <div className={`max-w-3xl mx-auto shadow-2xl rounded-lg overflow-hidden flex flex-col md:flex-row ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <div className="bg-gray-900 text-white p-8 md:w-1/3 flex flex-col justify-between">
               <div>
                 <h3 className="text-xl font-bold mb-4">Informações</h3>
@@ -248,24 +349,36 @@ export function HomePage() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <Mail size={18} className="text-amber-600" />
-                    <span className="text-sm">contato@bruno.com</span>
+                    <span className="text-sm">brunofotografia111@gmail.com</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Instagram size={18} className="text-amber-600" />
-                    <span className="text-sm">@brunofoto</span>
+                    <span className="text-sm">@brunofotografias_</span>
                   </div>
                 </div>
               </div>
             </div>
             <div className="p-8 md:w-2/3">
-              <form className="space-y-4">
+              <form 
+                className="space-y-4"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  const name = formData.get('name') as string;
+                  const subject = formData.get('subject') as string;
+                  const message = formData.get('message') as string;
+                  
+                  const text = `Olá, me chamo ${name}. ${subject ? `Assunto: ${subject}. ` : ''}${message}`;
+                  window.open(`https://wa.me/5581993162157?text=${encodeURIComponent(text)}`, '_blank');
+                }}
+              >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <input type="text" placeholder="Seu Nome" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" />
-                  <input type="email" placeholder="Seu Email" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" />
+                  <input name="name" type="text" placeholder="Seu Nome" className={`w-full p-3 border rounded focus:outline-none focus:border-amber-600 transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'}`} required />
+                  <input name="email" type="email" placeholder="Seu Email" className={`w-full p-3 border rounded focus:outline-none focus:border-amber-600 transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'}`} />
                 </div>
-                <input type="text" placeholder="Assunto" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors" />
-                <textarea rows={4} placeholder="Sua Mensagem" className="w-full p-3 bg-gray-50 border border-gray-200 rounded focus:outline-none focus:border-amber-600 transition-colors"></textarea>
-                <button className="px-6 py-3 bg-amber-600 text-white font-bold rounded hover:bg-amber-700 transition-colors w-full md:w-auto">
+                <input name="subject" type="text" placeholder="Assunto" className={`w-full p-3 border rounded focus:outline-none focus:border-amber-600 transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'}`} />
+                <textarea name="message" rows={4} placeholder="Sua Mensagem" className={`w-full p-3 border rounded focus:outline-none focus:border-amber-600 transition-colors ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-200 text-gray-900'}`} required></textarea>
+                <button type="submit" className="px-6 py-3 bg-amber-600 text-white font-bold rounded hover:bg-amber-700 transition-colors w-full md:w-auto">
                   Enviar Mensagem
                 </button>
               </form>
@@ -275,9 +388,12 @@ export function HomePage() {
       </section>
 
       {/* --- Footer --- */}
-      <footer className="bg-gray-100 text-gray-600 py-8 text-center">
+      <footer className="bg-gray-900 text-white py-8 text-center">
+        <p className="text-gray-500 text-sm">&copy; Bruno José do Nascimento Silva - CNPJ: 55.883.381/0001-96</p>
         <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Bruno Nascimento Fotografia. Todos os direitos reservados.</p>
+        <p className="text-gray-600 text-xs mt-2">&copy; Desenvolvido por Inove Dev</p>
       </footer>
     </div>
   );
+
 }

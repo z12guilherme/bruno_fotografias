@@ -6,6 +6,7 @@ import capaBg from '@/assets/Capa.jpg';
 
 import logo from '@/assets/logo.jpg';
 import { QuemSou } from './QuemSou';
+import { DownloadApp } from './DownloadApp';
 import portfolio1 from "@/assets/portfolio1.jpg";
 import portfolio2 from "@/assets/portfolio2.jpg";
 import portfolio3 from "@/assets/portfolio3.png";
@@ -26,6 +27,11 @@ export function HomePage() {
 
   useEffect(() => {
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
   }, [isDarkMode]);
 
   const toggleTheme = () => setIsDarkMode(!isDarkMode);
@@ -332,6 +338,9 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* --- Download App Section --- */}
+      <DownloadApp />
 
       {/* --- Contact Section --- */}
       <section id="contato" className={`py-20 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
