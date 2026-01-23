@@ -43,6 +43,25 @@ export function HomePage() {
     portfolio9,
   ];
 
+  // Dados dos depoimentos
+  const testimonials = [
+    {
+      id: 1,
+      name: "Josefa Tavares",
+      text: "Obrigada Bruno em participar da nossa alegria, foram muitas emoções, você faz um trabalho maravilhoso parabéns."
+    },
+    {
+      id: 2,
+      name: "Laiara Lima",
+      text: "Agradeço a você por toda sua atenção e profissionalismo! Que Deus continue abençoando esse trabalho lindo!"
+    },
+    {
+      id: 3,
+      name: "Rayane Valentim",
+      text: "Muito especial, você é um profissional incrível, superou minhas expectativas pra esse dia."
+    }
+  ];
+
   // Detecta o scroll para mudar o estilo da navbar
   useEffect(() => {
     const handleScroll = () => {
@@ -80,7 +99,7 @@ export function HomePage() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            {['Home', 'Sobre', 'Portfólio', 'Contato'].map((item) => (
+            {['Home', 'Sobre', 'Portfólio', 'Depoimentos', 'Contato'].map((item) => (
               <button
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase() === 'home' ? 'hero' : item.toLowerCase().replace('ó', 'o'))}
@@ -137,7 +156,7 @@ export function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             className={`md:hidden absolute top-full left-0 right-0 shadow-lg py-4 px-6 flex flex-col space-y-4 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}
           >
-            {['Home', 'Sobre', 'Portfólio', 'Contato'].map((item) => (
+            {['Home', 'Sobre', 'Portfólio', 'Depoimentos', 'Contato'].map((item) => (
               <button
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase() === 'home' ? 'hero' : item.toLowerCase().replace('ó', 'o'))}
@@ -277,6 +296,39 @@ export function HomePage() {
                 allowFullScreen
               ></iframe>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- Testimonials Section --- */}
+      <section id="depoimentos" className={`py-20 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className={`text-3xl md:text-4xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Depoimentos</h2>
+            <div className="w-16 h-1 bg-amber-600 mx-auto"></div>
+            <p className={`mt-4 max-w-2xl mx-auto ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+              Histórias reais de quem confiou seus momentos mais preciosos ao meu olhar.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial) => (
+              <motion.div
+                key={testimonial.id}
+                whileHover={{ y: -5 }}
+                className={`p-8 rounded-lg shadow-lg flex flex-col items-center text-center ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}
+              >
+                <p className={`italic mb-6 text-sm leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>"{testimonial.text}"</p>
+                <h3 className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{testimonial.name}</h3>
+                <div className="flex text-amber-500 mt-2 gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
