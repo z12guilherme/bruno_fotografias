@@ -10,7 +10,6 @@ import { Portfolio } from "@/components/Portfolio";
 import { ContactPage } from "@/components/ContactPage";
 import AdminLogin from "@/pages/AdminLogin";
 import AdminDashboard from "@/pages/AdminDashboard";
-import { DownloadApp } from "@/components/DownloadApp";
 
 
 function App() {
@@ -22,10 +21,7 @@ function App() {
       {!isHomePage && <Header />}
       <Routes>
         <Route path="/" element={
-          <>
-            <HomePage />
-            <DownloadApp />
-          </>
+          <HomePage />
         } />
         <Route path="/sobre" element={<AboutPage />} />
         <Route path="/area-do-cliente" element={<ClientAreaPage />} />
