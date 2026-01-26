@@ -7,7 +7,6 @@ import capaBg from '@/assets/Capa.jpg';
 import bannerLogo from '@/assets/logo_sem_fundo.png';
 import heroLogo from '@/assets/logo_sem_fundo.png';
 import { QuemSou } from './QuemSou';
-import { DownloadApp } from './DownloadApp';
 import portfolio1 from "@/assets/portfolio1.jpg";
 import portfolio2 from "@/assets/portfolio2.jpg";
 import portfolio3 from "@/assets/portfolio3.png";
@@ -338,9 +337,6 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* --- Download App Section --- */}
-      <DownloadApp />
-
       {/* --- Contact Section --- */}
       <section id="contato" className={`py-20 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
         <div className="container mx-auto px-6">
@@ -399,6 +395,11 @@ export function HomePage() {
       <footer className="bg-gray-900 text-white py-8 text-center">
         <p className="text-gray-500 text-sm">&copy; Bruno José do Nascimento Silva - CNPJ: 55.883.381/0001-96</p>
         <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Bruno Nascimento Fotografia. Todos os direitos reservados.</p>
+        
+        <a href="/bruno-fotografias.apk" download className="text-gray-800 hover:text-gray-700 text-[10px] mt-4 block transition-colors">
+          App
+        </a>
+
         <p className="text-gray-600 text-xs mt-2">&copy; Desenvolvido por Inove Dev</p>
       </footer>
     </div>
