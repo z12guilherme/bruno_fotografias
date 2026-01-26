@@ -4,7 +4,8 @@ import { motion } from 'framer-motion';
 import { Menu, X, Instagram, Mail, ChevronDown, Camera, Lock, Sun, Moon } from 'lucide-react';
 import capaBg from '@/assets/Capa.jpg';
 
-import logo from '@/assets/logo.jpg';
+import bannerLogo from '@/assets/logo_sem_fundo.png';
+import heroLogo from '@/assets/logo_sem_fundo.png';
 import { QuemSou } from './QuemSou';
 import { DownloadApp } from './DownloadApp';
 import portfolio1 from "@/assets/portfolio1.jpg";
@@ -96,11 +97,8 @@ export function HomePage() {
         }`}
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollToSection('hero')}>
-            <img src={logo} alt="Bruno Nascimento" className="h-10 w-10 rounded-full object-cover" />
-            <div className="text-2xl font-bold tracking-wider uppercase">
-              <span className={isScrolled ? (isDarkMode ? 'text-white' : 'text-gray-900') : 'text-white'}>Bruno | Fotografia de Nascimento </span>
-            </div>
+          <div className="cursor-pointer" onClick={() => scrollToSection('hero')}>
+            <img src={bannerLogo} alt="Bruno Nascimento" className="h-20 w-auto" />
           </div>
 
           {/* Desktop Menu */}
@@ -188,21 +186,24 @@ export function HomePage() {
         <div className="absolute inset-0 bg-black/40" /> {/* Overlay escuro */}
 
         <div className="relative z-10 text-center text-white px-4">
-          <motion.h1 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl font-bold mb-4 tracking-tight"
+            className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-4"
           >
-            Bruno Nascimento
-          </motion.h1>
+            <img src={heroLogo} alt="Logo Bruno Nascimento" className="h-58 w-58 object-contain" />
+            <h1 
+              className="text-5xl md:text-7xl font-bold tracking-tight"
+            >
+            </h1>
+          </motion.div>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-xl md:text-2xl font-light text-gray-200 mb-8"
           >
-            Especialista em Fotografia de Nascimento & Família
           </motion.p>
           <motion.button
             initial={{ opacity: 0 }}

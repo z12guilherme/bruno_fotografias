@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Menu, X, Instagram, Mail, ChevronDown, Camera, Lock, Sun, Moon } from 'lucide-react';
 import capaBg from '@/assets/Capa.jpg';
 
-import logo from '@/assets/logo.jpg';
+import logo from '@/assets/logo.PNG';
 import { QuemSou } from './QuemSou';
 import portfolio1 from "@/assets/portfolio1.jpg";
 import portfolio2 from "@/assets/portfolio2.jpg";
@@ -90,11 +90,8 @@ export function HomePage() {
         }`}
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollToSection('hero')}>
-            <img src={logo} alt="Bruno Nascimento" className="h-10 w-10 rounded-full object-cover" />
-            <div className="text-2xl font-bold tracking-wider uppercase">
-              <span className={isScrolled ? (isDarkMode ? 'text-white' : 'text-gray-900') : 'text-white'}>Bruno | Fotografia de Nascimento </span>
-            </div>
+          <div className="cursor-pointer" onClick={() => scrollToSection('hero')}>
+            <img src={logo} alt="Bruno Nascimento" className="h-12 w-auto" />
           </div>
 
           {/* Desktop Menu */}
