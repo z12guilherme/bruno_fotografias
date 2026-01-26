@@ -98,7 +98,7 @@ export function HomePage() {
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="cursor-pointer" onClick={() => scrollToSection('hero')}>
-            <img src={bannerLogo} alt="Bruno Nascimento" className="h-20 w-auto" />
+            <img src={bannerLogo} alt="Bruno Nascimento" className="h-28 w-auto" />
           </div>
 
           {/* Desktop Menu */}
@@ -185,35 +185,33 @@ export function HomePage() {
         />
         <div className="absolute inset-0 bg-black/40" /> {/* Overlay escuro */}
 
-        <div className="relative z-10 text-center text-white px-4">
-          <motion.div
+        {/* Watermark Logo */}
+        <div className="absolute inset-0 flex items-start justify-center pt-32 pointer-events-none">
+          <img 
+            src={heroLogo} 
+            alt="Marca d'água Bruno Nascimento" 
+            className="w-2/3 md:w-1/2 opacity-10"
+            style={{ filter: 'brightness(0) invert(1)' }} 
+          />
+        </div>
+
+        <div className="relative z-1 text-center text-white px-4 pt-32">
+          <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-4"
+            className="text-5xl md:text-7xl font-bold mb-4 tracking-tight"
           >
-            <img src={heroLogo} alt="Logo Bruno Nascimento" className="h-58 w-58 object-contain" />
-            <h1 
-              className="text-5xl md:text-7xl font-bold tracking-tight"
-            >
-            </h1>
-          </motion.div>
+          </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl font-light text-gray-200 mb-8"
+            className="text-xl md:text-2xl font-light text-gray-200 mb-8 mt-48"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
+            Especialista em Fotografia de Nascimento & Família
           </motion.p>
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            onClick={() => scrollToSection('portfolio')}
-            className="px-8 py-3 border-2 border-amber-600 text-white hover:bg-amber-600 transition-all duration-300 rounded uppercase text-sm tracking-widest font-semibold"
-          >
-            Ver Meu Trabalho
-          </motion.button>
         </div>
 
         <motion.div 

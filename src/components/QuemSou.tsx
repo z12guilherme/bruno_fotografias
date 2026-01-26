@@ -8,9 +8,6 @@ interface QuemSouProps {
 export function QuemSou({ isDarkMode }: QuemSouProps) {
   return (
     <section id="sobre" className={`py-20 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`} style={{ fontFamily: "'Montserrat', sans-serif" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap');
-      `}</style>
       <div className="container mx-auto px-6 max-w-5xl">
         <h2 className={`text-3xl md:text-4xl font-bold text-center mb-16 tracking-widest uppercase ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
           QUEM SOU?
