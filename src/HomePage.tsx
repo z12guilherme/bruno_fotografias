@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Menu, X, Instagram, Mail, ChevronDown, Camera, Lock, Sun, Moon } from 'lucide-react';
 import capaBg from '@/assets/Capa.jpg';
 
-import logo from '@/assets/logo.PNG';
+import logo from '@/assets/logo_sem_fundo.png';
 import { QuemSou } from './QuemSou';
 import portfolio1 from "@/assets/portfolio1.jpg";
 import portfolio2 from "@/assets/portfolio2.jpg";
