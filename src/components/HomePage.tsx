@@ -91,13 +91,13 @@ export function HomePage() {
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled 
-            ? (isDarkMode ? 'bg-gray-900/90 backdrop-blur-md shadow-sm py-3' : 'bg-white/90 backdrop-blur-md shadow-sm py-3') 
-            : 'bg-transparent py-5'
+            ? (isDarkMode ? 'bg-gray-900/90 backdrop-blur-md shadow-sm py-2' : 'bg-white/90 backdrop-blur-md shadow-sm py-2') 
+            : 'bg-transparent py-4'
         }`}
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="cursor-pointer" onClick={() => scrollToSection('hero')}>
-            <img src={bannerLogo} alt="Bruno Nascimento" className="h-28 w-auto" />
+            <img src={bannerLogo} alt="Bruno Nascimento" className="h-20 w-auto" />
           </div>
 
           {/* Desktop Menu */}
@@ -206,7 +206,7 @@ export function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl font-light text-gray-200 mb-8 mt-48"
+            className="text-xl md:text-2xl font-light text-gray-200 mb-8 mt-80"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             Especialista em Fotografia de Nascimento & Família
