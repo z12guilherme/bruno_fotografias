@@ -1,5 +1,7 @@
 import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
+import { useHomepageContent } from "@/hooks/useHomepageContent";
+import { Loader2 } from "lucide-react";
 
 import portfolio1 from "@/assets/portfolio1.jpg";
 import portfolio2 from "@/assets/portfolio2.jpg";
@@ -33,10 +35,24 @@ const breakpointColumnsObj = {
 };
 
 export const Portfolio = () => {
+  const { content, loading } = useHomepageContent();
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-background">
+        <Loader2 className="w-12 h-12 text-amber-600 animate-spin" />
+      </div>
+    );
+  }
+
+  const portfolioImages = content?.portfolio?.imageUrls?.length > 0
+    ? content.portfolio.imageUrls
+    : defaultPortfolioImages;
+
   return (
-    <section id="portfolio" className="py-20 px-4">
+    <section id="portfolio" className="pt-32 pb-20 px-4">
       <div className="container mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-12">Portfólio</h2>
+        <h2 className="text-4xl font-bold text-center mb-12">{content?.portfolio?.title || "Portfólio"}</h2>
         <Masonry breakpointCols={breakpointColumnsObj} className="flex w-auto -ml-4" columnClassName="pl-4 bg-clip-padding">
           {portfolioImages.map((image, index) => (
             <motion.div

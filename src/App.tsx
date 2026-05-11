@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/theme-provider";
-import { HomePage } from "@/components/HomePage";
+import { HomePage } from "@/HomePage";
 import { AboutPage } from "@/components/AboutPage";
 import { ClientAreaPage } from "@/components/ClientAreaPage";
 import { Portfolio } from "@/components/Portfolio";

@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, Upload, LogOut, FolderOpen, ArrowLeft, Pencil, FolderPlus, Folder, Link as LinkIcon } from "lucide-react";
+import { Loader2, Plus, Trash2, Upload, LogOut, FolderOpen, ArrowLeft, Pencil, FolderPlus, Folder, Link as LinkIcon, LayoutDashboard, Image as ImageIcon } from "lucide-react";
+import { HomePageEditor } from "@/components/HomePageEditor";
 
 // Tipos para nossos dados
 interface Album {
@@ -41,6 +42,7 @@ export default function AdminDashboard() {
   const [subfolders, setSubfolders] = useState<Subfolder[]>([]);
   const [currentSubfolder, setCurrentSubfolder] = useState<Subfolder | null>(null);
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [activeTab, setActiveTab] = useState<"albums" | "homepage">("albums");
   
   // Estados do formulário
   const [newAlbumTitle, setNewAlbumTitle] = useState("");
@@ -293,13 +295,37 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Painel Administrativo</h1>
+          <div className="flex items-center gap-4">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Painel Administrativo</h1>
+          </div>
           <Button variant="outline" onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" /> Sair
           </Button>
         </div>
 
-        {!selectedAlbum ? (
+        <div className="flex gap-4 mb-6 border-b pb-4">
+          <Button 
+            variant={activeTab === "albums" ? "default" : "outline"} 
+            onClick={() => setActiveTab("albums")}
+            className={activeTab === "albums" ? "bg-amber-600 hover:bg-amber-700" : ""}
+          >
+            <FolderOpen className="w-4 h-4 mr-2" /> Álbuns de Clientes
+          </Button>
+          <Button 
+            variant={activeTab === "homepage" ? "default" : "outline"} 
+            onClick={() => setActiveTab("homepage")}
+            className={activeTab === "homepage" ? "bg-amber-600 hover:bg-amber-700" : ""}
+          >
+            <LayoutDashboard className="w-4 h-4 mr-2" /> Editar Página Inicial
+          </Button>
+        </div>
+
+        {activeTab === "homepage" && (
+          <HomePageEditor />
+        )}
+
+        {activeTab === "albums" && (
+          !selectedAlbum ? (
           <div className="grid gap-8 md:grid-cols-2">
             {/* Seção Criar Álbum */}
             <div className="bg-white p-6 rounded-xl shadow-sm border">
@@ -488,7 +514,7 @@ export default function AdminDashboard() {
               )}
             </div>
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
