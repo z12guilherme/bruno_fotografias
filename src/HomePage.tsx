@@ -397,6 +397,16 @@ export function HomePage() {
               <Lock size={14} />
               <span className="text-xs font-bold uppercase">Área do Cliente</span>
             </Link>
+            <Link
+              to="/admin/login"
+              className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all ${isScrolled
+                ? 'border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white'
+                : 'border-white text-white hover:bg-white hover:text-gray-900'
+                }`}
+            >
+              <Lock size={14} />
+              <span className="text-xs font-bold uppercase">Área Administrativa</span>
+            </Link>
           </div>
 
           <div className="md:hidden flex items-center gap-4">
