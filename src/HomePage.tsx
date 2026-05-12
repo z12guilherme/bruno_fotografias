@@ -152,9 +152,7 @@ export function HomePage() {
                     />
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <div className="text-center p-4">
-                        <h3 className="text-white text-xl font-bold mb-2">Projeto {index + 1}</h3>
-                        <p className="text-gray-300 text-sm">Fotografia</p>
-                        <button className="mt-4 p-2 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors">
+                        <button className="p-2 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors shadow-lg">
                           <Camera size={20} />
                         </button>
                       </div>
