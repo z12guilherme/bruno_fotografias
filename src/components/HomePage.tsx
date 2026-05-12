@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Menu, X, Instagram, Mail, ChevronDown, Camera, Lock, Sun, Moon } from 'lucide-react';
-import capaBg from '@/assets/Capa.jpg';
+import capaBg from '@/assets/logo_sem_fundo.png';
 
 import bannerLogo from '@/assets/logo_sem_fundo.png';
 import heroLogo from '@/assets/logo_sem_fundo.png';
+import { useHomepageContent } from '@/hooks/useHomepageContent';
 import { QuemSou } from './QuemSou';
 import portfolio1 from "@/assets/portfolio1.jpg";
 import portfolio2 from "@/assets/portfolio2.jpg";
@@ -20,6 +21,7 @@ import portfolio9 from "@/assets/portfolio9.jpg";
 export function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { content } = useHomepageContent();
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme ? savedTheme === 'dark' : true;
@@ -89,11 +91,10 @@ export function HomePage() {
     <div className={`font-sans transition-colors duration-300 ${isDarkMode ? 'text-gray-100 bg-gray-900' : 'text-gray-800 bg-white'}`}>
       {/* --- Navigation --- */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled 
-            ? (isDarkMode ? 'bg-gray-900/90 backdrop-blur-md shadow-sm py-2' : 'bg-white/90 backdrop-blur-md shadow-sm py-2') 
-            : 'bg-transparent py-4'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+          ? (isDarkMode ? 'bg-gray-900/90 backdrop-blur-md shadow-sm py-2' : 'bg-white/90 backdrop-blur-md shadow-sm py-2')
+          : 'bg-transparent py-4'
+          }`}
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="cursor-pointer" onClick={() => scrollToSection('hero')}>
@@ -106,16 +107,15 @@ export function HomePage() {
               <button
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase() === 'home' ? 'hero' : item.toLowerCase().replace('ó', 'o'))}
-                className={`text-sm font-medium uppercase tracking-wide hover:text-amber-600 transition-colors ${
-                  isScrolled ? (isDarkMode ? 'text-gray-200' : 'text-gray-700') : 'text-white/90'
-                }`}
+                className={`text-sm font-medium uppercase tracking-wide hover:text-amber-600 transition-colors ${isScrolled ? (isDarkMode ? 'text-gray-200' : 'text-gray-700') : 'text-white/90'
+                  }`}
               >
                 {item}
               </button>
             ))}
-            
-            <button 
-              onClick={toggleTheme} 
+
+            <button
+              onClick={toggleTheme}
               className={`p-2 rounded-full transition-colors ${isScrolled ? (isDarkMode ? 'hover:bg-gray-800 text-yellow-400' : 'hover:bg-gray-100 text-gray-600') : 'text-white hover:bg-white/10'}`}
               title={isDarkMode ? "Mudar para modo claro" : "Mudar para modo escuro"}
             >
@@ -124,11 +124,10 @@ export function HomePage() {
 
             <Link
               to="/area-do-cliente"
-              className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all ${
-                isScrolled
-                  ? 'border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white'
-                  : 'border-white text-white hover:bg-white hover:text-gray-900'
-              }`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all ${isScrolled
+                ? 'border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white'
+                : 'border-white text-white hover:bg-white hover:text-gray-900'
+                }`}
             >
               <Lock size={14} />
               <span className="text-xs font-bold uppercase">Área do Cliente</span>
@@ -137,8 +136,8 @@ export function HomePage() {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-4">
-            <button 
-              onClick={toggleTheme} 
+            <button
+              onClick={toggleTheme}
               className={`p-2 rounded-full transition-colors ${isScrolled ? (isDarkMode ? 'text-yellow-400' : 'text-gray-600') : 'text-white'}`}
             >
               {isDarkMode ? <Sun size={24} /> : <Moon size={24} />}
@@ -178,42 +177,60 @@ export function HomePage() {
       {/* --- Hero Section --- */}
       <section id="hero" className="relative h-screen flex items-center justify-center bg-gray-900 overflow-hidden">
         {/* Background Image Placeholder */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60"
-          style={{ backgroundImage: `url(${capaBg})` }}
+          style={{ backgroundImage: `url(${content?.hero?.backgroundImageUrl || capaBg})` }}
         />
         <div className="absolute inset-0 bg-black/40" /> {/* Overlay escuro */}
 
         {/* Watermark Logo */}
         <div className="absolute inset-0 flex items-start justify-center pt-32 pointer-events-none">
-          <img 
-            src={heroLogo} 
-            alt="Marca d'água Bruno Nascimento" 
+          <img
+            src={heroLogo}
+            alt="Marca d'água Bruno Nascimento"
             className="w-2/3 md:w-1/2 opacity-10"
-            style={{ filter: 'brightness(0) invert(1)' }} 
+            style={{ filter: 'brightness(0) invert(1)' }}
           />
         </div>
 
-        <div className="relative z-1 text-center text-white px-4 pt-32">
-          <motion.h1 
+        <div className="relative z-1 flex flex-col items-center text-center text-white px-4 pt-32">
+          <motion.img
+            src={heroLogo}
+            alt="Logo Bruno Nascimento"
+            className="w-48 md:w-64 h-auto mb-6 drop-shadow-lg"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          />
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-5xl md:text-7xl font-bold mb-4 tracking-tight"
           >
+            Bruno Nascimento
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl md:text-2xl font-light text-gray-200 mb-8 mt-80"
+            className="text-xl md:text-2xl font-light text-gray-200 mb-8 mt-4"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
-            Especialista em Fotografia de Nascimento & Família
+            {content?.hero?.subtitle || "Especialista em Fotografia de Parto & Família"}
           </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <button onClick={() => scrollToSection('portfolio')} className="px-8 py-4 bg-amber-600 text-white font-semibold rounded-md hover:bg-amber-700 transition-all shadow-lg hover:shadow-xl">
+              {content?.hero?.ctaText || "Ver Meu Trabalho"}
+            </button>
+          </motion.div>
         </div>
 
-        <motion.div 
+        <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
           className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white/50"
@@ -239,13 +256,13 @@ export function HomePage() {
           {/* Grid de Fotos */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {portfolioImages.map((imgSrc, index) => (
-              <motion.div 
+              <motion.div
                 key={index}
                 whileHover={{ y: -5 }}
                 className={`group relative overflow-hidden rounded-lg shadow-md aspect-[3/4] ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}
               >
-                <img 
-                  src={imgSrc} 
+                <img
+                  src={imgSrc}
                   alt={`Portfolio ${index}`}
                   loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -363,7 +380,7 @@ export function HomePage() {
               </div>
             </div>
             <div className="p-8 md:w-2/3">
-              <form 
+              <form
                 className="space-y-4"
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -371,7 +388,7 @@ export function HomePage() {
                   const name = formData.get('name') as string;
                   const subject = formData.get('subject') as string;
                   const message = formData.get('message') as string;
-                  
+
                   const text = `Olá, me chamo ${name}. ${subject ? `Assunto: ${subject}. ` : ''}${message}`;
                   window.open(`https://wa.me/5581993162157?text=${encodeURIComponent(text)}`, '_blank');
                 }}
@@ -395,7 +412,7 @@ export function HomePage() {
       <footer className="bg-gray-900 text-white py-8 text-center">
         <p className="text-gray-500 text-sm">&copy; Bruno José do Nascimento Silva - CNPJ: 55.883.381/0001-96</p>
         <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Bruno Nascimento Fotografia. Todos os direitos reservados.</p>
-        
+
         <a href="/bruno-fotografias.apk" download className="text-gray-800 hover:text-gray-700 text-[10px] mt-4 block transition-colors">
           App
         </a>

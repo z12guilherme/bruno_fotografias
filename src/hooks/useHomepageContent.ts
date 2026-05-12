@@ -68,7 +68,7 @@ export interface HomepageContent {
 
 export const defaultContent: HomepageContent = {
   hero: {
-    subtitle: 'Especialista em Fotografia de Nascimento & Família',
+    subtitle: 'Especialista em Fotografia de Parto & Família',
     ctaText: 'Ver Meu Trabalho',
   },
   about: {

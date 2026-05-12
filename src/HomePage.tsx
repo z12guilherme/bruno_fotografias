@@ -83,14 +83,14 @@ export function HomePage() {
               style={{ backgroundImage: `url(${content.hero.backgroundImageUrl || capaBg})` }}
             />
             <div className="absolute inset-0 bg-black/40" />
-            <div className="relative z-10 text-center text-white px-4">
+            <div className="relative z-10 flex flex-col items-center text-center text-white px-4">
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
-                className="text-5xl md:text-7xl font-bold mb-4 tracking-tight"
+                className="text-4xl md:text-5xl font-bold mb-4 tracking-tight"
               >
-                Bruno Nascimento
+                Bruno Fotografia de Nascimento
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -364,7 +364,7 @@ export function HomePage() {
       >
         <div className="container mx-auto px-6 flex justify-between items-center">
           <div className="cursor-pointer" onClick={() => scrollToSection('hero')}>
-            <img src={logo} alt="Bruno Nascimento" className="h-12 w-auto" />
+            <img src={logo} alt="Bruno Nascimento" className="h-20 md:h-24 w-auto transition-all" />
           </div>
 
           <div className="hidden md:flex items-center space-x-8">

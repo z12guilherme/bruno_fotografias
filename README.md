@@ -53,8 +53,8 @@ O projeto foi construído com um stack moderno, separando claramente as responsa
 *   **Animações**: Framer Motion
 
 ### **Backend & Infraestrutura**
-*   !Supabase **Supabase**
-*   !PostgreSQL **PostgreSQL**
+*   ![Supabase](https://img.shields.io/badge/-Supabase-181818?style=flat&logo=supabase&logoColor=3ECF8E) **Supabase**
+*   ![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-316192?style=flat&logo=postgresql&logoColor=white) **PostgreSQL**
 
 ## 🔒 Licença e Direitos Autorais
 
