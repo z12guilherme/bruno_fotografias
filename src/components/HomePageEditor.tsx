@@ -948,44 +948,6 @@ export function HomePageEditor() {
                   onChange={(e) => handleCustomSectionChange(index, 'text', e.target.value)}
                 />
               </div>
-              <div>
-                <Label className="mb-2 block font-medium">Imagem de Destaque (Opcional)</Label>
-                <div className="relative aspect-video max-w-sm rounded-lg overflow-hidden border-2 border-dashed flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors group">
-                  {section.imageUrl ? (
-                    <>
-                      <img src={section.imageUrl} alt="Preview" className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                        <Label htmlFor={`custom_img_${index}`} className="cursor-pointer bg-white/20 hover:bg-white/40 text-white px-3 py-2 rounded-md font-medium backdrop-blur-sm transition-all shadow-sm text-sm">
-                          Alterar
-                        </Label>
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          className="h-9 w-9"
-                          onClick={() => handleCustomSectionChange(index, 'imageUrl', '')}
-                          title="Remover Imagem"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                        <Input id={`custom_img_${index}`} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleCustomImageUpload(e.target.files[0], index)} />
-                      </div>
-                    </>
-                  ) : (
-                    <Label htmlFor={`custom_img_${index}`} className="cursor-pointer w-full h-full flex flex-col items-center justify-center p-4">
-                      <Upload className="w-8 h-8 text-gray-400 mb-2 group-hover:text-amber-600 transition-colors" />
-                      <span className="text-sm font-medium text-gray-500 group-hover:text-amber-700 transition-colors">Clique para enviar foto</span>
-                      <Input id={`custom_img_${index}`} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleCustomImageUpload(e.target.files[0], index)} />
-                    </Label>
-                  )}
-                  {uploadingImage === `custom_${index}` && (
-                    <div className="absolute inset-0 bg-white/90 flex flex-col items-center justify-center z-10">
-                      <Loader2 className="w-8 h-8 animate-spin text-amber-600 mb-2" />
-                      <span className="text-sm font-bold text-amber-700">Enviando...</span>
-                    </div>
-                  )}
-                </div>
-              </div>
 
               {/* Galeria da Seção Personalizada */}
               <div className="pt-6 border-t mt-6">

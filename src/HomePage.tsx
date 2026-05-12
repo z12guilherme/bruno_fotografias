@@ -315,31 +315,23 @@ export function HomePage() {
                   )}
                 </div>
 
-                {customSec.text || customSec.imageUrl ? (
-                  <div className={`grid grid-cols-1 ${customSec.imageUrl ? 'md:grid-cols-2' : ''} gap-12 items-center`}>
-                    {customSec.text && (
-                      <div className={`text-lg leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} whitespace-pre-wrap`} style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                        {customSec.text}
-                      </div>
-                    )}
-                    {customSec.imageUrl && (
-                      <div className="flex justify-center md:justify-end">
-                        <img src={customSec.imageUrl} alt={customSec.title} className="rounded-sm shadow-lg w-full max-w-sm h-auto object-cover" />
-                      </div>
-                    )}
+                {customSec.text && (
+                  <div className={`text-lg leading-relaxed text-center max-w-3xl mx-auto mb-12 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'} whitespace-pre-wrap`} style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                    {customSec.text}
                   </div>
-                ) : null}
+                )}
 
                 {customSec.gallery && customSec.gallery.length > 0 && (
-                  <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  <div className="mt-8 flex flex-col items-center gap-8">
                     {customSec.gallery.map((img, i) => (
-                      <motion.div key={i} whileHover={{ y: -5 }} className={`rounded-lg overflow-hidden shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-                        <div className="aspect-square">
-                          <img src={img.url} alt={img.description || customSec.title} className="w-full h-full object-cover" />
+                      <motion.div key={i} whileHover={{ y: -5 }} className={`w-full max-w-3xl rounded-lg overflow-hidden shadow-lg flex flex-col md:flex-row items-center gap-6 p-6 transition-colors ${isDarkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-100'}`}>
+                        <div className="w-48 h-48 md:w-56 md:h-56 flex-shrink-0 flex items-center justify-center p-2">
+                          <img src={img.url} alt={img.description || customSec.title} className="max-w-full max-h-full object-contain drop-shadow-md" />
                         </div>
                         {img.description && (
-                          <div className="p-4 text-center">
-                            <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>{img.description}</p>
+                          <div className="flex-1 text-center md:text-left">
+                            <h3 className={`text-xl md:text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{img.description}</h3>
+                            <div className="w-12 h-1 bg-amber-600 mx-auto md:mx-0 mt-4"></div>
                           </div>
                         )}
                       </motion.div>

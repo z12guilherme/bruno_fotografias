@@ -1,5 +1,4 @@
 import bruno from '@/assets/bruno.png';
-import premiacao from '@/assets/premiacao.png';
 import { HomepageContent } from '@/hooks/useHomepageContent';
 
 interface QuemSouProps {
@@ -15,38 +14,20 @@ export function QuemSou({ isDarkMode, content }: QuemSouProps) {
           {content.title}
         </h2>
 
-        <div className="space-y-16">
-          {/* Seção Superior */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* Coluna Esquerda: Texto */}
-            <div className={`space-y-6 text-lg leading-relaxed text-left ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              <p>{content.bio1}</p>
-              {content.bio2 && <p>{content.bio2}</p>}
-            </div>
-            {/* Coluna Direita: Imagem do fotógrafo */}
-            <div className="flex justify-center md:justify-end">
-              <img
-                src={content.photographerImageUrl || bruno}
-                alt="Bruno Nascimento"
-                className="object-cover rounded-sm w-full max-w-sm shadow-lg"
-              />
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          {/* Coluna Esquerda: Textos */}
+          <div className={`space-y-6 text-lg leading-relaxed text-left ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            <p>{content.bio1}</p>
+            {content.bio2 && <p>{content.bio2}</p>}
+            {content.bio3 && <p>{content.bio3}</p>}
           </div>
-
-          {/* Seção Inferior */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* Coluna Esquerda: Imagem do prêmio */}
-            <div className="flex justify-center md:justify-start">
-              <img
-                src={content.awardImageUrl || premiacao}
-                alt="Prêmio Outstanding Maternity Award"
-                className="object-cover rounded-sm w-full max-w-sm shadow-lg"
-              />
-            </div>
-            {/* Coluna Direita: Texto */}
-            <div className={`space-y-6 text-lg leading-relaxed text-left ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              {content.bio3 && <p>{content.bio3}</p>}
-            </div>
+          {/* Coluna Direita: Imagem do fotógrafo */}
+          <div className="flex justify-center md:justify-end">
+            <img
+              src={content.photographerImageUrl || bruno}
+              alt="Bruno Nascimento"
+              className="object-cover rounded-sm w-full max-w-sm shadow-lg"
+            />
           </div>
         </div>
       </div>
