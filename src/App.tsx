@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/toaster";
@@ -15,26 +15,28 @@ import AdminDashboard from "@/pages/AdminDashboard";
 function App() {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
+  const isAdminPage = location.pathname.startsWith("/admin");
+  const showHeaderFooter = !isHomePage && !isAdminPage;
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      {!isHomePage && <Header />}
+      {showHeaderFooter && <Header />}
       <Routes>
-        <Route path="/" element={
-          <HomePage />
-        } />
+        <Route path="/" element={<HomePage />} />
         <Route path="/sobre" element={<AboutPage />} />
         <Route path="/area-do-cliente" element={<ClientAreaPage />} />
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/contato" element={<ContactPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/*" element={<Navigate to="/admin/login" replace />} />
         <Route path="*" element={<HomePage />} /> {/* Fallback para a página inicial */}
       </Routes>
-      {!isHomePage && <Footer />}
+      {showHeaderFooter && <Footer />}
       <Toaster />
     </ThemeProvider>
   );
 }
 
 export default App;
+
