@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, Upload, LogOut, FolderOpen, ArrowLeft, Pencil, FolderPlus, Folder, Link as LinkIcon, LayoutDashboard, Image as ImageIcon } from "lucide-react";
+import { Loader2, Plus, Trash2, Upload, LogOut, FolderOpen, ArrowLeft, Pencil, FolderPlus, Folder, Link as LinkIcon, LayoutDashboard, Image as ImageIcon, ShieldCheck } from "lucide-react";
 import { HomePageEditor } from "@/components/HomePageEditor";
+import { SecuritySettings } from "@/components/SecuritySettings";
 
 // Tipos para nossos dados
 interface Album {
@@ -42,7 +43,7 @@ export default function AdminDashboard() {
   const [subfolders, setSubfolders] = useState<Subfolder[]>([]);
   const [currentSubfolder, setCurrentSubfolder] = useState<Subfolder | null>(null);
   const [photos, setPhotos] = useState<Photo[]>([]);
-  const [activeTab, setActiveTab] = useState<"albums" | "homepage">("albums");
+  const [activeTab, setActiveTab] = useState<"albums" | "homepage" | "security">("albums");
   
   // Estados do formulário
   const [newAlbumTitle, setNewAlbumTitle] = useState("");
@@ -74,7 +75,19 @@ export default function AdminDashboard() {
       navigate("/admin/login");
       return;
     }
-    // Opcional: Verificar role 'admin' novamente para segurança extra
+    
+    // Verifica Nível de Garantia de Autenticação MFA (AAL)
+    const { data: mfaData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (mfaData && mfaData.nextLevel === 'aal2' && mfaData.currentLevel !== 'aal2') {
+      toast({
+        variant: "destructive",
+        title: "Verificação de 2FA requerida",
+        description: "Você precisa concluir a verificação de 2 fatores para acessar o painel.",
+      });
+      navigate("/admin/login");
+      return;
+    }
+
     setLoading(false);
   }
 
@@ -303,7 +316,7 @@ export default function AdminDashboard() {
           </Button>
         </div>
 
-        <div className="flex gap-4 mb-6 border-b pb-4">
+        <div className="flex gap-4 mb-6 border-b pb-4 flex-wrap">
           <Button 
             variant={activeTab === "albums" ? "default" : "outline"} 
             onClick={() => setActiveTab("albums")}
@@ -318,10 +331,21 @@ export default function AdminDashboard() {
           >
             <LayoutDashboard className="w-4 h-4 mr-2" /> Editar Página Inicial
           </Button>
+          <Button 
+            variant={activeTab === "security" ? "default" : "outline"} 
+            onClick={() => setActiveTab("security")}
+            className={activeTab === "security" ? "bg-amber-600 hover:bg-amber-700 text-white" : ""}
+          >
+            <ShieldCheck className="w-4 h-4 mr-2" /> Segurança & 2FA
+          </Button>
         </div>
 
         {activeTab === "homepage" && (
           <HomePageEditor />
+        )}
+
+        {activeTab === "security" && (
+          <SecuritySettings />
         )}
 
         {activeTab === "albums" && (
