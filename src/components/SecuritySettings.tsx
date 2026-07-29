@@ -59,6 +59,16 @@ export function SecuritySettings() {
     setIsEnrolling(true);
     setVerificationCode("");
     try {
+      // 1. Limpa qualquer fator TOTP pendente/não verificado de tentativas anteriores
+      const { data: existingFactors } = await supabase.auth.mfa.listFactors();
+      if (existingFactors?.totp) {
+        const unverifiedFactors = existingFactors.totp.filter((f) => f.status === "unverified");
+        for (const factor of unverifiedFactors) {
+          await supabase.auth.mfa.unenroll({ factorId: factor.id });
+        }
+      }
+
+      // 2. Inicia o cadastro do novo fator TOTP
       const { data, error } = await supabase.auth.mfa.enroll({
         factorType: "totp",
         issuer: "Bruno Nascimento Fotografia",
