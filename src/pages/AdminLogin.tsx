@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Lock, Mail, Loader2, KeyRound, ShieldCheck, ArrowLeft } from "lucide-react";
 
@@ -229,9 +230,9 @@ export default function AdminLogin() {
 
             <form onSubmit={handleVerifyMfa} className="space-y-6">
               <div>
-                <FormLabel htmlFor="mfaCode" className="text-sm font-medium text-gray-700">
+                <Label htmlFor="mfaCode" className="text-sm font-medium text-gray-700">
                   Código de Verificação
-                </FormLabel>
+                </Label>
                 <div className="relative mt-1">
                   <KeyRound className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
